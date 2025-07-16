@@ -13,9 +13,8 @@
         android:theme="@style/Theme.JetMemo"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.LearnWordsActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.JetMemo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
