@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">JetMemo</string>
+    <string name="app_name" translatable="false">KRWordApp</string>
+    <string name="button_skip">Skip</string>
+    <string name="title_correct">Correct!</string>
+    <string name="button_continue">Continue</string>
+    <string name="title_wrong">Wrong!</string>
+    <string name="title_complete">Complete</string>
 </resources>

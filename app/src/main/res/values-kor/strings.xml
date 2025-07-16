@@ -1,0 +1,7 @@
+<resources>
+    <string name="button_skip">건너뛰다</string>
+    <string name="title_correct">오른쪽!</string>
+    <string name="button_continue">계속하다</string>
+    <string name="title_wrong">잘못된!</string>
+    <string name="title_complete">완료하다</string>
+</resources>
