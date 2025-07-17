@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +37,7 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.ui.theme.BorderGrey
 import vbshkn.android.jetmemo.ui.theme.Grey10
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
+import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 class LearnWordsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +54,7 @@ class LearnWordsActivity : ComponentActivity() {
                         CloseButton()
                         QuestionWord("Galaxy")
                         OptionPanel()
+                        SkipButton()
                     }
                 }
             )
@@ -157,12 +159,39 @@ fun OptionPanel(){
             )
     ){
         Option(1, "Option")
-        Spacer(Modifier.height(8.dp))
         Option(2, "Optionononnono")
-        Spacer(Modifier.height(8.dp))
         Option(3, "Opopo")
-        Spacer(Modifier.height(8.dp))
         Option(4, "I GOT OPTIONS OH")
+    }
+}
+
+@Composable
+fun SkipButton(){
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom,
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Button(
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(VividBlue),
+            shape = RoundedCornerShape(22.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 32.dp,
+                    end = 32.dp,
+                    //top = 80.dp,
+                    bottom = 30.dp
+                )
+                .height(58.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.button_skip).uppercase(),
+                fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
+            )
+        }
     }
 }
 
@@ -188,4 +217,10 @@ private fun OptionPreview(){
 @Preview(showBackground = true)
 private fun OptionScreenPreview(){
     OptionPanel()
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun SkipButtonPreview(){
+    SkipButton()
 }

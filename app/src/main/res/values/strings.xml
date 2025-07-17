@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">KRWordApp</string>
+    <string name="app_name" translatable="false">JetMemo</string>
     <string name="button_skip">Skip</string>
     <string name="title_correct">Correct!</string>
     <string name="button_continue">Continue</string>
