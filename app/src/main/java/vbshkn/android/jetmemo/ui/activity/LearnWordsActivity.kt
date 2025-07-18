@@ -33,7 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import vbshkn.android.jetmemo.R
+import vbshkn.android.jetmemo.model.LearnWordsActivityViewModel
 import vbshkn.android.jetmemo.ui.theme.BorderGrey
 import vbshkn.android.jetmemo.ui.theme.Grey10
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
@@ -76,7 +78,10 @@ fun CloseButton(){
 }
 
 @Composable
-fun QuestionWord(text: String){
+fun QuestionWord(
+    text: String,
+    viewModel: LearnWordsActivityViewModel = viewModel()
+){
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -84,20 +89,21 @@ fun QuestionWord(text: String){
             .padding(top = 96.dp)
             //.background(Color.Red)
     ) {
-        Text(
-            text = text,
-            fontSize = 50.sp,
-            fontFamily = FontFamily(Font(R.font.nunito_semibold)),
-            textAlign = TextAlign.Center
-        )
+        viewModel.currentQuestion?.correctAnswer?.let {
+            Text(
+                text = it.original,
+                fontSize = 50.sp,
+                fontFamily = FontFamily(Font(R.font.nunito_semibold)),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
 @Composable
 fun Option(
     number: Int,
-    displayedText: String
-){
+    displayedText: String){
     Button(
         onClick = {},
         shape = RoundedCornerShape(20.dp),

@@ -1,6 +1,4 @@
-package vbshkn.android.jetmemo.model
-
-import android.util.Log
+package vbshkn.android.jetmemo.logic
 
 data class Word(
     val original: String,
