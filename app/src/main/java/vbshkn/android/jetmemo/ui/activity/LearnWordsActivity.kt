@@ -82,6 +82,7 @@ fun QuestionWord(text: String){
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 96.dp)
+            //.background(Color.Red)
     ) {
         Text(
             text = text,
@@ -152,10 +153,11 @@ fun OptionPanel(){
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
+            //.background(Color.Green)
             .padding(
                 start = 32.dp,
                 end = 32.dp,
-                top = 80.dp
+                top = 60.dp
             )
     ){
         Option(1, "Option")
@@ -170,7 +172,9 @@ fun SkipButton(){
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Bottom,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            //.background(Color.Yellow)
     ){
         Button(
             onClick = {},
@@ -181,7 +185,7 @@ fun SkipButton(){
                 .padding(
                     start = 32.dp,
                     end = 32.dp,
-                    //top = 80.dp,
+                    top = 60.dp,
                     bottom = 30.dp
                 )
                 .height(58.dp)
