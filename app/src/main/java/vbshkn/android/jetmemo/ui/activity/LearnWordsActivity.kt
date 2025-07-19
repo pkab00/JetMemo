@@ -18,13 +18,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -35,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import vbshkn.android.jetmemo.R
+import vbshkn.android.jetmemo.model.CorrectMessagePanelState
 import vbshkn.android.jetmemo.model.LearnWordsActivityViewModel
 import vbshkn.android.jetmemo.ui.theme.BorderGrey
 import vbshkn.android.jetmemo.ui.theme.Grey10
@@ -56,7 +62,8 @@ class LearnWordsActivity : ComponentActivity() {
                         CloseButton()
                         QuestionWord("Galaxy")
                         OptionPanel()
-                        SkipButton()
+                        //SkipButton()
+                        CorrectMessagePanel()
                     }
                 }
             )
@@ -111,6 +118,7 @@ fun Option(
             if(viewModel.buttonStates[index].isClickable){
                 viewModel.changeButtonState(index)
                 viewModel.setClickable(false)
+                viewModel.setCorrectMessagePanelVisible(true)
             }
         },
         shape = RoundedCornerShape(20.dp),
@@ -224,32 +232,76 @@ fun SkipButton(
     }
 }
 
-//@Composable
-//@Preview(showBackground = true)
-//private fun CloseButtonPreview(){
-//    CloseButton()
-//}
-
-//@Composable
-//@Preview(showBackground = true)
-//private fun QuestionWordPreview(){
-//    QuestionWord("Galaxy")
-//}
-
-//@Composable
-//@Preview(showBackground = true)
-//private fun OptionPreview(){
-//    Option(1, "Галактика")
-//}
-
 @Composable
-@Preview(showBackground = true)
-private fun OptionScreenPreview(){
-    OptionPanel()
+fun CorrectMessagePanel(
+    viewModel: LearnWordsActivityViewModel = viewModel()
+){
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(136.dp)
+            .alpha(viewModel.correctMessagePanelState.visibility)
+            .background(viewModel.correctMessagePanelState.mainColor)
+    ){
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Image(
+                painter = painterResource(viewModel.correctMessagePanelState.pictureResource),
+                contentDescription = stringResource(viewModel.correctMessagePanelState.messageResource),
+                modifier = Modifier
+                    .padding(
+                        start = 36.dp,
+                        top = 18.dp
+                    )
+            )
+            Text(
+                text = stringResource(viewModel.correctMessagePanelState.messageResource),
+                color = Color.White,
+                fontSize = 22.sp,
+                fontFamily = FontFamily(Font(R.font.rubik_regular)),
+                modifier = Modifier
+                    .padding(
+                        start = 8.dp,
+                        top = 18.dp
+                    )
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(22.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = viewModel.correctMessagePanelState.mainColor
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .padding(
+                        start = 32.dp,
+                        end = 32.dp,
+                        bottom = 24.dp
+                    )
+            ) {
+                Text(
+                    text = stringResource(R.string.button_continue).uppercase(),
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_bold))
+                )
+            }
+        }
+    }
 }
 
-@Composable
-@Preview(showBackground = true)
-private fun SkipButtonPreview(){
-    SkipButton()
-}
+//@Composable
+//@Preview
+//fun CorrectMessagePanelPreview(){
+//    CorrectMessagePanel()
+//}
