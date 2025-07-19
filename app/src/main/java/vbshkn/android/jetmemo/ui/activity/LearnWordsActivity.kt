@@ -103,12 +103,19 @@ fun QuestionWord(
 @Composable
 fun Option(
     number: Int,
-    displayedText: String){
+    viewModel: LearnWordsActivityViewModel = viewModel()
+){
+    val index = number - 1
     Button(
-        onClick = {},
+        onClick = {
+            if(viewModel.buttonStates[index].isClickable){
+                viewModel.changeButtonState(index)
+                viewModel.setClickable(false)
+            }
+        },
         shape = RoundedCornerShape(20.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, BorderGrey),
+        border = BorderStroke(1.dp, viewModel.buttonStates[index].borderColor),
         modifier = Modifier
             .fillMaxWidth()
             .padding(
@@ -122,12 +129,17 @@ fun Option(
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    if(viewModel.buttonStates[index].isClickable){
+                        viewModel.changeButtonState(index)
+                        viewModel.setClickable(false)
+                    }
+                },
                 shape = RoundedCornerShape(10.dp),
                 contentPadding = PaddingValues(1.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Grey10,
-                    contentColor = OptionTextGrey
+                    containerColor = viewModel.buttonStates[index].smallButtonColor,
+                    contentColor = viewModel.buttonStates[index].numberColor
                 ),
                 modifier = Modifier
                     .size(40.dp)
@@ -140,10 +152,11 @@ fun Option(
                 )
             }
             Text(
-                text = displayedText,
+                text = (viewModel.currentQuestion?.answers?.get(number-1)?.translation ?: ""),
+                // TODO: ПОДУМАТЬ ЧТО ДЕЛАТЬ С ЭТИМИ УРОДСКИМИ NULL-SAFE ВЫЗОВАМИ
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.rubik_regular)),
-                color = OptionTextGrey,
+                color = viewModel.buttonStates[index].textColor,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .padding(start = 8.dp)
@@ -166,15 +179,17 @@ fun OptionPanel(){
                 top = 60.dp
             )
     ){
-        Option(1, "Option")
-        Option(2, "Optionononnono")
-        Option(3, "Opopo")
-        Option(4, "I GOT OPTIONS OH")
+        Option(1)
+        Option(2)
+        Option(3)
+        Option(4)
     }
 }
 
 @Composable
-fun SkipButton(){
+fun SkipButton(
+    viewModel: LearnWordsActivityViewModel = viewModel()
+){
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Bottom,
@@ -183,7 +198,11 @@ fun SkipButton(){
             //.background(Color.Yellow)
     ){
         Button(
-            onClick = {},
+            onClick = {
+                viewModel.resetButtonStates()
+                viewModel.setClickable(true)
+                viewModel.setNewQuestion()
+            },
             colors = ButtonDefaults.buttonColors(VividBlue),
             shape = RoundedCornerShape(22.dp),
             modifier = Modifier
@@ -217,11 +236,11 @@ fun SkipButton(){
 //    QuestionWord("Galaxy")
 //}
 
-@Composable
-@Preview(showBackground = true)
-private fun OptionPreview(){
-    Option(1, "Галактика")
-}
+//@Composable
+//@Preview(showBackground = true)
+//private fun OptionPreview(){
+//    Option(1, "Галактика")
+//}
 
 @Composable
 @Preview(showBackground = true)

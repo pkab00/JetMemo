@@ -1,6 +1,7 @@
 package vbshkn.android.jetmemo.model
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
@@ -16,35 +17,71 @@ class LearnWordsActivityViewModel : ViewModel() {
     private val trainer: LearnWordsTrainer = LearnWordsTrainer()
 
     private val _currentQuestion = mutableStateOf(trainer.generateNextQuestion())
-    private val _borderColor = mutableStateOf(BorderGrey)
-    private val _smallButtonColor = mutableStateOf(Grey10)
-    private val _textColor = mutableStateOf(OptionTextGrey)
-    private val _numberTextColor = mutableStateOf(OptionTextGrey)
+    private val _buttonStates = mutableStateListOf<ButtonState>().apply {
+        repeat(4) {add(ButtonState())}
+    }
 
     var currentQuestion by _currentQuestion
-    var borderColor by _borderColor
-    var smallButtonColor by _smallButtonColor
-    var textColor by _textColor
-    var numberTextColor by _numberTextColor
+    val buttonStates: List<ButtonState> = _buttonStates
+
+    fun setNewQuestion(){
+        currentQuestion = trainer.generateNextQuestion()
+    }
+
+    fun changeButtonState(buttonIndex: Int){
+        val isCorrect: Boolean = currentQuestion?.run {
+            correctAnswer.original == answers[buttonIndex].original
+        } ?: false
+
+        when(isCorrect){
+            true -> buttonStates[buttonIndex].setCorrectState()
+            false -> buttonStates[buttonIndex].setWrongState()
+        }
+    }
+
+    fun resetButtonStates(){
+        buttonStates.forEach {state ->
+            state.setNeutralState()
+        }
+    }
+
+    fun setClickable(clickable: Boolean){
+        buttonStates.forEach {state ->
+            state.updateClickable(clickable)
+        }
+    }
+}
+
+class ButtonState(){
+    var borderColor by mutableStateOf(BorderGrey)
+    var smallButtonColor by mutableStateOf(Grey10)
+    var textColor by mutableStateOf(OptionTextGrey)
+    var numberColor by mutableStateOf(OptionTextGrey)
+    var isClickable by mutableStateOf(true)
+        private set
 
     fun setNeutralState(){
-        _borderColor.value = BorderGrey
-        _smallButtonColor.value = Grey10
-        _textColor.value = OptionTextGrey
-        _numberTextColor.value = OptionTextGrey
+        borderColor = BorderGrey
+        smallButtonColor = Grey10
+        textColor = OptionTextGrey
+        numberColor = OptionTextGrey
     }
 
     fun setCorrectState(){
-        _borderColor.value = CorrectGreen
-        _smallButtonColor.value = CorrectGreen
-        _textColor.value = CorrectGreen
-        _numberTextColor.value = Color.White
+        borderColor = CorrectGreen
+        smallButtonColor = CorrectGreen
+        textColor = CorrectGreen
+        numberColor = Color.White
     }
 
     fun setWrongState(){
-        _borderColor.value = WrongRed
-        _smallButtonColor.value = WrongRed
-        _textColor.value = WrongRed
-        _numberTextColor.value = Color.White
+        borderColor = WrongRed
+        smallButtonColor = WrongRed
+        textColor = WrongRed
+        numberColor = Color.White
+    }
+
+    fun updateClickable(clickable: Boolean){
+        isClickable = clickable
     }
 }
