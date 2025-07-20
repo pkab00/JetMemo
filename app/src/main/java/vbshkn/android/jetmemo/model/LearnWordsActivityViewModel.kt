@@ -1,15 +1,11 @@
 package vbshkn.android.jetmemo.model
 
-import androidx.collection.mutableFloatSetOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
@@ -32,11 +28,11 @@ class LearnWordsActivityViewModel : ViewModel() {
     val buttonStates: List<ButtonState> = _buttonStates
     var correctMessagePanelState by _correctMessagePanelState
 
-    fun setNewQuestion(){
+    private fun setNewQuestion(){
         currentQuestion = trainer.generateNextQuestion()
     }
 
-    fun changeButtonState(buttonIndex: Int){
+    private fun changeButtonState(buttonIndex: Int){
         val isCorrect: Boolean = currentQuestion?.run {
             correctAnswer.original == answers[buttonIndex].original
         } ?: false
@@ -48,24 +44,43 @@ class LearnWordsActivityViewModel : ViewModel() {
         setCorrectMessagePanelState(isCorrect)
     }
 
-    fun resetButtonStates(){
+    private fun resetButtonStates(){
         buttonStates.forEach {state ->
             state.setNeutralState()
         }
     }
 
-    fun setClickable(clickable: Boolean){
+    private fun setOptionsClickable(clickable: Boolean){
         buttonStates.forEach {state ->
             state.updateClickable(clickable)
         }
     }
 
-    fun setCorrectMessagePanelState(state: Boolean){
+    private fun setCorrectMessagePanelState(state: Boolean){
         correctMessagePanelState.switchState(state)
     }
 
-    fun setCorrectMessagePanelVisible(visibility: Boolean){
+    private fun setCorrectMessagePanelVisible(visibility: Boolean){
         correctMessagePanelState.updateVisibility(visibility)
+    }
+
+    fun onOption(index: Int){
+        if(buttonStates[index].isClickable){
+            changeButtonState(index)
+            setOptionsClickable(false)
+            setCorrectMessagePanelVisible(true)
+        }
+    }
+
+    fun onSkip(){
+        setNewQuestion()
+    }
+
+    fun onContinue(){
+        setNewQuestion()
+        resetButtonStates()
+        setCorrectMessagePanelVisible(false)
+        setOptionsClickable(true)
     }
 }
 
@@ -107,7 +122,7 @@ class CorrectMessagePanelState(){
     val _messageResource = mutableIntStateOf(R.string.title_correct)
     val _pictureRecource = mutableIntStateOf(R.drawable.ic_correct)
     val _mainColor = mutableStateOf(CorrectGreen)
-    val _visibility = mutableFloatStateOf(1f)
+    val _visibility = mutableStateOf(false)
 
     var messageResource by _messageResource
     var pictureResource by _pictureRecource
@@ -130,6 +145,6 @@ class CorrectMessagePanelState(){
     }
 
     fun updateVisibility(visible: Boolean){
-        visibility = if(visible) 1f else 0f
+        visibility = visible
     }
 }

@@ -4,6 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,39 +18,30 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import vbshkn.android.jetmemo.R
-import vbshkn.android.jetmemo.model.CorrectMessagePanelState
 import vbshkn.android.jetmemo.model.LearnWordsActivityViewModel
-import vbshkn.android.jetmemo.ui.theme.BorderGrey
-import vbshkn.android.jetmemo.ui.theme.Grey10
-import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 class LearnWordsActivity : ComponentActivity() {
@@ -62,7 +59,7 @@ class LearnWordsActivity : ComponentActivity() {
                         CloseButton()
                         QuestionWord("Galaxy")
                         OptionPanel()
-                        //SkipButton()
+                        SkipButton()
                         CorrectMessagePanel()
                     }
                 }
@@ -94,7 +91,6 @@ fun QuestionWord(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 96.dp)
-            //.background(Color.Red)
     ) {
         viewModel.currentQuestion?.correctAnswer?.let {
             Text(
@@ -115,11 +111,7 @@ fun Option(
     val index = number - 1
     Button(
         onClick = {
-            if(viewModel.buttonStates[index].isClickable){
-                viewModel.changeButtonState(index)
-                viewModel.setClickable(false)
-                viewModel.setCorrectMessagePanelVisible(true)
-            }
+            viewModel.onOption(index)
         },
         shape = RoundedCornerShape(20.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
@@ -138,10 +130,7 @@ fun Option(
         ) {
             Button(
                 onClick = {
-                    if(viewModel.buttonStates[index].isClickable){
-                        viewModel.changeButtonState(index)
-                        viewModel.setClickable(false)
-                    }
+                    viewModel.onOption(index)
                 },
                 shape = RoundedCornerShape(10.dp),
                 contentPadding = PaddingValues(1.dp),
@@ -187,10 +176,9 @@ fun OptionPanel(){
                 top = 60.dp
             )
     ){
-        Option(1)
-        Option(2)
-        Option(3)
-        Option(4)
+        for(i in 1..4){
+            Option(i)
+        }
     }
 }
 
@@ -198,36 +186,39 @@ fun OptionPanel(){
 fun SkipButton(
     viewModel: LearnWordsActivityViewModel = viewModel()
 ){
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Bottom,
-        modifier = Modifier
-            .fillMaxWidth()
-            //.background(Color.Yellow)
-    ){
-        Button(
-            onClick = {
-                viewModel.resetButtonStates()
-                viewModel.setClickable(true)
-                viewModel.setNewQuestion()
-            },
-            colors = ButtonDefaults.buttonColors(VividBlue),
-            shape = RoundedCornerShape(22.dp),
+    AnimatedVisibility(
+        visible = !viewModel.correctMessagePanelState.visibility,
+        enter = fadeIn(tween(durationMillis = 10)),
+        exit = fadeOut(tween(durationMillis = 10)) // анимация проигрывается почти мгновенно
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Bottom,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 32.dp,
-                    end = 32.dp,
-                    top = 60.dp,
-                    bottom = 30.dp
+                .fillMaxSize()
+        ){
+            Button(
+                onClick = {
+                    viewModel.onSkip()
+                },
+                colors = ButtonDefaults.buttonColors(VividBlue),
+                shape = RoundedCornerShape(22.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 32.dp,
+                        end = 32.dp,
+                        top = 60.dp,
+                        bottom = 30.dp
+                    )
+                    .height(58.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.button_skip).uppercase(),
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                 )
-                .height(58.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.button_skip).uppercase(),
-                fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.nunito_bold)),
-            )
+            }
         }
     }
 }
@@ -236,65 +227,72 @@ fun SkipButton(
 fun CorrectMessagePanel(
     viewModel: LearnWordsActivityViewModel = viewModel()
 ){
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(136.dp)
-            .alpha(viewModel.correctMessagePanelState.visibility)
-            .background(viewModel.correctMessagePanelState.mainColor)
-    ){
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth()
+    AnimatedVisibility(
+        visible = viewModel.correctMessagePanelState.visibility,
+        enter = slideInHorizontally(),
+        exit = slideOutHorizontally()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .height(136.dp)
+                .background(viewModel.correctMessagePanelState.mainColor)
         ){
-            Image(
-                painter = painterResource(viewModel.correctMessagePanelState.pictureResource),
-                contentDescription = stringResource(viewModel.correctMessagePanelState.messageResource),
-                modifier = Modifier
-                    .padding(
-                        start = 36.dp,
-                        top = 18.dp
-                    )
-            )
-            Text(
-                text = stringResource(viewModel.correctMessagePanelState.messageResource),
-                color = Color.White,
-                fontSize = 22.sp,
-                fontFamily = FontFamily(Font(R.font.rubik_regular)),
-                modifier = Modifier
-                    .padding(
-                        start = 8.dp,
-                        top = 18.dp
-                    )
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Button(
-                onClick = {},
-                shape = RoundedCornerShape(22.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = viewModel.correctMessagePanelState.mainColor
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp)
-                    .padding(
-                        start = 32.dp,
-                        end = 32.dp,
-                        bottom = 24.dp
-                    )
-            ) {
-                Text(
-                    text = stringResource(R.string.button_continue).uppercase(),
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.nunito_bold))
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Image(
+                    painter = painterResource(viewModel.correctMessagePanelState.pictureResource),
+                    contentDescription = stringResource(viewModel.correctMessagePanelState.messageResource),
+                    modifier = Modifier
+                        .padding(
+                            start = 36.dp,
+                            top = 18.dp
+                        )
                 )
+                Text(
+                    text = stringResource(viewModel.correctMessagePanelState.messageResource),
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontFamily = FontFamily(Font(R.font.rubik_regular)),
+                    modifier = Modifier
+                        .padding(
+                            start = 8.dp,
+                            top = 18.dp
+                        )
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Button(
+                    onClick = {
+                        viewModel.onContinue()
+                    },
+                    shape = RoundedCornerShape(22.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = viewModel.correctMessagePanelState.mainColor
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp)
+                        .padding(
+                            start = 32.dp,
+                            end = 32.dp,
+                            bottom = 24.dp
+                        )
+                ) {
+                    Text(
+                        text = stringResource(R.string.button_continue).uppercase(),
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.nunito_bold))
+                    )
+                }
             }
         }
     }
