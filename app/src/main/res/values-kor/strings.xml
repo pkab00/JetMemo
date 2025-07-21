@@ -7,4 +7,5 @@
     <string name="about_app">"애플리케이션에 관하여 "</string>
     <string name="add_new_unit">"새로운 섹션 추가 "</string>
     <string name="your_units">당신의 섹션:</string>
+    <string name="all_words">"모든 단어 "</string>
 </resources>

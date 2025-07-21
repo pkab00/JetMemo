@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,11 +35,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,9 +58,13 @@ class MainActivity : ComponentActivity() {
                 topBar = { TopBar() }
             ) { innerPadding ->
                 Column(
-                    modifier = Modifier.padding(innerPadding)
+                    verticalArrangement = Arrangement.Top,
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .background(Color.White)
                 ) {
-                    //YourUnitsLabel()
+                    YourUnitsLabel()
                     UnitList()
                 }
             }
@@ -87,6 +94,7 @@ fun TopBar(){
                 contentDescription = stringResource(R.string.add_new_unit),
                 modifier = Modifier
                     .size(36.dp)
+                    .clip(CircleShape)
                     .clickable(
                     onClick = {}
                 )
@@ -97,6 +105,7 @@ fun TopBar(){
                 contentDescription = stringResource(R.string.about_app),
                 modifier = Modifier
                     .size(36.dp)
+                    .clip(CircleShape)
                     .clickable(
                     onClick = {}
                 )
@@ -114,18 +123,19 @@ fun YourUnitsLabel(){
         Text(
             text = stringResource(R.string.your_units),
             color = VividBlue,
-            fontSize = 20.sp,
+            fontSize = 28.sp,
             fontFamily = FontFamily(Font(R.font.nunito_bold)),
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(start = 5.dp, top = 5.dp)
+                .background(Color.White)
         )
     }
 }
 
 @Composable
 fun UnitList(){
-    val testData = listOf("ONE", "TWO", "THREE", "ME GUSTAS", "I GOT SO MANY THINGS")
+    val tempData = listOf(stringResource(R.string.all_words))
     LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -133,7 +143,7 @@ fun UnitList(){
             .background(Color.White)
             .fillMaxSize()
     ) {
-        items(testData){
+        items(tempData) {
             item -> UnitButton(item)
         }
     }
@@ -144,8 +154,8 @@ fun UnitButton(text: String){
     Button(
         onClick = {},
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = VividBlue,
+            containerColor = VividBlue,
+            contentColor = Color.White,
         ),
         border = BorderStroke(1.dp, VividBlue),
         shape = RoundedCornerShape(0.dp),
@@ -153,10 +163,23 @@ fun UnitButton(text: String){
             .fillMaxWidth()
             .padding(5.dp)
     ) {
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            fontFamily = FontFamily(Font(R.font.nunito_semibold))
-        )
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Icon(
+                painter = painterResource(
+                    if(text == stringResource(R.string.all_words))
+                        R.drawable.ic_default_folder
+                    else R.drawable.ic_folder
+                ),
+                contentDescription = "",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = text,
+                fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.nunito_semibold))
+            )
+        }
     }
 }
