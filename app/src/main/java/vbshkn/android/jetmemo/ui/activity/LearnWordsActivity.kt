@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,16 +57,21 @@ class LearnWordsActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .background(Color.White)
                     ) {
-                        CloseButton()
-                        QuestionWord("Galaxy")
-                        OptionPanel()
-                        SkipButton()
-                        CorrectMessagePanel()
+                        Content()
                     }
                 }
             )
         }
     }
+}
+
+@Composable
+fun Content(){
+    CloseButton()
+    QuestionWord("Galaxy")
+    OptionPanel()
+    SkipButton()
+    CorrectMessagePanel()
 }
 
 @Composable
@@ -110,9 +116,7 @@ fun Option(
 ){
     val index = number - 1
     Button(
-        onClick = {
-            viewModel.onOption(index)
-        },
+        onClick = { viewModel.onOption(index) },
         shape = RoundedCornerShape(20.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
         border = BorderStroke(1.dp, viewModel.buttonStates[index].borderColor),
@@ -129,9 +133,7 @@ fun Option(
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
-                onClick = {
-                    viewModel.onOption(index)
-                },
+                onClick = { viewModel.onOption(index) },
                 shape = RoundedCornerShape(10.dp),
                 contentPadding = PaddingValues(1.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -169,7 +171,6 @@ fun OptionPanel(){
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            //.background(Color.Green)
             .padding(
                 start = 32.dp,
                 end = 32.dp,
@@ -198,9 +199,7 @@ fun SkipButton(
                 .fillMaxSize()
         ){
             Button(
-                onClick = {
-                    viewModel.onSkip()
-                },
+                onClick = { viewModel.onSkip() },
                 colors = ButtonDefaults.buttonColors(VividBlue),
                 shape = RoundedCornerShape(22.dp),
                 modifier = Modifier
@@ -270,9 +269,7 @@ fun CorrectMessagePanel(
                 modifier = Modifier.fillMaxWidth()
             ){
                 Button(
-                    onClick = {
-                        viewModel.onContinue()
-                    },
+                    onClick = { viewModel.onContinue() },
                     shape = RoundedCornerShape(22.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
@@ -297,9 +294,3 @@ fun CorrectMessagePanel(
         }
     }
 }
-
-//@Composable
-//@Preview
-//fun CorrectMessagePanelPreview(){
-//    CorrectMessagePanel()
-//}
