@@ -7,6 +7,7 @@
     <string name="title_complete">Complete</string>
     <string name="about_app">About the app</string>
     <string name="add_new_unit">Add new unit</string>
+    <string name="your_units">Your units:</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

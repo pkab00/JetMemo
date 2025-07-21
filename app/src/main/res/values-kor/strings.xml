@@ -5,5 +5,6 @@
     <string name="title_wrong">잘못된!</string>
     <string name="title_complete">완료하다</string>
     <string name="about_app">"애플리케이션에 관하여 "</string>
-    <string name="add_new_unit">Добавить новый раздел</string>
+    <string name="add_new_unit">"새로운 섹션 추가 "</string>
+    <string name="your_units">당신의 섹션:</string>
 </resources>

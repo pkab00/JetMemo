@@ -5,5 +5,6 @@
     <string name="title_wrong">Неверно!</string>
     <string name="title_complete">Завершить</string>
     <string name="about_app">О приложении</string>
-    <string name="add_new_unit">"새로운 섹션 추가 "</string>
+    <string name="add_new_unit">Добавить новый раздел:</string>
+    <string name="your_units">Ваши разделы:</string>
 </resources>
