@@ -4,10 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,11 +22,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.ui.theme.HeaderBlueGrey
-import vbshkn.android.jetmemo.ui.theme.InputTextBlue
-import vbshkn.android.jetmemo.ui.theme.PlaceholderFocused
+import vbshkn.android.jetmemo.ui.theme.InputAreaFocused
+import vbshkn.android.jetmemo.ui.theme.InputAreaUnfocused
 import vbshkn.android.jetmemo.ui.theme.VividBlue
-
-// TODO: Сделать нормальную цветовую тему
 
 @Composable
 fun TextInputDialog(
@@ -41,7 +38,11 @@ fun TextInputDialog(
 
     if(isOpen){
         AlertDialog(
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                onDismiss()
+                text = ""
+            },
+            containerColor = Color.White,
             title = {
                 Text(
                     text = title,
@@ -50,18 +51,19 @@ fun TextInputDialog(
                 )
             },
             text = {
-                TextField(
+                OutlinedTextField(
                     value = text,
                     textStyle = TextStyle(
-                        color = InputTextBlue,
+                        color = Color.White,
                         fontFamily = FontFamily(Font(R.font.nunito_semibold))
                     ),
                     onValueChange = { text = it },
                     colors = TextFieldDefaults.colors(
-                        cursorColor = VividBlue,
+                        cursorColor = Color.White,
                         focusedIndicatorColor = VividBlue,
                         unfocusedIndicatorColor = Color.White,
-                        focusedPlaceholderColor = PlaceholderFocused
+                        focusedContainerColor = InputAreaFocused,
+                        unfocusedContainerColor = InputAreaUnfocused
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -71,6 +73,7 @@ fun TextInputDialog(
                     onClick = {
                         onConfirm(text)
                         onDismiss()
+                        text = ""
                     },
                     colors = ButtonDefaults.buttonColors(
                         contentColor = VividBlue,
@@ -81,7 +84,10 @@ fun TextInputDialog(
             },
             dismissButton = {
                 TextButton(
-                    onClick = onDismiss,
+                    onClick = {
+                        onDismiss()
+                        text = ""
+                    },
                     colors = ButtonDefaults.buttonColors(
                         contentColor = VividBlue,
                         containerColor = Color.White
