@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -73,16 +74,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(viewModel: MainActivityViewModel, ){
-    var show by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
+    var editModeOn by remember { mutableStateOf(false) }
+
     TextInputDialog(
-        isOpen = show,
-        onDismiss = {show = false},
+        isOpen = showAddDialog,
+        onDismiss = {showAddDialog = false},
         onConfirm = { unitName -> viewModel.addUnit(unitName)},
         title = stringResource(R.string.add_new_unit)
     )
 
     Scaffold(
-        topBar = { TopBar {show = true} }
+        topBar = {
+            TopBar(
+                onAddClicked = { showAddDialog = true }
+            )
+        }
     ) { innerPadding ->
         Column(
             verticalArrangement = Arrangement.Top,
@@ -91,8 +98,8 @@ fun MainScreen(viewModel: MainActivityViewModel, ){
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            YourUnitsLabel()
-            UnitList(viewModel)
+            YourUnitsLabel({ editModeOn = !editModeOn }, editModeOn)
+            UnitList(viewModel, editModeOn)
         }
     }
 }
@@ -124,8 +131,8 @@ fun TopBar(
                     .size(36.dp)
                     .clip(CircleShape)
                     .clickable(
-                    onClick = onAddClicked
-                )
+                        onClick = onAddClicked
+                    )
             )
             Spacer(Modifier.width(22.dp))
             Icon(
@@ -135,34 +142,64 @@ fun TopBar(
                     .size(36.dp)
                     .clip(CircleShape)
                     .clickable(
-                    onClick = {}
-                )
+                        onClick = {}
+                    )
             )
         }
     )
 }
 
 @Composable
-fun YourUnitsLabel(){
+fun YourUnitsLabel(
+    onEditClicked: () -> Unit,
+    editMode: Boolean
+){
     Row(
         verticalAlignment = Alignment.Top,
         modifier = Modifier.fillMaxWidth()
     ){
-        Text(
-            text = stringResource(R.string.your_units),
-            color = VividBlue,
-            fontSize = 28.sp,
-            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 5.dp, top = 5.dp)
-                .background(Color.White)
-        )
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = stringResource(R.string.your_units),
+                color = VividBlue,
+                fontSize = 28.sp,
+                fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 5.dp, top = 5.dp)
+                    .background(Color.White)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier.weight(0.5f)
+        ) {
+            Icon(
+                painter = painterResource(
+                    if(editMode) R.drawable.ic_edit_mode_off
+                    else R.drawable.ic_edit_mode_on
+                ),
+                contentDescription = "",
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(end = 5.dp, top = 5.dp)
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(VividBlue)
+                    .clickable { onEditClicked() }
+            )
+        }
     }
 }
 
 @Composable
-fun UnitList(viewModel: MainActivityViewModel){
+fun UnitList(
+    viewModel: MainActivityViewModel,
+    editMode: Boolean
+){
     val units by viewModel.allUnits.collectAsState()
     val allWordsUnit = UnitEntity(id = -1, name = stringResource(R.string.all_words))
     val allUnits = remember(units) { listOf(allWordsUnit) + units }
@@ -175,13 +212,16 @@ fun UnitList(viewModel: MainActivityViewModel){
             .fillMaxSize()
     ) {
         items(allUnits) {
-            unit -> UnitButton(unit.name)
+            unit -> UnitButton(unit.name, editMode)
         }
     }
 }
 
 @Composable
-fun UnitButton(text: String){
+fun UnitButton(
+    text: String,
+    isEditable: Boolean
+){
     Button(
         onClick = {},
         colors = ButtonDefaults.buttonColors(
@@ -197,20 +237,46 @@ fun UnitButton(text: String){
         Row(
             modifier = Modifier.fillMaxSize()
         ) {
-            Icon(
-                painter = painterResource(
-                    if(text == stringResource(R.string.all_words))
-                        R.drawable.ic_default_folder
-                    else R.drawable.ic_folder
-                ),
-                contentDescription = "",
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(
-                text = text,
-                fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.nunito_semibold))
-            )
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    painter = painterResource(
+                        if(text == stringResource(R.string.all_words))
+                            R.drawable.ic_default_folder
+                        else R.drawable.ic_folder
+                    ),
+                    contentDescription = "",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = text,
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_semibold))
+                )
+            }
+            if(isEditable && text != stringResource(R.string.all_words)){
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.weight(0.4f)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                            .clickable(onClick = {})
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .clickable(onClick = {})
+                    )
+                }
+            }
         }
     }
 }
