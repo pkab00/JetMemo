@@ -9,6 +9,8 @@
     <string name="add_new_unit">Add new unit</string>
     <string name="your_units">Your units:</string>
     <string name="all_words">All words</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="dismiss">Dismiss</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

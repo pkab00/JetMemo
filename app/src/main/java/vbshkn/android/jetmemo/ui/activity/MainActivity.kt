@@ -29,6 +29,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,35 +44,65 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import vbshkn.android.jetmemo.R
+import vbshkn.android.jetmemo.data.UnitEntity
+import vbshkn.android.jetmemo.model.MainActivityViewModel
+import vbshkn.android.jetmemo.model.MainActivityViewModelFactory
+import vbshkn.android.jetmemo.ui.App
+import vbshkn.android.jetmemo.ui.TextInputDialog
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val app = application as App
+        val repository = app.unitRepository
+        val viewModel = ViewModelProvider(
+            this,
+            MainActivityViewModelFactory(repository),
+        ) [MainActivityViewModel::class.java]
+
         enableEdgeToEdge()
         setContent {
-            Scaffold(
-                topBar = { TopBar() }
-            ) { innerPadding ->
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                        .background(Color.White)
-                ) {
-                    YourUnitsLabel()
-                    UnitList()
-                }
-            }
+            MainScreen(viewModel)
+        }
+    }
+}
+
+@Composable
+fun MainScreen(viewModel: MainActivityViewModel, ){
+    var show by remember { mutableStateOf(false) }
+    TextInputDialog(
+        isOpen = show,
+        onDismiss = {show = false},
+        onConfirm = { unitName -> viewModel.addUnit(unitName)},
+        title = stringResource(R.string.add_new_unit)
+    )
+
+    Scaffold(
+        topBar = { TopBar {show = true} }
+    ) { innerPadding ->
+        Column(
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            YourUnitsLabel()
+            UnitList(viewModel)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(){
+fun TopBar(
+    onAddClicked: () -> Unit
+)
+{
     TopAppBar(
         title = {
             Text(
@@ -89,7 +124,7 @@ fun TopBar(){
                     .size(36.dp)
                     .clip(CircleShape)
                     .clickable(
-                    onClick = {}
+                    onClick = onAddClicked
                 )
             )
             Spacer(Modifier.width(22.dp))
@@ -127,8 +162,11 @@ fun YourUnitsLabel(){
 }
 
 @Composable
-fun UnitList(){
-    val tempData = listOf(stringResource(R.string.all_words))
+fun UnitList(viewModel: MainActivityViewModel){
+    val units by viewModel.allUnits.collectAsState()
+    val allWordsUnit = UnitEntity(id = -1, name = stringResource(R.string.all_words))
+    val allUnits = remember(units) { listOf(allWordsUnit) + units }
+
     LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -136,8 +174,8 @@ fun UnitList(){
             .background(Color.White)
             .fillMaxSize()
     ) {
-        items(tempData) {
-            item -> UnitButton(item)
+        items(allUnits) {
+            unit -> UnitButton(unit.name)
         }
     }
 }

@@ -17,3 +17,9 @@ val Grey10 = Color(0xFFEEEEEF)
 val VividBlue = Color(0xFF2574FF)
 val CorrectGreen = Color(0xFF0EAD69)
 val WrongRed = Color(0xFFFA4169)
+
+val HeaderBlueGrey = Color(0xFF2C3E50) // С оттенком синего
+
+val InputTextBlue = Color(0xFF5D9BFF)
+val PlaceholderFocused = Color(0xFF78A9FF)
+

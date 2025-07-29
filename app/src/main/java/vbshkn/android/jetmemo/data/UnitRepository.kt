@@ -1,6 +1,8 @@
 package vbshkn.android.jetmemo.data
 
+import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import kotlin.concurrent.Volatile
 
 /**
  * Repository - промежуточный слой абстракции между DB и ViewModel.
@@ -20,5 +22,18 @@ class UnitRepository(private val unitDao: UnitDao) {
 
     suspend fun deleteUnit(unit: UnitEntity){
         unitDao.deleteUnit(unit)
+    }
+
+    companion object{
+        @Volatile
+        var INSTANCE: UnitRepository? = null
+
+        fun getInstance(unitDao: UnitDao): UnitRepository{
+            return INSTANCE ?: synchronized(this) {
+                val repo = UnitRepository(unitDao)
+                INSTANCE = repo
+                repo
+            }
+        }
     }
 }

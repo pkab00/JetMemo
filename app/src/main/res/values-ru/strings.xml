@@ -8,4 +8,5 @@
     <string name="add_new_unit">Добавить новый юнит:</string>
     <string name="your_units">Ваши юниты:</string>
     <string name="all_words">Все слова</string>
+    <string name="dismiss">Отмена</string>
 </resources>
