@@ -4,9 +4,12 @@
     <string name="button_continue">Продолжить</string>
     <string name="title_wrong">Неверно!</string>
     <string name="title_complete">Завершить</string>
-    <string name="about_app">О приложении</string>
     <string name="add_new_unit">Добавить новый юнит:</string>
     <string name="your_units">Ваши юниты:</string>
     <string name="all_words">Все слова</string>
     <string name="dismiss">Отмена</string>
+    <string name="edit_unit">Редактировать юнит:</string>
+    <string name="delete_unit">Удалить юнит?</string>
+    <string name="cant_be_canceled">Это действие нельзя отменить.</string>
+    <string name="title_about">О приложении</string>
 </resources>

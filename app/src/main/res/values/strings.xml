@@ -5,12 +5,16 @@
     <string name="button_continue">Continue</string>
     <string name="title_wrong">Wrong!</string>
     <string name="title_complete">Complete</string>
-    <string name="about_app">About the app</string>
     <string name="add_new_unit">Add new unit</string>
     <string name="your_units">Your units:</string>
     <string name="all_words">All words</string>
     <string name="ok" translatable="false">OK</string>
     <string name="dismiss">Dismiss</string>
+    <string name="edit_unit">Edit unit:</string>
+    <string name="delete_unit">Delete this unit?</string>
+    <string name="cant_be_canceled">This action can\'t be canceled.</string>
+    <string name="title_about">About</string>
+    <string name="about_app" translatable="false">powered by Jetpack Compose. dev. by vbshkin, 2025</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

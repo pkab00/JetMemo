@@ -24,6 +24,10 @@ class UnitRepository(private val unitDao: UnitDao) {
         unitDao.deleteUnit(unit)
     }
 
+    suspend fun editUnit(unit: UnitEntity){
+        unitDao.updateUnit(unit)
+    }
+
     companion object{
         @Volatile
         var INSTANCE: UnitRepository? = null

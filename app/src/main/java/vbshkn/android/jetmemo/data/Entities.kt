@@ -19,7 +19,7 @@ data class WordEntity (
 data class UnitEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
+    var name: String,
     var counter: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
 )

@@ -1,5 +1,8 @@
 package vbshkn.android.jetmemo.model
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,4 +33,29 @@ class MainActivityViewModel(private val repository: UnitRepository): ViewModel()
             repository.deleteUnit(unit)
         }
     }
+
+    fun editUnit(unit: UnitEntity){
+        viewModelScope.launch {
+            repository.editUnit(unit)
+        }
+    }
+
+    var dialogState by mutableStateOf<DialogState>(DialogState.None)
+        private set
+
+    fun showDialog(newState: DialogState){
+        dialogState = newState
+    }
+
+    fun dismissDialog(){
+        dialogState = DialogState.None
+    }
+}
+
+sealed class DialogState{
+    data object None: DialogState()
+    data object AddUnitDialog: DialogState()
+    data object AboutDialog: DialogState()
+    data class EditUnitDialog(val unit: UnitEntity): DialogState()
+    data class DeleteUnitDialog(val unit: UnitEntity): DialogState()
 }

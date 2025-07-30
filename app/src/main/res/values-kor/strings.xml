@@ -4,9 +4,12 @@
     <string name="button_continue">계속하다</string>
     <string name="title_wrong">잘못된!</string>
     <string name="title_complete">완료하다</string>
-    <string name="about_app">"애플리케이션에 관하여 "</string>
     <string name="add_new_unit">"새로운 유닛 추가 "</string>
     <string name="your_units">당신의 유닛:</string>
     <string name="all_words">"모든 단어 "</string>
     <string name="dismiss">해고하다</string>
+    <string name="edit_unit">"유닛 편집: "</string>
+    <string name="delete_unit">"유닛를 삭제하시겠습니까? "</string>
+    <string name="cant_be_canceled">"이 작업은 취소할 수 없습니다. "</string>
+    <string name="title_about">애플리케이션에 관하여</string>
 </resources>

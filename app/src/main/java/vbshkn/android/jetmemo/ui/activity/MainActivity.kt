@@ -38,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -48,10 +47,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.UnitEntity
+import vbshkn.android.jetmemo.model.DialogState
 import vbshkn.android.jetmemo.model.MainActivityViewModel
 import vbshkn.android.jetmemo.model.MainActivityViewModelFactory
 import vbshkn.android.jetmemo.ui.App
-import vbshkn.android.jetmemo.ui.TextInputDialog
+import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
+import vbshkn.android.jetmemo.ui.dialog.InfoDialog
+import vbshkn.android.jetmemo.ui.dialog.TextInputDialog
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 class MainActivity : ComponentActivity() {
@@ -74,20 +76,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(viewModel: MainActivityViewModel, ){
-    var showAddDialog by remember { mutableStateOf(false) }
     var editModeOn by remember { mutableStateOf(false) }
 
-    TextInputDialog(
-        isOpen = showAddDialog,
-        onDismiss = {showAddDialog = false},
-        onConfirm = { unitName -> viewModel.addUnit(unitName)},
-        title = stringResource(R.string.add_new_unit)
-    )
+    DialogHost(viewModel)
 
     Scaffold(
         topBar = {
             TopBar(
-                onAddClicked = { showAddDialog = true }
+                onAddClicked = { viewModel.showDialog(DialogState.AddUnitDialog) },
+                onAboutClicked = { viewModel.showDialog(DialogState.AboutDialog) }
             )
         }
     ) { innerPadding ->
@@ -107,7 +104,8 @@ fun MainScreen(viewModel: MainActivityViewModel, ){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    onAddClicked: () -> Unit
+    onAddClicked: () -> Unit,
+    onAboutClicked: () -> Unit
 )
 {
     TopAppBar(
@@ -142,7 +140,7 @@ fun TopBar(
                     .size(36.dp)
                     .clip(CircleShape)
                     .clickable(
-                        onClick = {}
+                        onClick = onAboutClicked
                     )
             )
         }
@@ -212,15 +210,22 @@ fun UnitList(
             .fillMaxSize()
     ) {
         items(allUnits) {
-            unit -> UnitButton(unit.name, editMode)
+            unit -> UnitButton(
+                unit = unit,
+                isEditable = editMode,
+                onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
+                onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
+            )
         }
     }
 }
 
 @Composable
 fun UnitButton(
-    text: String,
-    isEditable: Boolean
+    unit: UnitEntity,
+    isEditable: Boolean,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
 ){
     Button(
         onClick = {},
@@ -243,7 +248,7 @@ fun UnitButton(
             ) {
                 Icon(
                     painter = painterResource(
-                        if(text == stringResource(R.string.all_words))
+                        if(unit.name == stringResource(R.string.all_words))
                             R.drawable.ic_default_folder
                         else R.drawable.ic_folder
                     ),
@@ -251,12 +256,12 @@ fun UnitButton(
                     modifier = Modifier.padding(end = 8.dp)
                 )
                 Text(
-                    text = text,
+                    text = unit.name,
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.nunito_semibold))
                 )
             }
-            if(isEditable && text != stringResource(R.string.all_words)){
+            if(isEditable && unit.name != stringResource(R.string.all_words)){
                 Row(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.weight(0.4f)
@@ -266,17 +271,55 @@ fun UnitButton(
                         contentDescription = "",
                         modifier = Modifier
                             .padding(end = 20.dp)
-                            .clickable(onClick = {})
+                            .clickable(onClick = { onEdit() })
                     )
                     Icon(
                         painter = painterResource(R.drawable.ic_delete),
                         contentDescription = "",
                         modifier = Modifier
                             .padding()
-                            .clickable(onClick = {})
+                            .clickable(onClick = { onDelete() })
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun DialogHost(viewModel: MainActivityViewModel){
+    when(val state = viewModel.dialogState){
+        is DialogState.AboutDialog -> {
+            InfoDialog(
+                onConfirm = {},
+                onDismiss = { viewModel.dismissDialog() },
+                title = stringResource(R.string.title_about),
+                message = stringResource(R.string.about_app)
+            )
+        }
+        is DialogState.AddUnitDialog -> {
+            TextInputDialog(
+                onDismiss = { viewModel.dismissDialog() },
+                onConfirm = { unitName -> viewModel.addUnit(unitName) },
+                title = stringResource(R.string.add_new_unit)
+            )
+        }
+        is DialogState.EditUnitDialog -> {
+            TextInputDialog(
+                onDismiss = { viewModel.dismissDialog() },
+                onConfirm = { newName -> viewModel.editUnit(state.unit.copy(name = newName)) },
+                title = stringResource(R.string.edit_unit),
+                initialValue = state.unit.name
+            )
+        }
+        is DialogState.DeleteUnitDialog -> {
+            ConfirmDialog(
+                onDismiss = { viewModel.dismissDialog() },
+                onConfirm = { viewModel.deleteUnit(state.unit) },
+                title = stringResource(R.string.delete_unit),
+                message = stringResource(R.string.cant_be_canceled)
+            )
+        }
+        is DialogState.None -> Unit
     }
 }
