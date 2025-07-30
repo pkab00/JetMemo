@@ -53,6 +53,7 @@ import vbshkn.android.jetmemo.model.MainActivityViewModelFactory
 import vbshkn.android.jetmemo.ui.App
 import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.InfoDialog
+import vbshkn.android.jetmemo.ui.dialog.InputLimit
 import vbshkn.android.jetmemo.ui.dialog.TextInputDialog
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
@@ -301,7 +302,8 @@ fun DialogHost(viewModel: MainActivityViewModel){
             TextInputDialog(
                 onDismiss = { viewModel.dismissDialog() },
                 onConfirm = { unitName -> viewModel.addUnit(unitName) },
-                title = stringResource(R.string.add_new_unit)
+                title = stringResource(R.string.add_new_unit),
+                inputLimit = InputLimit.UNIT_NAME
             )
         }
         is DialogState.EditUnitDialog -> {
@@ -309,7 +311,8 @@ fun DialogHost(viewModel: MainActivityViewModel){
                 onDismiss = { viewModel.dismissDialog() },
                 onConfirm = { newName -> viewModel.editUnit(state.unit.copy(name = newName)) },
                 title = stringResource(R.string.edit_unit),
-                initialValue = state.unit.name
+                initialValue = state.unit.name,
+                inputLimit = InputLimit.UNIT_NAME
             )
         }
         is DialogState.DeleteUnitDialog -> {
