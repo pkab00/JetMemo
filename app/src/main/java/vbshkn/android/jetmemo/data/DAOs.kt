@@ -30,11 +30,8 @@ interface UnitDao {
     @Update
     suspend fun updateUnit(entity: UnitEntity)
 
-    @Query("SELECT * FROM units_table")
+    @Query("SELECT * FROM units_table ORDER BY createdAt DESC")
     fun getAll(): Flow<List<UnitEntity>>
-
-    @Query("SELECT name FROM units_table ORDER BY createdAt DESC")
-    fun getNames(): Flow<List<String>>
 
     @Query("SELECT counter FROM units_table WHERE id = :id")
     fun getCounterByID(id: Int): Int

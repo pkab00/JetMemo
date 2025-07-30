@@ -50,6 +50,7 @@ import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.model.DialogState
 import vbshkn.android.jetmemo.model.MainActivityViewModel
 import vbshkn.android.jetmemo.model.MainActivityViewModelFactory
+import vbshkn.android.jetmemo.model.SortMode
 import vbshkn.android.jetmemo.ui.App
 import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.InfoDialog
@@ -78,6 +79,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(viewModel: MainActivityViewModel, ){
     var editModeOn by remember { mutableStateOf(false) }
+    var sortMode by remember { mutableStateOf(SortMode.NEW_TO_OLD) }
 
     DialogHost(viewModel)
 
@@ -96,8 +98,18 @@ fun MainScreen(viewModel: MainActivityViewModel, ){
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            YourUnitsLabel({ editModeOn = !editModeOn }, editModeOn)
-            UnitList(viewModel, editModeOn)
+            TitleArea(
+                onEdit = { editModeOn = !editModeOn },
+                onSort = {
+                    when(sortMode){
+                        SortMode.NEW_TO_OLD -> sortMode = SortMode.OLD_TO_NEW
+                        SortMode.OLD_TO_NEW -> sortMode = SortMode.NEW_TO_OLD
+                    }
+                },
+                editMode = editModeOn,
+                sortMode = sortMode
+            )
+            UnitList(viewModel, editModeOn, sortMode)
         }
     }
 }
@@ -149,8 +161,10 @@ fun TopBar(
 }
 
 @Composable
-fun YourUnitsLabel(
-    onEditClicked: () -> Unit,
+fun TitleArea(
+    onEdit: () -> Unit,
+    onSort: () -> Unit,
+    sortMode: SortMode,
     editMode: Boolean
 ){
     Row(
@@ -178,17 +192,31 @@ fun YourUnitsLabel(
         ) {
             Icon(
                 painter = painterResource(
+                    if(sortMode == SortMode.OLD_TO_NEW) R.drawable.ic_arrow_up
+                    else R.drawable.ic_arrow_down
+                ),
+                contentDescription = "",
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(end = 15.dp, top = 5.dp)
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(VividBlue)
+                    .clickable { onSort() }
+            )
+            Icon(
+                painter = painterResource(
                     if(editMode) R.drawable.ic_edit_mode_off
                     else R.drawable.ic_edit_mode_on
                 ),
                 contentDescription = "",
                 tint = Color.White,
                 modifier = Modifier
-                    .padding(end = 5.dp, top = 5.dp)
+                    .padding(top = 5.dp, end = 5.dp)
                     .size(32.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(VividBlue)
-                    .clickable { onEditClicked() }
+                    .clickable { onEdit() }
             )
         }
     }
@@ -197,11 +225,16 @@ fun YourUnitsLabel(
 @Composable
 fun UnitList(
     viewModel: MainActivityViewModel,
-    editMode: Boolean
+    editMode: Boolean,
+    sortMode: SortMode
 ){
     val units by viewModel.allUnits.collectAsState()
+    val sortedUnits =
+        if(sortMode == SortMode.NEW_TO_OLD) units.sortedBy { it.createdAt }
+        else units.sortedByDescending { it.createdAt }
     val allWordsUnit = UnitEntity(id = -1, name = stringResource(R.string.all_words))
-    val allUnits = remember(units) { listOf(allWordsUnit) + units }
+    val allUnits = remember(sortedUnits) { listOf(allWordsUnit) + sortedUnits }
+
 
     LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,

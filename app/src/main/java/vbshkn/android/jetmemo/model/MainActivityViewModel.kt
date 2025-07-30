@@ -59,3 +59,8 @@ sealed class DialogState{
     data class EditUnitDialog(val unit: UnitEntity): DialogState()
     data class DeleteUnitDialog(val unit: UnitEntity): DialogState()
 }
+
+enum class SortMode{
+    NEW_TO_OLD,
+    OLD_TO_NEW
+}
