@@ -58,7 +58,7 @@ import vbshkn.android.jetmemo.ui.theme.VividBlue
 fun HomeScreen(
     viewModel: HomeScreenModel,
     controller: NavController
-){
+) {
     var editModeOn by remember { mutableStateOf(false) }
     var sortMode by remember { mutableStateOf(SortMode.NEW_TO_OLD) }
 
@@ -82,7 +82,7 @@ fun HomeScreen(
             TitleArea(
                 onEdit = { editModeOn = !editModeOn },
                 onSort = {
-                    when(sortMode){
+                    when (sortMode) {
                         SortMode.NEW_TO_OLD -> sortMode = SortMode.OLD_TO_NEW
                         SortMode.OLD_TO_NEW -> sortMode = SortMode.NEW_TO_OLD
                     }
@@ -105,8 +105,7 @@ fun HomeScreen(
 fun TopBar(
     onAddClicked: () -> Unit,
     onAboutClicked: () -> Unit
-)
-{
+) {
     TopAppBar(
         title = {
             Text(
@@ -152,11 +151,11 @@ fun TitleArea(
     onSort: () -> Unit,
     sortMode: SortMode,
     editMode: Boolean
-){
+) {
     Row(
         verticalAlignment = Alignment.Top,
         modifier = Modifier.fillMaxWidth()
-    ){
+    ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.weight(1f)
@@ -178,7 +177,7 @@ fun TitleArea(
         ) {
             Icon(
                 painter = painterResource(
-                    if(sortMode == SortMode.OLD_TO_NEW) R.drawable.ic_arrow_up
+                    if (sortMode == SortMode.OLD_TO_NEW) R.drawable.ic_arrow_up
                     else R.drawable.ic_arrow_down
                 ),
                 contentDescription = "",
@@ -192,7 +191,7 @@ fun TitleArea(
             )
             Icon(
                 painter = painterResource(
-                    if(editMode) R.drawable.ic_edit_mode_off
+                    if (editMode) R.drawable.ic_edit_mode_off
                     else R.drawable.ic_edit_mode_on
                 ),
                 contentDescription = "",
@@ -214,30 +213,30 @@ fun UnitList(
     controller: NavController,
     editMode: Boolean,
     sortMode: SortMode
-){
+) {
     val units by viewModel.allUnits.collectAsState()
     val sortedUnits =
-        if(sortMode == SortMode.NEW_TO_OLD) units.sortedBy { it.createdAt }
+        if (sortMode == SortMode.NEW_TO_OLD) units.sortedBy { it.createdAt }
         else units.sortedByDescending { it.createdAt }
     val allWordsUnit = UnitEntity(id = -1, name = stringResource(R.string.all_words))
     val allUnits = remember(sortedUnits) { listOf(allWordsUnit) + sortedUnits }
 
 
-    LazyColumn (
+    LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(top = 10.dp)
             .background(MaterialWhite)
             .fillMaxSize()
     ) {
-        items(allUnits) {
-                unit -> UnitButton(
-            unit = unit,
-            isEditable = editMode,
-            onClick = { controller.navigate(Router.UnitRoute(unit.id)) },
-            onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
-            onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
-        )
+        items(allUnits) { unit ->
+            UnitButton(
+                unit = unit,
+                isEditable = editMode,
+                onClick = { controller.navigate(Router.UnitRoute(unit.id)) },
+                onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
+                onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
+            )
         }
     }
 }
@@ -249,7 +248,7 @@ fun UnitButton(
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
-){
+) {
     Button(
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
@@ -271,7 +270,7 @@ fun UnitButton(
             ) {
                 Icon(
                     painter = painterResource(
-                        if(unit.name == stringResource(R.string.all_words))
+                        if (unit.name == stringResource(R.string.all_words))
                             R.drawable.ic_default_folder
                         else R.drawable.ic_folder
                     ),
@@ -284,7 +283,7 @@ fun UnitButton(
                     fontFamily = FontFamily(Font(R.font.nunito_semibold))
                 )
             }
-            if(isEditable && unit.name != stringResource(R.string.all_words)){
+            if (isEditable && unit.name != stringResource(R.string.all_words)) {
                 Row(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.weight(0.4f)
@@ -310,8 +309,8 @@ fun UnitButton(
 }
 
 @Composable
-fun DialogHost(viewModel: HomeScreenModel){
-    when(val state = viewModel.dialogState){
+fun DialogHost(viewModel: HomeScreenModel) {
+    when (val state = viewModel.dialogState) {
         is DialogState.AboutDialog -> {
             InfoDialog(
                 onConfirm = {},
@@ -320,6 +319,7 @@ fun DialogHost(viewModel: HomeScreenModel){
                 message = stringResource(R.string.about_app)
             )
         }
+
         is DialogState.AddUnitDialog -> {
             TextInputDialog(
                 onDismiss = { viewModel.dismissDialog() },
@@ -328,6 +328,7 @@ fun DialogHost(viewModel: HomeScreenModel){
                 inputLimit = InputLimit.UNIT_NAME
             )
         }
+
         is DialogState.EditUnitDialog -> {
             TextInputDialog(
                 onDismiss = { viewModel.dismissDialog() },
@@ -337,6 +338,7 @@ fun DialogHost(viewModel: HomeScreenModel){
                 inputLimit = InputLimit.UNIT_NAME
             )
         }
+
         is DialogState.DeleteUnitDialog -> {
             ConfirmDialog(
                 onDismiss = { viewModel.dismissDialog() },
@@ -345,6 +347,7 @@ fun DialogHost(viewModel: HomeScreenModel){
                 message = stringResource(R.string.cant_be_canceled)
             )
         }
+
         is DialogState.None -> Unit
     }
 }

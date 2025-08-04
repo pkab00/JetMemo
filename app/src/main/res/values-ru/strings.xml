@@ -13,4 +13,5 @@
     <string name="cant_be_canceled">Это действие нельзя отменить.</string>
     <string name="title_about">О приложении</string>
     <string name="message_empty_unit">Юнит пуст. Нажмите на кнопку \"+\", чтобы добавить в него новое слово.</string>
+    <string name="statr_learning">Учить</string>
 </resources>

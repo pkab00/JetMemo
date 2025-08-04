@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,6 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,15 +53,24 @@ fun UnitScreen(
     wordList: List<WordEntity>,
     controller: NavController
 ) {
+    var isEmpty by remember { mutableStateOf(wordList.isEmpty()) }
+
     Scaffold(
         topBar = {
             TopBar(
                 id = id,
                 onAdd = {},
                 onNavigate = {
-                    controller.navigate(Router.HomeRoute){
-                    popUpTo(0)
-                }}
+                    controller.navigate(Router.HomeRoute) {
+                        popUpTo(0)
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BottomBar(
+                show = !isEmpty,
+                onLearn = {}
             )
         }
     ) { innerPadding ->
@@ -63,7 +80,7 @@ fun UnitScreen(
                 .padding(innerPadding)
                 .background(MaterialWhite)
         ) {
-            if(wordList.isEmpty()){
+            if (isEmpty) {
                 EmptyUnitFiller()
             }
         }
@@ -76,7 +93,7 @@ fun TopBar(
     id: Int,
     onAdd: () -> Unit,
     onNavigate: () -> Unit
-){
+) {
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -117,7 +134,51 @@ fun TopBar(
 }
 
 @Composable
-fun EmptyUnitFiller(){
+fun BottomBar(
+    show: Boolean,
+    onLearn: () -> Unit
+) {
+    BottomAppBar(
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(if (show) VividBlue else MaterialWhite)
+        ) {
+            if (show) {
+                Button(
+                    onClick = { onLearn() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialWhite,
+                        contentColor = VividBlue
+                    ),
+                    shape = RoundedCornerShape(22.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            start = 30.dp,
+                            end = 30.dp,
+                            top = 15.dp,
+                            bottom = 15.dp
+                        )
+                ) {
+                    Text(
+                        text = stringResource(R.string.statr_learning).uppercase(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.rubik_regular))
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EmptyUnitFiller() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
