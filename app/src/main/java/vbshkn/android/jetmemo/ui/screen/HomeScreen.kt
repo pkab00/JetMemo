@@ -1,9 +1,5 @@
-package vbshkn.android.jetmemo.ui.activity
+package vbshkn.android.jetmemo.ui.screen
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,40 +40,19 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.model.DialogState
 import vbshkn.android.jetmemo.model.MainActivityViewModel
-import vbshkn.android.jetmemo.model.MainActivityViewModelFactory
 import vbshkn.android.jetmemo.model.SortMode
-import vbshkn.android.jetmemo.ui.App
 import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.InfoDialog
 import vbshkn.android.jetmemo.ui.dialog.InputLimit
 import vbshkn.android.jetmemo.ui.dialog.TextInputDialog
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val app = application as App
-        val repository = app.unitRepository
-        val viewModel = ViewModelProvider(
-            this,
-            MainActivityViewModelFactory(repository),
-        ) [MainActivityViewModel::class.java]
-
-        enableEdgeToEdge()
-        setContent {
-            MainScreen(viewModel)
-        }
-    }
-}
-
 @Composable
-fun MainScreen(viewModel: MainActivityViewModel, ){
+fun HomeScreen(viewModel: MainActivityViewModel){
     var editModeOn by remember { mutableStateOf(false) }
     var sortMode by remember { mutableStateOf(SortMode.NEW_TO_OLD) }
 
@@ -244,12 +219,12 @@ fun UnitList(
             .fillMaxSize()
     ) {
         items(allUnits) {
-            unit -> UnitButton(
-                unit = unit,
-                isEditable = editMode,
-                onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
-                onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
-            )
+                unit -> UnitButton(
+            unit = unit,
+            isEditable = editMode,
+            onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
+            onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
+        )
         }
     }
 }
