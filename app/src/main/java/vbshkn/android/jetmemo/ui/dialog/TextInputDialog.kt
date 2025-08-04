@@ -30,9 +30,10 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.ui.theme.HeaderBlueGrey
 import vbshkn.android.jetmemo.ui.theme.InputAreaFocused
 import vbshkn.android.jetmemo.ui.theme.InputAreaUnfocused
+import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
-enum class InputLimit(val limit: Int){
+enum class InputLimit(val limit: Int) {
     NONE(-1),
     UNIT_NAME(40),
     WORD(30)
@@ -49,84 +50,84 @@ fun TextInputDialog(
     var text by remember { mutableStateOf(initialValue) }
     val maxLength = inputLimit.limit
 
-        AlertDialog(
-                onDismissRequest = {
+    AlertDialog(
+        onDismissRequest = {
+            onDismiss()
+            text = ""
+        },
+        containerColor = MaterialWhite,
+        title = {
+            Text(
+                text = title,
+                color = HeaderBlueGrey,
+                fontFamily = FontFamily(Font(R.font.nunito_semibold))
+            )
+        },
+        text = {
+            OutlinedTextField(
+                value = text,
+                textStyle = TextStyle(
+                    color = MaterialWhite,
+                    fontFamily = FontFamily(Font(R.font.nunito_semibold))
+                ),
+                onValueChange = { if (it.length <= maxLength || maxLength <= 0) text = it },
+                colors = TextFieldDefaults.colors(
+                    cursorColor = MaterialWhite,
+                    focusedIndicatorColor = VividBlue,
+                    unfocusedIndicatorColor = MaterialWhite,
+                    focusedContainerColor = InputAreaFocused,
+                    unfocusedContainerColor = InputAreaUnfocused
+                ),
+                visualTransformation = if (maxLength > 0) {
+                    if (text.length >= maxLength) {
+                        VisualTransformation { original ->
+                            TransformedText(
+                                AnnotatedString(original.text.take(maxLength)),
+                                OffsetMapping.Identity
+                            )
+                        }
+                    } else VisualTransformation.None
+                } else VisualTransformation.None,
+                label = {
+                    if (maxLength > 0) {
+                        Text(
+                            text = "${text.length}/$maxLength",
+                            color = MaterialWhite,
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.rubik_regular)),
+                            modifier = Modifier.background(VividBlue)
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(text)
                     onDismiss()
                     text = ""
                 },
-                containerColor = Color.White,
-                title = {
-                    Text(
-                        text = title,
-                        color = HeaderBlueGrey,
-                        fontFamily = FontFamily(Font(R.font.nunito_semibold))
-                    )
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = VividBlue,
+                    containerColor = MaterialWhite
+                ),
+                border = BorderStroke(width = 1.dp, color = VividBlue)
+            ) { Text(stringResource(R.string.ok)) }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                    text = ""
                 },
-                text = {
-                    OutlinedTextField(
-                        value = text,
-                        textStyle = TextStyle(
-                            color = Color.White,
-                            fontFamily = FontFamily(Font(R.font.nunito_semibold))
-                        ),
-                        onValueChange = { if(it.length <= maxLength || maxLength <= 0) text = it },
-                        colors = TextFieldDefaults.colors(
-                            cursorColor = Color.White,
-                            focusedIndicatorColor = VividBlue,
-                            unfocusedIndicatorColor = Color.White,
-                            focusedContainerColor = InputAreaFocused,
-                            unfocusedContainerColor = InputAreaUnfocused
-                        ),
-                        visualTransformation = if(maxLength > 0){
-                            if(text.length >= maxLength){
-                                VisualTransformation { original ->
-                                    TransformedText(
-                                        AnnotatedString(original.text.take(maxLength)),
-                                        OffsetMapping.Identity
-                                    )
-                                }
-                            } else VisualTransformation.None
-                        } else VisualTransformation.None,
-                        label = {
-                            if(maxLength > 0){
-                                Text(
-                                    text = "${text.length}/$maxLength",
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontFamily = FontFamily(Font(R.font.rubik_regular)),
-                                    modifier = Modifier.background(VividBlue)
-                                )
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            onConfirm(text)
-                            onDismiss()
-                            text = ""
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = VividBlue,
-                            containerColor = Color.White
-                        ),
-                        border = BorderStroke(width = 1.dp, color = VividBlue)
-                    ) { Text(stringResource(R.string.ok)) }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            onDismiss()
-                            text = ""
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = VividBlue,
-                            containerColor = Color.White
-                        ),
-                        border = BorderStroke(width = 1.dp, color = VividBlue)
-                    ) { Text(stringResource(R.string.dismiss)) }
-                }
-            )
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = VividBlue,
+                    containerColor = MaterialWhite
+                ),
+                border = BorderStroke(width = 1.dp, color = VividBlue)
+            ) { Text(stringResource(R.string.dismiss)) }
         }
+    )
+}

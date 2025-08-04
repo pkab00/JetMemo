@@ -4,6 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Ease
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -30,27 +42,46 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = Router.HomeRoute
+                startDestination = Router.HomeRoute,
+                enterTransition = { enterAnimation(300) },
+                exitTransition = { exitAnimation(300) }
             ) {
                 composable<Router.HomeRoute> {
                     viewModel = ViewModelProvider(
                         store,
                         HomeScreenModelFactory(repository),
-                    ) [HomeScreenModel::class.java]
+                    )[HomeScreenModel::class.java]
                     HomeScreen(
                         viewModel = viewModel as HomeScreenModel,
                         controller = navController
                     )
                 }
-                composable<Router.UnitRoute>{
+                composable<Router.UnitRoute> {
                     // данные из data class'а принимаем здесь
                     val data = it.toRoute<Router.UnitRoute>()
                     UnitScreen(
                         id = data.id,
-                        controller = navController
+                        controller = navController,
+                        wordList = listOf()
                     )
                 }
             }
         }
     }
+}
+
+fun enterAnimation(duration: Int): EnterTransition {
+    return fadeIn(
+        animationSpec = tween(duration, easing = EaseOut)
+    ) + slideInHorizontally(
+        animationSpec = tween(duration, easing = EaseOut),
+    )
+}
+
+fun exitAnimation(duration: Int): ExitTransition {
+    return fadeOut(
+        animationSpec = tween(duration, easing = EaseIn)
+    ) + slideOutHorizontally(
+        animationSpec = tween(duration, easing = EaseIn)
+    )
 }

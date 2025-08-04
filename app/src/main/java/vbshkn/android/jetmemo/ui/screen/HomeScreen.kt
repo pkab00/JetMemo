@@ -51,6 +51,7 @@ import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.InfoDialog
 import vbshkn.android.jetmemo.ui.dialog.InputLimit
 import vbshkn.android.jetmemo.ui.dialog.TextInputDialog
+import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 @Composable
@@ -76,7 +77,7 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color.White)
+                .background(MaterialWhite)
         ) {
             TitleArea(
                 onEdit = { editModeOn = !editModeOn },
@@ -116,8 +117,8 @@ fun TopBar(
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = VividBlue,
-            titleContentColor = Color.White,
-            actionIconContentColor = Color.White
+            titleContentColor = MaterialWhite,
+            actionIconContentColor = MaterialWhite
         ),
         actions = {
             Icon(
@@ -168,7 +169,7 @@ fun TitleArea(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 5.dp, top = 5.dp)
-                    .background(Color.White)
+                    .background(MaterialWhite)
             )
         }
         Row(
@@ -181,7 +182,7 @@ fun TitleArea(
                     else R.drawable.ic_arrow_down
                 ),
                 contentDescription = "",
-                tint = Color.White,
+                tint = MaterialWhite,
                 modifier = Modifier
                     .padding(end = 15.dp, top = 5.dp)
                     .size(32.dp)
@@ -195,7 +196,7 @@ fun TitleArea(
                     else R.drawable.ic_edit_mode_on
                 ),
                 contentDescription = "",
-                tint = Color.White,
+                tint = MaterialWhite,
                 modifier = Modifier
                     .padding(top = 5.dp, end = 5.dp)
                     .size(32.dp)
@@ -226,7 +227,7 @@ fun UnitList(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(top = 10.dp)
-            .background(Color.White)
+            .background(MaterialWhite)
             .fillMaxSize()
     ) {
         items(allUnits) {
@@ -253,7 +254,7 @@ fun UnitButton(
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
             containerColor = VividBlue,
-            contentColor = Color.White,
+            contentColor = MaterialWhite,
         ),
         border = BorderStroke(1.dp, VividBlue),
         shape = RoundedCornerShape(0.dp),

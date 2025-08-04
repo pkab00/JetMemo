@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.ui.theme.HeaderBlueGrey
+import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 @Composable
@@ -25,7 +26,7 @@ fun InfoDialog(
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        containerColor = Color.White,
+        containerColor = MaterialWhite,
         title = {
             Text(
                 text = title,
@@ -48,7 +49,7 @@ fun InfoDialog(
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = VividBlue,
-                    containerColor = Color.White
+                    containerColor = MaterialWhite
                 ),
                 border = BorderStroke(width = 1.dp, color = VividBlue)
             ) { Text(stringResource(R.string.ok)) }

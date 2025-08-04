@@ -11,6 +11,7 @@ val Pink40 = Color(0xFF7D5260)
 
 // custom colors
 
+val MaterialWhite = Color(0xFFE3E3E3)
 val BorderGrey = Color(0xFFCCCCD0)
 val OptionTextGrey = Color(0xFF888992)
 val Grey10 = Color(0xFFEEEEEF)

@@ -12,4 +12,5 @@
     <string name="delete_unit">"유닛를 삭제하시겠습니까? "</string>
     <string name="cant_be_canceled">"이 작업은 취소할 수 없습니다. "</string>
     <string name="title_about">애플리케이션에 관하여</string>
+    <string name="message_empty_unit">해당 유닛은 현재 비어 있습니다. \"+\" 버튼을 눌러 이 단원에 새 단어를 추가하세요.</string>
 </resources>
