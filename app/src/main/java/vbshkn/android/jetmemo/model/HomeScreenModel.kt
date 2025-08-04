@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.data.UnitRepository
 
-class MainActivityViewModel(private val repository: UnitRepository): ViewModel() {
+class HomeScreenModel(private val repository: UnitRepository): ViewModel() {
     val allUnits: StateFlow<List<UnitEntity>> = repository.getUnits()
         // превращаем холодный поток (Flow) в горячий (StateFlow)
         .stateIn(

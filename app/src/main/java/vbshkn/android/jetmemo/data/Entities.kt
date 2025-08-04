@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "main_words_table")
 data class WordEntity (
@@ -14,6 +15,7 @@ data class WordEntity (
     val translation: String,
     val createdAt: Long = System.currentTimeMillis()
 )
+
 
 @Entity(tableName = "units_table")
 data class UnitEntity (

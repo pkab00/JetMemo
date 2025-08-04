@@ -40,11 +40,13 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.model.DialogState
-import vbshkn.android.jetmemo.model.MainActivityViewModel
+import vbshkn.android.jetmemo.model.HomeScreenModel
 import vbshkn.android.jetmemo.model.SortMode
+import vbshkn.android.jetmemo.ui.Router
 import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.InfoDialog
 import vbshkn.android.jetmemo.ui.dialog.InputLimit
@@ -52,7 +54,10 @@ import vbshkn.android.jetmemo.ui.dialog.TextInputDialog
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 @Composable
-fun HomeScreen(viewModel: MainActivityViewModel){
+fun HomeScreen(
+    viewModel: HomeScreenModel,
+    controller: NavController
+){
     var editModeOn by remember { mutableStateOf(false) }
     var sortMode by remember { mutableStateOf(SortMode.NEW_TO_OLD) }
 
@@ -84,7 +89,12 @@ fun HomeScreen(viewModel: MainActivityViewModel){
                 editMode = editModeOn,
                 sortMode = sortMode
             )
-            UnitList(viewModel, editModeOn, sortMode)
+            UnitList(
+                viewModel = viewModel,
+                controller = controller,
+                editMode = editModeOn,
+                sortMode = sortMode
+            )
         }
     }
 }
@@ -199,7 +209,8 @@ fun TitleArea(
 
 @Composable
 fun UnitList(
-    viewModel: MainActivityViewModel,
+    viewModel: HomeScreenModel,
+    controller: NavController,
     editMode: Boolean,
     sortMode: SortMode
 ){
@@ -222,6 +233,7 @@ fun UnitList(
                 unit -> UnitButton(
             unit = unit,
             isEditable = editMode,
+            onClick = { controller.navigate(Router.UnitRoute(unit.id)) },
             onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
             onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
         )
@@ -233,11 +245,12 @@ fun UnitList(
 fun UnitButton(
     unit: UnitEntity,
     isEditable: Boolean,
+    onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ){
     Button(
-        onClick = {},
+        onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
             containerColor = VividBlue,
             contentColor = Color.White,
@@ -296,7 +309,7 @@ fun UnitButton(
 }
 
 @Composable
-fun DialogHost(viewModel: MainActivityViewModel){
+fun DialogHost(viewModel: HomeScreenModel){
     when(val state = viewModel.dialogState){
         is DialogState.AboutDialog -> {
             InfoDialog(

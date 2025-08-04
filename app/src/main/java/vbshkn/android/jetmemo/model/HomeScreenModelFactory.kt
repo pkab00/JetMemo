@@ -10,11 +10,11 @@ import vbshkn.android.jetmemo.data.UnitRepository
  *
  * Реализация любезно предоставлена Qwen 3 Coder.
  */
-class MainActivityViewModelFactory(private val repository: UnitRepository) : ViewModelProvider.Factory {
+class HomeScreenModelFactory(private val repository: UnitRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(HomeScreenModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainActivityViewModel(repository) as T
+            return HomeScreenModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
