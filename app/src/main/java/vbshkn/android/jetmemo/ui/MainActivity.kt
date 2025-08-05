@@ -15,6 +15,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,7 +37,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            var viewModel: ViewModel? = null
 
             NavHost(
                 navController = navController,
@@ -45,25 +45,24 @@ class MainActivity : ComponentActivity() {
                 exitTransition = { exitAnimation(300) }
             ) {
                 composable<Router.HomeRoute> {
-                    viewModel = ViewModelProvider(
-                        store,
-                        HomeScreenModelFactory(app.homeRepository),
-                    )[HomeScreenModel::class.java]
+                    val viewModel: HomeScreenModel = viewModel(
+                        factory = HomeScreenModelFactory(app.homeRepository)
+                    )
                     HomeScreen(
-                        viewModel = viewModel as HomeScreenModel,
+                        viewModel = viewModel,
                         controller = navController
                     )
                 }
                 composable<Router.UnitRoute> {
                     // данные из data class'а принимаем здесь
                     val data = it.toRoute<Router.UnitRoute>()
-                    viewModel = ViewModelProvider(
-                        store,
-                        UnitScreenModelFactory(app.unitRepository, data.id)
-                    )[UnitScreenModel::class.java]
+                    val viewModel: UnitScreenModel = viewModel(
+                        factory = UnitScreenModelFactory(app.unitRepository, data.id),
+                        key = "unit_${data.id}"
+                    )
                     UnitScreen(
                         name = data.name,
-                        viewModel = viewModel as UnitScreenModel,
+                        viewModel = viewModel,
                         controller = navController,
                     )
                 }

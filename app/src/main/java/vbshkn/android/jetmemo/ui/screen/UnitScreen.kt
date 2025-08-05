@@ -1,16 +1,22 @@
 package vbshkn.android.jetmemo.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
@@ -33,11 +39,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -56,7 +64,7 @@ fun UnitScreen(
     controller: NavController
 ) {
     val words by viewModel.unitWords.collectAsState()
-    val isEmpty by remember { mutableStateOf(words.isEmpty()) }
+    val isEmpty = words.isEmpty()
 
     Scaffold(
         topBar = {
@@ -83,9 +91,7 @@ fun UnitScreen(
                 .padding(innerPadding)
                 .background(MaterialWhite)
         ) {
-            if (isEmpty) {
-                EmptyUnitFiller()
-            }
+            WordList(viewModel)
         }
     }
 }
@@ -194,5 +200,88 @@ fun EmptyUnitFiller() {
             fontFamily = FontFamily(Font(R.font.nunito_regular)),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@Composable
+fun WordList(viewModel: UnitScreenModel){
+    val words by viewModel.unitWords.collectAsState()
+
+    if(words.isNotEmpty()){
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .background(MaterialWhite)
+                .fillMaxSize()
+                .padding(10.dp)
+        ) {
+            items(words){word ->
+                WordItem(word)
+            }
+        }
+    }
+    else EmptyUnitFiller()
+}
+
+@Composable
+fun WordItem(word: WordEntity) {
+    Button(
+        onClick = {},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialWhite,
+            contentColor = VividBlue
+        ),
+        contentPadding = PaddingValues(5.dp),
+        shape = RectangleShape,
+        border = BorderStroke(0.5.dp, VividBlue),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(MaterialWhite)
+                .padding(
+                    start = 10.dp,
+                    end = 10.dp,
+                    top = 5.dp,
+                    bottom = 5.dp
+                )
+                .fillMaxWidth()
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = word.original,
+                    fontSize = 22.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_semibold)),
+                    modifier = Modifier
+                        .background(MaterialWhite)
+                )
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    text = word.translation,
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                    color = OptionTextGrey,
+                    modifier = Modifier
+                        .background(MaterialWhite)
+                )
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_more),
+                    contentDescription = "",
+                    tint = VividBlue
+                )
+            }
+        }
     }
 }
