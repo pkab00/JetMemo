@@ -53,6 +53,7 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.WordEntity
 import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.ui.Router
+import vbshkn.android.jetmemo.ui.dialog.DoubleTextInputDialog
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -66,11 +67,13 @@ fun UnitScreen(
     val words by viewModel.unitWords.collectAsState()
     val isEmpty = words.isEmpty()
 
+    DialogHost(viewModel)
+
     Scaffold(
         topBar = {
             TopBar(
                 title = name,
-                onAdd = {},
+                onAdd = { viewModel.showDialog(UnitScreenModel.DialogState.AddWordDialog) },
                 onNavigate = {
                     controller.navigate(Router.HomeRoute) {
                         popUpTo(0)
@@ -204,10 +207,10 @@ fun EmptyUnitFiller() {
 }
 
 @Composable
-fun WordList(viewModel: UnitScreenModel){
+fun WordList(viewModel: UnitScreenModel) {
     val words by viewModel.unitWords.collectAsState()
 
-    if(words.isNotEmpty()){
+    if (words.isNotEmpty()) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -215,12 +218,11 @@ fun WordList(viewModel: UnitScreenModel){
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            items(words){word ->
+            items(words) { word ->
                 WordItem(word)
             }
         }
-    }
-    else EmptyUnitFiller()
+    } else EmptyUnitFiller()
 }
 
 @Composable
@@ -283,5 +285,23 @@ fun WordItem(word: WordEntity) {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun DialogHost(model: UnitScreenModel){
+    when(val dialogState = model.dialogState){
+        is UnitScreenModel.DialogState.AddWordDialog -> {
+            DoubleTextInputDialog(
+                onConfirm = {str1, str2 ->
+                    model.addWord(WordEntity(original = str1, translation = str2))
+                },
+                onDismiss = { model.dismissDialog() },
+                title = stringResource(R.string.add_new_word),
+                firstInitialValue = stringResource(R.string.placeholder_original_word),
+                secondInitialValue = stringResource(R.string.placeholder_translated_word)
+            )
+        }
+        is UnitScreenModel.DialogState.None -> Unit
     }
 }

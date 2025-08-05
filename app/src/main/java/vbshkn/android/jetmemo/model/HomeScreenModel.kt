@@ -50,15 +50,16 @@ class HomeScreenModel(private val repository: HomeRepository): ViewModel() {
     fun dismissDialog(){
         dialogState = DialogState.None
     }
+
+    sealed class DialogState{
+        data object None: DialogState()
+        data object AddUnitDialog: DialogState()
+        data object AboutDialog: DialogState()
+        data class EditUnitDialog(val unit: UnitEntity): DialogState()
+        data class DeleteUnitDialog(val unit: UnitEntity): DialogState()
+    }
 }
 
-sealed class DialogState{
-    data object None: DialogState()
-    data object AddUnitDialog: DialogState()
-    data object AboutDialog: DialogState()
-    data class EditUnitDialog(val unit: UnitEntity): DialogState()
-    data class DeleteUnitDialog(val unit: UnitEntity): DialogState()
-}
 
 enum class SortMode{
     NEW_TO_OLD,

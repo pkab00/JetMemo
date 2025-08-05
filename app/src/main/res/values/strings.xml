@@ -17,6 +17,9 @@
     <string name="about_app" translatable="false">powered by Jetpack Compose. dev. by vbshkin, 2025</string>
     <string name="message_empty_unit">The unit is currently empty. Press \"+\" button to add a new word to this unit.</string>
     <string name="statr_learning">Start learning</string>
+    <string name="add_new_word">Add new word:</string>
+    <string name="placeholder_original_word">Original...</string>
+    <string name="placeholder_translated_word">Translated...</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

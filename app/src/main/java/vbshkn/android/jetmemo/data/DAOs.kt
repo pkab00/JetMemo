@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WordDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWord(entity: WordEntity)
+    suspend fun insertWord(entity: WordEntity): Long //1L - ignored
 
     @Delete
     suspend fun deleteWord(entity: WordEntity)
@@ -29,7 +29,7 @@ interface WordDao {
 @Dao
 interface UnitDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertUnit(entity: UnitEntity)
+    suspend fun insertUnit(entity: UnitEntity): Long
 
     @Delete
     suspend fun deleteUnit(entity: UnitEntity)
@@ -44,7 +44,7 @@ interface UnitDao {
 @Dao
 interface RelationsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertRelation(entity: RelationsEntity)
+    suspend fun insertRelation(entity: RelationsEntity): Long
 
     @Delete
     suspend fun deleteRelation(entity: RelationsEntity)

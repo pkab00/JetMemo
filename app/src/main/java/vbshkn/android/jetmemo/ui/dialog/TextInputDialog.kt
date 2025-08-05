@@ -2,7 +2,10 @@ package vbshkn.android.jetmemo.ui.dialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -15,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -53,7 +55,7 @@ fun TextInputDialog(
     AlertDialog(
         onDismissRequest = {
             onDismiss()
-            text = ""
+            text = initialValue
         },
         containerColor = MaterialWhite,
         title = {
@@ -64,50 +66,14 @@ fun TextInputDialog(
             )
         },
         text = {
-            OutlinedTextField(
-                value = text,
-                textStyle = TextStyle(
-                    color = MaterialWhite,
-                    fontFamily = FontFamily(Font(R.font.nunito_semibold))
-                ),
-                onValueChange = { if (it.length <= maxLength || maxLength <= 0) text = it },
-                colors = TextFieldDefaults.colors(
-                    cursorColor = MaterialWhite,
-                    focusedIndicatorColor = VividBlue,
-                    unfocusedIndicatorColor = MaterialWhite,
-                    focusedContainerColor = InputAreaFocused,
-                    unfocusedContainerColor = InputAreaUnfocused
-                ),
-                visualTransformation = if (maxLength > 0) {
-                    if (text.length >= maxLength) {
-                        VisualTransformation { original ->
-                            TransformedText(
-                                AnnotatedString(original.text.take(maxLength)),
-                                OffsetMapping.Identity
-                            )
-                        }
-                    } else VisualTransformation.None
-                } else VisualTransformation.None,
-                label = {
-                    if (maxLength > 0) {
-                        Text(
-                            text = "${text.length}/$maxLength",
-                            color = MaterialWhite,
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.rubik_regular)),
-                            modifier = Modifier.background(VividBlue)
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+            CustomTextField(text, maxLength) { text = it }
         },
         confirmButton = {
             TextButton(
                 onClick = {
                     onConfirm(text)
                     onDismiss()
-                    text = ""
+                    text = initialValue
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = VividBlue,
@@ -120,7 +86,7 @@ fun TextInputDialog(
             TextButton(
                 onClick = {
                     onDismiss()
-                    text = ""
+                    text = initialValue
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = VividBlue,
@@ -129,5 +95,120 @@ fun TextInputDialog(
                 border = BorderStroke(width = 1.dp, color = VividBlue)
             ) { Text(stringResource(R.string.dismiss)) }
         }
+    )
+}
+
+@Composable
+fun DoubleTextInputDialog(
+    onConfirm: (String, String) -> Unit,
+    onDismiss: () -> Unit,
+    title: String,
+    firstInitialValue: String = "",
+    secondInitialValue: String = "",
+    inputLimit: InputLimit = InputLimit.NONE
+) {
+    var firstText by remember { mutableStateOf(firstInitialValue) }
+    var secondText by remember { mutableStateOf(secondInitialValue) }
+    val maxLength = inputLimit.limit
+
+    AlertDialog(
+        onDismissRequest = {
+            onDismiss()
+            firstText = firstInitialValue
+            secondText = secondInitialValue
+        },
+        containerColor = MaterialWhite,
+        title = {
+            Text(
+                text = title,
+                color = HeaderBlueGrey,
+                fontFamily = FontFamily(Font(R.font.nunito_semibold))
+            )
+        },
+        text = {
+            Column {
+                CustomTextField(firstText, maxLength) { firstText = it }
+                Spacer(Modifier.height(10.dp))
+                CustomTextField(secondText, maxLength) { secondText = it }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(firstText, secondText)
+                    onDismiss()
+                    firstText = firstInitialValue
+                    secondText = secondInitialValue
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = VividBlue,
+                    containerColor = MaterialWhite
+                ),
+                border = BorderStroke(width = 1.dp, color = VividBlue)
+            ) { Text(stringResource(R.string.ok)) }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                    firstText = firstInitialValue
+                    secondText = secondInitialValue
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = VividBlue,
+                    containerColor = MaterialWhite
+                ),
+                border = BorderStroke(width = 1.dp, color = VividBlue)
+            ) { Text(stringResource(R.string.dismiss)) }
+        }
+    )
+}
+
+@Composable
+private fun CustomTextField(
+    text: String,
+    maxLength: Int,
+    onValueChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = text,
+        textStyle = TextStyle(
+            color = MaterialWhite,
+            fontFamily = FontFamily(Font(R.font.nunito_semibold))
+        ),
+        onValueChange = { newText ->
+            if (maxLength <= 0 || newText.length <= maxLength) {
+                onValueChange(newText)
+            }
+        },
+        colors = TextFieldDefaults.colors(
+            cursorColor = MaterialWhite,
+            focusedIndicatorColor = VividBlue,
+            unfocusedIndicatorColor = MaterialWhite,
+            focusedContainerColor = InputAreaFocused,
+            unfocusedContainerColor = InputAreaUnfocused
+        ),
+        visualTransformation = if (maxLength > 0) {
+            if (text.length >= maxLength) {
+                VisualTransformation { original ->
+                    TransformedText(
+                        AnnotatedString(original.text.take(maxLength)),
+                        OffsetMapping.Identity
+                    )
+                }
+            } else VisualTransformation.None
+        } else VisualTransformation.None,
+        label = {
+            if (maxLength > 0) {
+                Text(
+                    text = "${text.length}/$maxLength",
+                    color = MaterialWhite,
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.rubik_regular)),
+                    modifier = Modifier.background(VividBlue)
+                )
+            }
+        },
+        modifier = Modifier.fillMaxWidth()
     )
 }

@@ -1,5 +1,8 @@
 package vbshkn.android.jetmemo.model
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -41,5 +44,21 @@ class UnitScreenModel(
         viewModelScope.launch {
             repository.deleteWordCompletely(word)
         }
+    }
+
+    var dialogState by mutableStateOf<DialogState>(DialogState.None)
+        private set
+
+    fun showDialog(state: DialogState){
+        dialogState = state
+    }
+
+    fun dismissDialog(){
+        dialogState = DialogState.None
+    }
+
+    sealed class DialogState{
+        data object None: DialogState()
+        data object AddWordDialog: DialogState()
     }
 }

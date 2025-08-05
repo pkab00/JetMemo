@@ -7,10 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseInBack
 import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.lifecycle.ViewModel
@@ -41,8 +46,8 @@ class MainActivity : ComponentActivity() {
             NavHost(
                 navController = navController,
                 startDestination = Router.HomeRoute,
-                enterTransition = { enterAnimation(300) },
-                exitTransition = { exitAnimation(300) }
+                enterTransition = { enterAnimation(400) },
+                exitTransition = { exitAnimation(400) }
             ) {
                 composable<Router.HomeRoute> {
                     val viewModel: HomeScreenModel = viewModel(
@@ -72,17 +77,11 @@ class MainActivity : ComponentActivity() {
 }
 
 fun enterAnimation(duration: Int): EnterTransition {
-    return fadeIn(
-        animationSpec = tween(duration, easing = EaseOut)
-    ) + slideInHorizontally(
-        animationSpec = tween(duration, easing = EaseOut),
-    )
+    return slideInHorizontally(tween(duration, easing = LinearEasing)) +
+            scaleIn(tween(duration))
 }
 
 fun exitAnimation(duration: Int): ExitTransition {
-    return fadeOut(
-        animationSpec = tween(duration, easing = EaseIn)
-    ) + slideOutHorizontally(
-        animationSpec = tween(duration, easing = EaseIn)
-    )
+    return slideOutHorizontally(tween(duration, easing = LinearEasing)) +
+            scaleOut(tween(duration))
 }

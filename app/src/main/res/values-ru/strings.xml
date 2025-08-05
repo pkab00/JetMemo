@@ -14,4 +14,7 @@
     <string name="title_about">О приложении</string>
     <string name="message_empty_unit">Юнит пуст. Нажмите на кнопку \"+\", чтобы добавить в него новое слово.</string>
     <string name="statr_learning">Учить</string>
+    <string name="add_new_word">Добавить слово:</string>
+    <string name="placeholder_original_word">Оригинал...</string>
+    <string name="placeholder_translated_word">Перевод...</string>
 </resources>
