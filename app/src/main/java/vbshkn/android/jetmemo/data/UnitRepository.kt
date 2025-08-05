@@ -1,40 +1,50 @@
 package vbshkn.android.jetmemo.data
 
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlin.concurrent.Volatile
 
-/**
- * Repository - промежуточный слой абстракции между DB и ViewModel.
- *
- * Репозиторий запрашивает только необходимые ему для работы Dao.
- * Он инкапсулирует процессы работы с данными.
- * ViewModel для отображения данных использует ТОЛЬКО функционал Repository.
- */
-class UnitRepository(private val unitDao: UnitDao) {
-    fun getUnits(): Flow<List<UnitEntity>>{
-        return unitDao.getAll()
+class UnitRepository(
+    private val wordDao: WordDao,
+    private val relationsDao: RelationsDao
+) {
+
+    fun getAllFromUnit(id: Int): Flow<List<WordEntity>> {
+        return if (id == -1) wordDao.getAll() else relationsDao.getWordsInUnit(id)
     }
 
-    suspend fun insertUnit(name: String){
-        unitDao.insertUnit(UnitEntity(name = name))
+    suspend fun addWord(
+        word: WordEntity,
+        unitID: Int
+    ) {
+        wordDao.insertWord(word) // если такое слово уже есть - будет пропущено
+        relationsDao.insertRelation(RelationsEntity(word.id, unitID))
     }
 
-    suspend fun deleteUnit(unit: UnitEntity){
-        unitDao.deleteUnit(unit)
+    suspend fun editWord(word: WordEntity) {
+        wordDao.updateWord(word)
     }
 
-    suspend fun editUnit(unit: UnitEntity){
-        unitDao.updateUnit(unit)
+    suspend fun deleteWordFromUnit(
+        word: WordEntity,
+        unitID: Int
+    ) {
+        relationsDao.deleteRelation(RelationsEntity(word.id, unitID))
     }
 
-    companion object{
+    suspend fun deleteWordCompletely(word: WordEntity) {
+        wordDao.deleteWord(word)
+    }
+
+    companion object {
         @Volatile
         var INSTANCE: UnitRepository? = null
 
-        fun getInstance(unitDao: UnitDao): UnitRepository{
+        fun getInstance(
+            wordDao: WordDao,
+            relationsDao: RelationsDao
+        ): UnitRepository {
             return INSTANCE ?: synchronized(this) {
-                val repo = UnitRepository(unitDao)
+                val repo = UnitRepository(wordDao, relationsDao)
                 INSTANCE = repo
                 repo
             }

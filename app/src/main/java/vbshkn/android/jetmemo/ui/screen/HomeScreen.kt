@@ -233,7 +233,7 @@ fun UnitList(
             UnitButton(
                 unit = unit,
                 isEditable = editMode,
-                onClick = { controller.navigate(Router.UnitRoute(unit.id)) },
+                onClick = { controller.navigate(Router.UnitRoute(unit.id, unit.name)) },
                 onEdit = { viewModel.showDialog(DialogState.EditUnitDialog(unit)) },
                 onDelete = { viewModel.showDialog(DialogState.DeleteUnitDialog(unit)) }
             )

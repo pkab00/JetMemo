@@ -7,6 +7,9 @@ sealed class Router{
     object HomeRoute
 
     @Serializable
-    data class UnitRoute(val id: Int)
+    data class UnitRoute(
+        val id: Int,
+        val name: String
+    )
 }
 

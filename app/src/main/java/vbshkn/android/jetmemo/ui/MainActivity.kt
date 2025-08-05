@@ -6,15 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.Ease
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
         val store = this.viewModelStore
         val app = application as App
-        val repository = app.unitRepository
+        val repository = app.homeRepository
 
         enableEdgeToEdge()
         setContent {
@@ -61,6 +58,7 @@ class MainActivity : ComponentActivity() {
                     val data = it.toRoute<Router.UnitRoute>()
                     UnitScreen(
                         id = data.id,
+                        name = data.name,
                         controller = navController,
                         wordList = listOf()
                     )

@@ -2,10 +2,11 @@ package vbshkn.android.jetmemo.ui
 
 import android.app.Application
 import vbshkn.android.jetmemo.data.MainDB
+import vbshkn.android.jetmemo.data.HomeRepository
 import vbshkn.android.jetmemo.data.UnitRepository
 
 class App: Application() {
-    val database by lazy { MainDB.createDB(this) } // singleton-объект ДБ
-    val unitRepository by lazy { UnitRepository.getInstance(database.unitDao()) }
-
+    private val database by lazy { MainDB.createDB(this) } // singleton-объект ДБ
+    val homeRepository by lazy { HomeRepository.getInstance(database.unitDao()) }
+    val unitRepository by lazy { UnitRepository.getInstance(database.wordDao(), database.relationsDao()) }
 }

@@ -50,6 +50,7 @@ import vbshkn.android.jetmemo.ui.theme.VividBlue
 @Composable
 fun UnitScreen(
     id: Int,
+    name: String,
     wordList: List<WordEntity>,
     controller: NavController
 ) {
@@ -58,7 +59,7 @@ fun UnitScreen(
     Scaffold(
         topBar = {
             TopBar(
-                id = id,
+                title = name,
                 onAdd = {},
                 onNavigate = {
                     controller.navigate(Router.HomeRoute) {
@@ -90,14 +91,14 @@ fun UnitScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    id: Int,
+    title: String,
     onAdd: () -> Unit,
     onNavigate: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "ID: $id",
+                text = title,
                 fontSize = 22.sp,
                 fontFamily = FontFamily(Font(R.font.nunito_bold))
             )
