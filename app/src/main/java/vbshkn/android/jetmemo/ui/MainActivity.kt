@@ -21,6 +21,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import vbshkn.android.jetmemo.model.HomeScreenModel
 import vbshkn.android.jetmemo.model.HomeScreenModelFactory
+import vbshkn.android.jetmemo.model.UnitScreenModel
+import vbshkn.android.jetmemo.model.UnitScreenModelFactory
 import vbshkn.android.jetmemo.ui.screen.HomeScreen
 import vbshkn.android.jetmemo.ui.screen.UnitScreen
 
@@ -30,7 +32,6 @@ class MainActivity : ComponentActivity() {
 
         val store = this.viewModelStore
         val app = application as App
-        val repository = app.homeRepository
 
         enableEdgeToEdge()
         setContent {
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                 composable<Router.HomeRoute> {
                     viewModel = ViewModelProvider(
                         store,
-                        HomeScreenModelFactory(repository),
+                        HomeScreenModelFactory(app.homeRepository),
                     )[HomeScreenModel::class.java]
                     HomeScreen(
                         viewModel = viewModel as HomeScreenModel,
@@ -56,11 +57,14 @@ class MainActivity : ComponentActivity() {
                 composable<Router.UnitRoute> {
                     // данные из data class'а принимаем здесь
                     val data = it.toRoute<Router.UnitRoute>()
+                    viewModel = ViewModelProvider(
+                        store,
+                        UnitScreenModelFactory(app.unitRepository, data.id)
+                    )[UnitScreenModel::class.java]
                     UnitScreen(
-                        id = data.id,
                         name = data.name,
+                        viewModel = viewModel as UnitScreenModel,
                         controller = navController,
-                        wordList = listOf()
                     )
                 }
             }

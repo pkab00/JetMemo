@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.WordEntity
+import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.ui.Router
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
@@ -49,12 +51,12 @@ import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 @Composable
 fun UnitScreen(
-    id: Int,
     name: String,
-    wordList: List<WordEntity>,
+    viewModel: UnitScreenModel,
     controller: NavController
 ) {
-    var isEmpty by remember { mutableStateOf(wordList.isEmpty()) }
+    val words by viewModel.unitWords.collectAsState()
+    val isEmpty by remember { mutableStateOf(words.isEmpty()) }
 
     Scaffold(
         topBar = {
