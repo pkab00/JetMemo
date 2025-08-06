@@ -17,7 +17,10 @@ class UnitRepository(
         unitID: Int
     ) {
         wordDao.insertWord(word) // если такое слово уже есть - будет пропущено
-        relationsDao.insertRelation(RelationsEntity(word.id, unitID))
+        if(unitID != -1){
+            val newID = wordDao.getWordID(word.original, word.translation)
+            relationsDao.insertRelation(RelationsEntity(newID, unitID))
+        }
     }
 
     suspend fun editWord(word: WordEntity) {

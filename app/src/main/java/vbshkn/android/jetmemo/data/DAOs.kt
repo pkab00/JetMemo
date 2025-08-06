@@ -19,11 +19,14 @@ interface WordDao {
     @Update
     suspend fun updateWord(entity: WordEntity)
 
-    @Query("SELECT * FROM main_words_table") // Flow является корутиной, которая может использоваться как state
+    @Query("SELECT * FROM main_words_table ORDER BY createdAt DESC") // Flow является корутиной, которая может использоваться как state
     fun getAll(): Flow<List<WordEntity>> // и самостоятельно обновляется при любых изменениях в ДБ
 
     @Query("SELECT EXISTS(SELECT 1 FROM main_words_table WHERE id = :id)")
     fun hasWord(id: Int): Boolean
+
+    @Query("SELECT id FROM main_words_table WHERE (original = :original AND translation = :translation)")
+    suspend fun getWordID(original: String, translation: String): Int
 }
 
 @Dao
