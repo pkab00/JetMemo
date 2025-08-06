@@ -2,19 +2,20 @@ package vbshkn.android.jetmemo.ui.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -27,25 +28,30 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -53,7 +59,9 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.WordEntity
 import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.ui.Router
+import vbshkn.android.jetmemo.ui.dialog.CustomDropDownMenu
 import vbshkn.android.jetmemo.ui.dialog.DoubleTextInputDialog
+import vbshkn.android.jetmemo.ui.dialog.MenuAction
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -227,73 +235,106 @@ fun WordList(viewModel: UnitScreenModel) {
 
 @Composable
 fun WordItem(word: WordEntity) {
-    Button(
-        onClick = {},
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialWhite,
-            contentColor = VividBlue
-        ),
-        contentPadding = PaddingValues(5.dp),
-        shape = RectangleShape,
-        border = BorderStroke(0.5.dp, VividBlue),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+    var showMenu by remember { mutableStateOf(false) }
+    var buttonPosition by remember { mutableStateOf(Offset.Zero) }
+    var buttonHeight by remember { mutableFloatStateOf(0f) }
+    var buttonWidth by remember { mutableFloatStateOf(0f) }
+
+    Box(Modifier.fillMaxWidth()) {
+        Button(
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialWhite,
+                contentColor = VividBlue
+            ),
+            contentPadding = PaddingValues(5.dp),
+            shape = RectangleShape,
+            border = BorderStroke(0.5.dp, VividBlue),
             modifier = Modifier
-                .background(MaterialWhite)
-                .padding(
-                    start = 10.dp,
-                    end = 10.dp,
-                    top = 5.dp,
-                    bottom = 5.dp
-                )
                 .fillMaxWidth()
+                .padding(bottom = 10.dp)
+                .onGloballyPositioned { coordinates ->
+                    buttonPosition = coordinates.positionInParent() // текущее положение кнопки
+                    buttonHeight = coordinates.size.height.toFloat() // текущая высота
+                    buttonWidth = coordinates.size.width.toFloat() // текущая ширина
+                }
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = word.original,
-                    fontSize = 22.sp,
-                    fontFamily = FontFamily(Font(R.font.nunito_semibold)),
-                    modifier = Modifier
-                        .background(MaterialWhite)
-                )
-                Spacer(Modifier.height(5.dp))
-                Text(
-                    text = word.translation,
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
-                    color = OptionTextGrey,
-                    modifier = Modifier
-                        .background(MaterialWhite)
-                )
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
+                    .background(MaterialWhite)
+                    .padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                        top = 5.dp,
+                        bottom = 5.dp
+                    )
+                    .fillMaxWidth()
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_more),
-                    contentDescription = "",
-                    tint = VividBlue
-                )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = word.original,
+                        fontSize = 22.sp,
+                        fontFamily = FontFamily(Font(R.font.nunito_semibold)),
+                        modifier = Modifier
+                            .background(MaterialWhite)
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    Text(
+                        text = word.translation,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                        color = OptionTextGrey,
+                        modifier = Modifier
+                            .background(MaterialWhite)
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_more),
+                        contentDescription = "",
+                        tint = VividBlue,
+                        modifier = Modifier
+                            .clickable { showMenu = true }
+                    )
+                }
             }
+        }
+        Box(
+            modifier = Modifier
+                .offset {
+                    IntOffset(
+                        // позиционируем с учётом длины и ширины самой кнопки
+                        x = (buttonPosition.x + buttonWidth).toInt(),
+                        y = (buttonPosition.y + buttonHeight).toInt()
+                    )
+                }
+        ) {
+            CustomDropDownMenu(
+                show = showMenu,
+                onDismiss = { showMenu = false },
+                actions = listOf(
+                    MenuAction(stringResource(R.string.edit)) {},
+                    MenuAction(stringResource(R.string.delete)) {}
+                )
+            )
         }
     }
 }
 
 @Composable
-private fun DialogHost(model: UnitScreenModel){
-    when(val dialogState = model.dialogState){
+private fun DialogHost(model: UnitScreenModel) {
+    when (val dialogState = model.dialogState) {
         is UnitScreenModel.DialogState.AddWordDialog -> {
             DoubleTextInputDialog(
-                onConfirm = {str1, str2 ->
+                onConfirm = { str1, str2 ->
                     model.addWord(WordEntity(original = str1, translation = str2))
                 },
                 onDismiss = { model.dismissDialog() },
@@ -302,6 +343,7 @@ private fun DialogHost(model: UnitScreenModel){
                 secondInitialValue = stringResource(R.string.placeholder_translated_word)
             )
         }
+
         is UnitScreenModel.DialogState.None -> Unit
     }
 }

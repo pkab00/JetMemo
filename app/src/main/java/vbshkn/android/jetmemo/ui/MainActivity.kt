@@ -16,8 +16,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOut
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -77,11 +80,19 @@ class MainActivity : ComponentActivity() {
 }
 
 fun enterAnimation(duration: Int): EnterTransition {
-    return slideInHorizontally(tween(duration, easing = LinearEasing)) +
-            scaleIn(tween(duration))
+    return fadeIn(
+        animationSpec = tween(300, easing = LinearEasing)
+    ) + slideIn(
+        animationSpec = tween(400, easing = LinearEasing),
+        initialOffset = {IntOffset(400, 100)}
+    )
 }
 
 fun exitAnimation(duration: Int): ExitTransition {
-    return slideOutHorizontally(tween(duration, easing = LinearEasing)) +
-            scaleOut(tween(duration))
+    return fadeOut(
+        animationSpec = tween(300, easing = LinearEasing)
+    ) + slideOut(
+        animationSpec = tween(400, easing = LinearEasing),
+        targetOffset = {IntOffset(400, 100)}
+    )
 }

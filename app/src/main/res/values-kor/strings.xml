@@ -17,4 +17,6 @@
     <string name="add_new_word">새로운 단어 추가:</string>
     <string name="placeholder_original_word">원문...</string>
     <string name="placeholder_translated_word">번역...</string>
+    <string name="edit">편집하다</string>
+    <string name="delete">삭제하다</string>
 </resources>

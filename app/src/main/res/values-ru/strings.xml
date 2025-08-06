@@ -17,4 +17,6 @@
     <string name="add_new_word">Добавить слово:</string>
     <string name="placeholder_original_word">Оригинал...</string>
     <string name="placeholder_translated_word">Перевод...</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
 </resources>

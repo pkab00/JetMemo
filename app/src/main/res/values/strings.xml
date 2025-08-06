@@ -20,6 +20,8 @@
     <string name="add_new_word">Add new word:</string>
     <string name="placeholder_original_word">Original...</string>
     <string name="placeholder_translated_word">Translated...</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>
