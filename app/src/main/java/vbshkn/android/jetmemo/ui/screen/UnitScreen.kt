@@ -59,6 +59,8 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.WordEntity
 import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.ui.Router
+import vbshkn.android.jetmemo.ui.dialog.CheckboxConfirmDialog
+import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.CustomDropDownMenu
 import vbshkn.android.jetmemo.ui.dialog.DoubleTextInputDialog
 import vbshkn.android.jetmemo.ui.dialog.MenuAction
@@ -227,14 +229,17 @@ fun WordList(viewModel: UnitScreenModel) {
                 .padding(10.dp)
         ) {
             items(words) { word ->
-                WordItem(word)
+                WordItem(word, viewModel)
             }
         }
     } else EmptyUnitFiller()
 }
 
 @Composable
-fun WordItem(word: WordEntity) {
+fun WordItem(
+    word: WordEntity,
+    viewModel: UnitScreenModel
+) {
     var showMenu by remember { mutableStateOf(false) }
     var buttonPosition by remember { mutableStateOf(Offset.Zero) }
     var buttonHeight by remember { mutableFloatStateOf(0f) }
@@ -321,8 +326,12 @@ fun WordItem(word: WordEntity) {
                 show = showMenu,
                 onDismiss = { showMenu = false },
                 actions = listOf(
-                    MenuAction(stringResource(R.string.edit)) {},
-                    MenuAction(stringResource(R.string.delete)) {}
+                    MenuAction(stringResource(R.string.edit)) {
+                        viewModel.showDialog(UnitScreenModel.DialogState.EditWordDialog(word))
+                    },
+                    MenuAction(stringResource(R.string.delete)) {
+                        viewModel.showDialog(UnitScreenModel.DialogState.DeleteWordDialog(word))
+                    }
                 )
             )
         }
@@ -342,6 +351,38 @@ private fun DialogHost(model: UnitScreenModel) {
                 firstInitialValue = stringResource(R.string.placeholder_original_word),
                 secondInitialValue = stringResource(R.string.placeholder_translated_word)
             )
+        }
+        is UnitScreenModel.DialogState.EditWordDialog -> {
+            val word = dialogState.word
+            DoubleTextInputDialog(
+                onConfirm = {str1, str2 ->
+                    model.editWord(word.copy(original = str1, translation = str2))
+                },
+                onDismiss = { model.dismissDialog() },
+                title = stringResource(R.string.edit_word),
+                firstInitialValue = word.original,
+                secondInitialValue = word.translation
+            )
+        }
+        is UnitScreenModel.DialogState.DeleteWordDialog -> {
+            val word = dialogState.word
+            if(model.unitID == -1){
+                ConfirmDialog(
+                    onConfirm = { model.deleteWordCompletely(word) },
+                    onDismiss = { model.dismissDialog() },
+                    title = stringResource(R.string.delete_word),
+                    message = stringResource(R.string.message_deletation_warning)
+                )
+            }
+            else{
+                CheckboxConfirmDialog(
+                    onCheckboxOn = { model.deleteWordCompletely(word) },
+                    onCheckboxOff = { model.deleteWordFromUnit(word) },
+                    onDismiss = { model.dismissDialog() },
+                    title = stringResource(R.string.delete_word),
+                    message = stringResource(R.string.message_delete_completely)
+                )
+            }
         }
 
         is UnitScreenModel.DialogState.None -> Unit

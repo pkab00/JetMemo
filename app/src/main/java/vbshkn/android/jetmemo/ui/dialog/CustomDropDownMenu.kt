@@ -63,7 +63,7 @@ private fun CustomMenuItem(action: MenuAction){
                 color = OptionTextGrey
             )
         },
-        onClick = { action.onClick }
+        onClick = { action.onClick() }
     )
 }
 

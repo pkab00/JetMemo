@@ -13,7 +13,7 @@ import vbshkn.android.jetmemo.data.WordEntity
 
 class UnitScreenModel(
     private val repository: UnitRepository,
-    private val unitID: Int
+    val unitID: Int
 ) : ViewModel() {
     val unitWords = repository.getAllFromUnit(unitID)
         .stateIn(
@@ -60,5 +60,7 @@ class UnitScreenModel(
     sealed class DialogState{
         data object None: DialogState()
         data object AddWordDialog: DialogState()
+        data class EditWordDialog(val word: WordEntity): DialogState()
+        data class DeleteWordDialog(val word: WordEntity): DialogState()
     }
 }

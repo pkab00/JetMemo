@@ -19,4 +19,8 @@
     <string name="placeholder_translated_word">Перевод...</string>
     <string name="edit">Редактировать</string>
     <string name="delete">Удалить</string>
+    <string name="edit_word">Редактировать слово:</string>
+    <string name="delete_word">Удалить слово?</string>
+    <string name="message_delete_completely">Полностью удалить слово изо всех юнитов.</string>
+    <string name="message_deletation_warning">Это действие безвозвратно удалит слово изо всех юнитов, в которых оно находится.</string>
 </resources>

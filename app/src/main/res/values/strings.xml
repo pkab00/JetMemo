@@ -22,6 +22,10 @@
     <string name="placeholder_translated_word">Translated...</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="edit_word">Edit word:</string>
+    <string name="delete_word">Delete word?</string>
+    <string name="message_delete_completely">Completely delete the word from all units.</string>
+    <string name="message_deletation_warning">This action will permanently remove the word from all units it is in.</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>
