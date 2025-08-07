@@ -26,6 +26,7 @@
     <string name="delete_word">Delete word?</string>
     <string name="message_delete_completely">Completely delete the word from all units.</string>
     <string name="message_deletation_warning">This action will permanently remove the word from all units it is in.</string>
+    <string name="add_to">Add to...</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

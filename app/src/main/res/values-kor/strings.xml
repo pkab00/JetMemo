@@ -23,4 +23,5 @@
     <string name="delete_word">단어 삭제?</string>
     <string name="message_delete_completely">모든 유닛에서 해당 단어를 완전히 제거하세요.</string>
     <string name="message_deletation_warning">이 작업을 수행하면 해당 단어가 속한 모든 유닛에서 영구적으로 제거됩니다.</string>
+    <string name="add_to">"...에 추가 "</string>
 </resources>

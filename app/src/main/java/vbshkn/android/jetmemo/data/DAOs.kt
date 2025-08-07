@@ -61,4 +61,18 @@ interface RelationsDao {
         """
     )
     fun getWordsInUnit(unitID: Int): Flow<List<WordEntity>>
+
+    @Query(
+        """
+        SELECT ut.*
+        FROM units_table ut
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM relations_table rt
+            WHERE rt.wordID = :wordID
+            AND rt.unitID = ut.id
+        )
+        """
+    )
+    fun getUnitsWithNoWord(wordID: Int): Flow<List<UnitEntity>>
 }

@@ -62,5 +62,6 @@ class UnitScreenModel(
         data object AddWordDialog: DialogState()
         data class EditWordDialog(val word: WordEntity): DialogState()
         data class DeleteWordDialog(val word: WordEntity): DialogState()
+        data class AddToAnotherUnitDialog(val word: WordEntity): DialogState()
     }
 }

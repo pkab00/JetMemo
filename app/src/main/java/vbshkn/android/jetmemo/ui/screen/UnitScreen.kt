@@ -64,6 +64,7 @@ import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.CustomDropDownMenu
 import vbshkn.android.jetmemo.ui.dialog.DoubleTextInputDialog
 import vbshkn.android.jetmemo.ui.dialog.MenuAction
+import vbshkn.android.jetmemo.ui.dialog.MultiplySelectionDialog
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -331,6 +332,9 @@ fun WordItem(
                     },
                     MenuAction(stringResource(R.string.delete)) {
                         viewModel.showDialog(UnitScreenModel.DialogState.DeleteWordDialog(word))
+                    },
+                    MenuAction(stringResource(R.string.add_to)) {
+                        viewModel.showDialog(UnitScreenModel.DialogState.AddToAnotherUnitDialog(word))
                     }
                 )
             )
@@ -384,7 +388,15 @@ private fun DialogHost(model: UnitScreenModel) {
                 )
             }
         }
-
+        // TODO: create ViewModel methods to handle this
+        is UnitScreenModel.DialogState.AddToAnotherUnitDialog -> {
+            MultiplySelectionDialog(
+                onConfirm = {},
+                onDismiss = { model.dismissDialog() },
+                title = "",
+                items = emptyList()
+            )
+        }
         is UnitScreenModel.DialogState.None -> Unit
     }
 }

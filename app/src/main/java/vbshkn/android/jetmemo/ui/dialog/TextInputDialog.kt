@@ -61,6 +61,7 @@ fun TextInputDialog(
         title = {
             Text(
                 text = title,
+                fontSize = 22.sp,
                 color = HeaderBlueGrey,
                 fontFamily = FontFamily(Font(R.font.nunito_semibold))
             )
@@ -121,6 +122,7 @@ fun DoubleTextInputDialog(
         title = {
             Text(
                 text = title,
+                fontSize = 22.sp,
                 color = HeaderBlueGrey,
                 fontFamily = FontFamily(Font(R.font.nunito_semibold))
             )

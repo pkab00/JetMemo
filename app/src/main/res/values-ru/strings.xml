@@ -23,4 +23,5 @@
     <string name="delete_word">Удалить слово?</string>
     <string name="message_delete_completely">Полностью удалить слово изо всех юнитов.</string>
     <string name="message_deletation_warning">Это действие безвозвратно удалит слово изо всех юнитов, в которых оно находится.</string>
+    <string name="add_to">Добавить в...</string>
 </resources>

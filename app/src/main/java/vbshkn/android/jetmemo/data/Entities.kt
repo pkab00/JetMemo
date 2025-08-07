@@ -24,7 +24,11 @@ data class UnitEntity (
     var name: String,
     var counter: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}
 
 @Entity(
     tableName = "relations_table",
