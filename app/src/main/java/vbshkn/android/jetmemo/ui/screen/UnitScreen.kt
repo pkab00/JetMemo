@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -40,12 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -64,7 +60,7 @@ import vbshkn.android.jetmemo.ui.dialog.ConfirmDialog
 import vbshkn.android.jetmemo.ui.dialog.CustomDropDownMenu
 import vbshkn.android.jetmemo.ui.dialog.DoubleTextInputDialog
 import vbshkn.android.jetmemo.ui.dialog.MenuAction
-import vbshkn.android.jetmemo.ui.dialog.MultiplySelectionDialog
+import vbshkn.android.jetmemo.ui.dialog.MultiSelectionDialog
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -388,13 +384,12 @@ private fun DialogHost(model: UnitScreenModel) {
                 )
             }
         }
-        // TODO: create ViewModel methods to handle this
         is UnitScreenModel.DialogState.AddToAnotherUnitDialog -> {
-            MultiplySelectionDialog(
+            MultiSelectionDialog(
                 onConfirm = {},
                 onDismiss = { model.dismissDialog() },
-                title = "",
-                items = emptyList()
+                title = stringResource(R.string.add_to),
+                content = emptyList()
             )
         }
         is UnitScreenModel.DialogState.None -> Unit
