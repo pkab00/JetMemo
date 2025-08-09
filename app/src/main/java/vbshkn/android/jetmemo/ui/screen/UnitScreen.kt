@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import vbshkn.android.jetmemo.R
+import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.data.WordEntity
 import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.ui.Router
@@ -385,11 +386,19 @@ private fun DialogHost(model: UnitScreenModel) {
             }
         }
         is UnitScreenModel.DialogState.AddToAnotherUnitDialog -> {
+            val word = dialogState.word
+            val content by model.unitsToAddTo.collectAsState()
+            model.loadUnitsToAddTo(word) // !!! запрос на обновление данных перед отрисовкой !!!
             MultiSelectionDialog(
-                onConfirm = {},
+                onConfirm = { selection ->
+                    selection.forEach { item ->
+                        val unit = item as UnitEntity
+                        model.addWordToAnotherUnit(word, unit.id)
+                    }
+                },
                 onDismiss = { model.dismissDialog() },
                 title = stringResource(R.string.add_to),
-                content = emptyList()
+                content = content
             )
         }
         is UnitScreenModel.DialogState.None -> Unit

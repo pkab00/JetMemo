@@ -74,5 +74,5 @@ interface RelationsDao {
         )
         """
     )
-    fun getUnitsWithNoWord(wordID: Int): Flow<List<UnitEntity>>
+    suspend fun getUnitsWithNoWord(wordID: Int): List<UnitEntity>
 }

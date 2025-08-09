@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.data.UnitRepository
 import vbshkn.android.jetmemo.data.WordEntity
 
@@ -21,8 +24,19 @@ class UnitScreenModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+    private val _unitsToAddTo = MutableStateFlow<List<UnitEntity>>(emptyList())
+    val unitsToAddTo = _unitsToAddTo.asStateFlow()
 
     fun addWord(word: WordEntity){
+        viewModelScope.launch {
+            repository.addWord(word, unitID)
+        }
+    }
+
+    fun addWordToAnotherUnit(
+        word: WordEntity,
+        unitID: Int
+    ) {
         viewModelScope.launch {
             repository.addWord(word, unitID)
         }
@@ -43,6 +57,12 @@ class UnitScreenModel(
     fun deleteWordCompletely(word: WordEntity){
         viewModelScope.launch {
             repository.deleteWordCompletely(word)
+        }
+    }
+
+    fun loadUnitsToAddTo(word: WordEntity){
+        viewModelScope.launch {
+            _unitsToAddTo.value = repository.getUnitsToAddTo(word)
         }
     }
 

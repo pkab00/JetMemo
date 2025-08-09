@@ -41,7 +41,7 @@ import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 @Composable
 fun MultiSelectionDialog(
-    onConfirm: (List<Any>) -> Unit,
+    onConfirm: (selection: List<Any>) -> Unit,
     onDismiss: () -> Unit,
     title: String,
     initialSelection: List<Any> = emptyList(),
@@ -84,6 +84,7 @@ fun MultiSelectionDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
+                            .padding(10.dp)
                     ) {
                         items(content) { option ->
                             SelectionItem(
@@ -143,7 +144,7 @@ private fun SelectionItem(
         horizontalArrangement = Arrangement.spacedBy(7.dp),
         modifier = Modifier
             .background(MaterialWhite)
-            .border(0.5.dp, OptionTextGrey)
+            .border(0.75.dp, if (checkedState) VividBlue else OptionTextGrey)
             .fillMaxWidth()
     ) {
         Checkbox(
@@ -160,7 +161,7 @@ private fun SelectionItem(
         )
         Text(
             text = data.toString(),
-            color = OptionTextGrey,
+            color = if (checkedState) VividBlue else OptionTextGrey,
             fontSize = 14.sp,
             fontFamily = FontFamily(Font(R.font.rubik_regular)),
             modifier = Modifier.padding(end = 7.dp)

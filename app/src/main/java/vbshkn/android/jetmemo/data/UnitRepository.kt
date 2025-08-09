@@ -38,6 +38,10 @@ class UnitRepository(
         wordDao.deleteWord(word)
     }
 
+    suspend fun getUnitsToAddTo(word: WordEntity): List<UnitEntity>{
+        return relationsDao.getUnitsWithNoWord(word.id)
+    }
+
     companion object {
         @Volatile
         var INSTANCE: UnitRepository? = null
