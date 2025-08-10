@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,6 +43,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -114,6 +117,11 @@ fun TopBar(
     onAdd: () -> Unit,
     onNavigate: () -> Unit
 ) {
+    var showSortMenu by remember { mutableStateOf(false) }
+    var sortIconOffset by remember { mutableStateOf(Offset.Zero) }
+    var sortIconHeight by remember { mutableIntStateOf(0) }
+    var sortIconWidth by remember { mutableIntStateOf(0) }
+
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -132,10 +140,36 @@ fun TopBar(
                 painter = painterResource(R.drawable.ic_add),
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(36.dp)
+                    .padding(7.dp)
+                    .size(28.dp)
                     .clip(CircleShape)
                     .clickable { onAdd() }
+            )
+            Icon(
+                painter = painterResource(R.drawable.ic_sort),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(7.dp)
+                    .size(28.dp)
+                    .clickable { showSortMenu = true }
+                    .onGloballyPositioned { coordinates ->
+                        sortIconOffset = coordinates.positionInParent()
+                        sortIconHeight = coordinates.size.height
+                        sortIconWidth = coordinates.size.width
+                    }
+            )
+            CustomDropDownMenu(
+                show = showSortMenu,
+                onDismiss = { showSortMenu = false },
+                offset = IntOffset(
+                    x = (sortIconOffset.x + sortIconWidth).toInt(),
+                    y = (sortIconOffset.y + sortIconHeight).toInt()
+                ),
+                actions = listOf(
+                    MenuAction("One") {},
+                    MenuAction("Two") {},
+                    MenuAction("Three") {},
+                )
             )
         },
         navigationIcon = {
@@ -310,32 +344,25 @@ fun WordItem(
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .offset {
-                    IntOffset(
-                        // позиционируем с учётом длины и ширины самой кнопки
-                        x = (buttonPosition.x + buttonWidth).toInt(),
-                        y = (buttonPosition.y + buttonHeight).toInt()
-                    )
+        CustomDropDownMenu(
+            show = showMenu,
+            onDismiss = { showMenu = false },
+            offset = IntOffset(
+                x = (buttonPosition.x + buttonWidth).toInt(),
+                y = (buttonPosition.y + buttonHeight).toInt()
+            ),
+            actions = listOf(
+                MenuAction(stringResource(R.string.edit)) {
+                    viewModel.showDialog(UnitScreenModel.DialogState.EditWordDialog(word))
+                },
+                MenuAction(stringResource(R.string.delete)) {
+                    viewModel.showDialog(UnitScreenModel.DialogState.DeleteWordDialog(word))
+                },
+                MenuAction(stringResource(R.string.add_to)) {
+                    viewModel.showDialog(UnitScreenModel.DialogState.AddToAnotherUnitDialog(word))
                 }
-        ) {
-            CustomDropDownMenu(
-                show = showMenu,
-                onDismiss = { showMenu = false },
-                actions = listOf(
-                    MenuAction(stringResource(R.string.edit)) {
-                        viewModel.showDialog(UnitScreenModel.DialogState.EditWordDialog(word))
-                    },
-                    MenuAction(stringResource(R.string.delete)) {
-                        viewModel.showDialog(UnitScreenModel.DialogState.DeleteWordDialog(word))
-                    },
-                    MenuAction(stringResource(R.string.add_to)) {
-                        viewModel.showDialog(UnitScreenModel.DialogState.AddToAnotherUnitDialog(word))
-                    }
-                )
             )
-        }
+        )
     }
 }
 
@@ -353,10 +380,11 @@ private fun DialogHost(model: UnitScreenModel) {
                 secondInitialValue = stringResource(R.string.placeholder_translated_word)
             )
         }
+
         is UnitScreenModel.DialogState.EditWordDialog -> {
             val word = dialogState.word
             DoubleTextInputDialog(
-                onConfirm = {str1, str2 ->
+                onConfirm = { str1, str2 ->
                     model.editWord(word.copy(original = str1, translation = str2))
                 },
                 onDismiss = { model.dismissDialog() },
@@ -365,17 +393,17 @@ private fun DialogHost(model: UnitScreenModel) {
                 secondInitialValue = word.translation
             )
         }
+
         is UnitScreenModel.DialogState.DeleteWordDialog -> {
             val word = dialogState.word
-            if(model.unitID == -1){
+            if (model.unitID == -1) {
                 ConfirmDialog(
                     onConfirm = { model.deleteWordCompletely(word) },
                     onDismiss = { model.dismissDialog() },
                     title = stringResource(R.string.delete_word),
                     message = stringResource(R.string.message_deletation_warning)
                 )
-            }
-            else{
+            } else {
                 CheckboxConfirmDialog(
                     onCheckboxOn = { model.deleteWordCompletely(word) },
                     onCheckboxOff = { model.deleteWordFromUnit(word) },
@@ -385,6 +413,7 @@ private fun DialogHost(model: UnitScreenModel) {
                 )
             }
         }
+
         is UnitScreenModel.DialogState.AddToAnotherUnitDialog -> {
             val word = dialogState.word
             val content by model.unitsToAddTo.collectAsState()
@@ -401,6 +430,7 @@ private fun DialogHost(model: UnitScreenModel) {
                 content = content
             )
         }
+
         is UnitScreenModel.DialogState.None -> Unit
     }
 }

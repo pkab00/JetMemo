@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vbshkn.android.jetmemo.R
@@ -35,18 +36,20 @@ data class MenuAction(
 fun CustomDropDownMenu(
     show: Boolean,
     onDismiss: () -> Unit,
-    actions: List<MenuAction>,
-
+    offset: IntOffset,
+    actions: List<MenuAction>
 ) {
     if (show) {
-        DropdownMenu(
-            expanded = show,
-            onDismissRequest = { onDismiss() },
-            modifier = Modifier
-                .background(MaterialWhite)
-        ) {
-            actions.forEach { action ->
-                CustomMenuItem(action)
+        Box(Modifier.offset{ offset }){
+            DropdownMenu(
+                expanded = show,
+                onDismissRequest = { onDismiss() },
+                modifier = Modifier
+                    .background(MaterialWhite)
+            ) {
+                actions.forEach { action ->
+                    CustomMenuItem(action)
+                }
             }
         }
     }
