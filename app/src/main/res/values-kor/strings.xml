@@ -24,4 +24,7 @@
     <string name="message_delete_completely">모든 유닛에서 해당 단어를 완전히 제거하세요.</string>
     <string name="message_deletation_warning">이 작업을 수행하면 해당 단어가 속한 모든 유닛에서 영구적으로 제거됩니다.</string>
     <string name="add_to">"...에 추가 "</string>
+    <string name="sort_time">생성 시간 기준</string>
+    <string name="sort_original">"알파벳순 (원본 기준) "</string>
+    <string name="sort_translation">알파벳순 (번역순)</string>
 </resources>

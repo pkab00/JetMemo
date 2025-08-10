@@ -27,6 +27,9 @@
     <string name="message_delete_completely">Completely delete the word from all units.</string>
     <string name="message_deletation_warning">This action will permanently remove the word from all units it is in.</string>
     <string name="add_to">Add to...</string>
+    <string name="sort_time">By creation time</string>
+    <string name="sort_original">In alphabet order (by original)</string>
+    <string name="sort_translation">In alphabet order (by translation)</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

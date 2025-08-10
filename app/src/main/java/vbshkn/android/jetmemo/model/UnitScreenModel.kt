@@ -1,8 +1,6 @@
 package vbshkn.android.jetmemo.model
 
-import android.content.Intent.ShortcutIconResource
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.isTraceInProgress
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import vbshkn.android.jetmemo.data.UnitEntity
@@ -21,10 +19,14 @@ class UnitScreenModel(
     private val repository: UnitRepository,
     val unitID: Int
 ) : ViewModel() {
-    var sortMode = mutableStateOf(SortMode.getNextMode())
-        private set
-    val unitWords = repository.getAllFromUnit(unitID).map { data ->
-        when (sortMode.value) {
+    private val _sortMode = MutableStateFlow<SortMode>(SortMode.ByTimeAsc)
+    val sortMode = _sortMode.asStateFlow()
+
+    val unitWords = combine(
+        repository.getAllFromUnit(unitID), // комбинируем flow данных и flow режима сортировки
+        sortMode // новый поток будет эммититься при изменении хотя бы одного из них
+    ) { data, mode ->
+        when (mode) {
             is SortMode.ByOriginalAsc -> data.sortedBy { it.original }
             is SortMode.ByOriginalDesc -> data.sortedByDescending { it.original }
             is SortMode.ByTranslationAsc -> data.sortedBy { it.translation }
@@ -92,8 +94,10 @@ class UnitScreenModel(
         dialogState = DialogState.None
     }
 
-    fun nextSortMode(){
-        sortMode.value = SortMode.getNextMode()
+    fun setSortMode(newMode: SortMode) {
+        viewModelScope.launch {
+            _sortMode.value = newMode
+        }
     }
 
     sealed class DialogState {
@@ -104,31 +108,12 @@ class UnitScreenModel(
         data class AddToAnotherUnitDialog(val word: WordEntity) : DialogState()
     }
 
-    sealed class SortMode(
-        nameRes: Long,
-        iconRes: Long
-    ) {
-        data object ByOriginalAsc : SortMode(0, 0)
-        data object ByOriginalDesc : SortMode(0, 0)
-        data object ByTranslationAsc : SortMode(0, 0)
-        data object ByTranslationDesc : SortMode(0, 0)
-        data object ByTimeAsc : SortMode(0, 0)
-        data object ByTimeDesc : SortMode(0, 0)
-
-        companion object {
-            private var currentIndex = 0
-            private val modes = listOf(
-                ByOriginalAsc, ByOriginalDesc,
-                ByTranslationAsc, ByTranslationDesc,
-                ByTimeAsc, ByTimeDesc
-            )
-
-            fun getNextMode(): SortMode {
-                if (currentIndex == modes.size) {
-                    currentIndex = 0
-                }
-                return modes[currentIndex++]
-            }
-        }
+    sealed class SortMode {
+        data object ByOriginalAsc : SortMode()
+        data object ByOriginalDesc : SortMode()
+        data object ByTranslationAsc : SortMode()
+        data object ByTranslationDesc : SortMode()
+        data object ByTimeAsc : SortMode()
+        data object ByTimeDesc : SortMode()
     }
 }

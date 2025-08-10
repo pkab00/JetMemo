@@ -24,4 +24,7 @@
     <string name="message_delete_completely">Полностью удалить слово изо всех юнитов.</string>
     <string name="message_deletation_warning">Это действие безвозвратно удалит слово изо всех юнитов, в которых оно находится.</string>
     <string name="add_to">Добавить в...</string>
+    <string name="sort_time">По времени создания</string>
+    <string name="sort_original">В алфавитном порядке (оригинал)</string>
+    <string name="sort_translation">В алфавитном порядке (перевод)</string>
 </resources>

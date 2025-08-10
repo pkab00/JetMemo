@@ -84,7 +84,7 @@ fun UnitScreen(
         topBar = {
             TopBar(
                 title = name,
-                onAdd = { viewModel.showDialog(UnitScreenModel.DialogState.AddWordDialog) },
+                model = viewModel,
                 onNavigate = {
                     controller.navigate(Router.HomeRoute) {
                         popUpTo(0)
@@ -114,9 +114,10 @@ fun UnitScreen(
 @Composable
 fun TopBar(
     title: String,
-    onAdd: () -> Unit,
+    model: UnitScreenModel,
     onNavigate: () -> Unit
 ) {
+    val sortMode by model.sortMode.collectAsState()
     var showSortMenu by remember { mutableStateOf(false) }
     var sortIconOffset by remember { mutableStateOf(Offset.Zero) }
     var sortIconHeight by remember { mutableIntStateOf(0) }
@@ -143,7 +144,7 @@ fun TopBar(
                     .padding(7.dp)
                     .size(28.dp)
                     .clip(CircleShape)
-                    .clickable { onAdd() }
+                    .clickable { model.showDialog(UnitScreenModel.DialogState.AddWordDialog) }
             )
             Icon(
                 painter = painterResource(R.drawable.ic_sort),
@@ -166,9 +167,24 @@ fun TopBar(
                     y = (sortIconOffset.y + sortIconHeight).toInt()
                 ),
                 actions = listOf(
-                    MenuAction("One") {},
-                    MenuAction("Two") {},
-                    MenuAction("Three") {},
+                    MenuAction("↑ "+ stringResource(R.string.sort_time)) {
+                        model.setSortMode(UnitScreenModel.SortMode.ByTimeAsc)
+                    },
+                    MenuAction("↓ "+ stringResource(R.string.sort_time)) {
+                        model.setSortMode(UnitScreenModel.SortMode.ByTimeDesc)
+                    },
+                    MenuAction("↑ "+ stringResource(R.string.sort_original)) {
+                        model.setSortMode(UnitScreenModel.SortMode.ByOriginalAsc)
+                    },
+                    MenuAction("↓ "+ stringResource(R.string.sort_original)) {
+                        model.setSortMode(UnitScreenModel.SortMode.ByOriginalDesc)
+                    },
+                    MenuAction("↑ "+ stringResource(R.string.sort_translation)) {
+                        model.setSortMode(UnitScreenModel.SortMode.ByTranslationAsc)
+                    },
+                    MenuAction("↓ "+ stringResource(R.string.sort_translation)) {
+                        model.setSortMode(UnitScreenModel.SortMode.ByTranslationDesc)
+                    }
                 )
             )
         },
