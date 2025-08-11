@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,8 +42,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -167,23 +164,14 @@ fun TopBar(
                     y = (sortIconOffset.y + sortIconHeight).toInt()
                 ),
                 actions = listOf(
-                    MenuAction("↑ "+ stringResource(R.string.sort_time)) {
+                    MenuAction(stringResource(R.string.sort_time)) {
                         model.setSortMode(UnitScreenModel.SortMode.ByTimeAsc)
                     },
-                    MenuAction("↓ "+ stringResource(R.string.sort_time)) {
-                        model.setSortMode(UnitScreenModel.SortMode.ByTimeDesc)
-                    },
-                    MenuAction("↑ "+ stringResource(R.string.sort_original)) {
+                    MenuAction(stringResource(R.string.sort_original)) {
                         model.setSortMode(UnitScreenModel.SortMode.ByOriginalAsc)
                     },
-                    MenuAction("↓ "+ stringResource(R.string.sort_original)) {
-                        model.setSortMode(UnitScreenModel.SortMode.ByOriginalDesc)
-                    },
-                    MenuAction("↑ "+ stringResource(R.string.sort_translation)) {
+                    MenuAction(stringResource(R.string.sort_translation)) {
                         model.setSortMode(UnitScreenModel.SortMode.ByTranslationAsc)
-                    },
-                    MenuAction("↓ "+ stringResource(R.string.sort_translation)) {
-                        model.setSortMode(UnitScreenModel.SortMode.ByTranslationDesc)
                     }
                 )
             )
@@ -276,7 +264,10 @@ fun WordList(viewModel: UnitScreenModel) {
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            items(words) { word ->
+            items(
+                items = words,
+                key = { it.id }
+            ) { word ->
                 WordItem(word, viewModel)
             }
         }

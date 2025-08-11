@@ -26,14 +26,7 @@ class UnitScreenModel(
         repository.getAllFromUnit(unitID), // комбинируем flow данных и flow режима сортировки
         sortMode // новый поток будет эммититься при изменении хотя бы одного из них
     ) { data, mode ->
-        when (mode) {
-            is SortMode.ByOriginalAsc -> data.sortedBy { it.original }
-            is SortMode.ByOriginalDesc -> data.sortedByDescending { it.original }
-            is SortMode.ByTranslationAsc -> data.sortedBy { it.translation }
-            is SortMode.ByTranslationDesc -> data.sortedByDescending { it.translation }
-            is SortMode.ByTimeAsc -> data.sortedBy { it.createdAt }
-            is SortMode.ByTimeDesc -> data.sortedByDescending { it.createdAt }
-        }
+        data.sortedByMode(mode)
     }
         .stateIn(
             scope = viewModelScope,
@@ -100,6 +93,15 @@ class UnitScreenModel(
         }
     }
 
+    // функция-расширение
+    private fun List<WordEntity>.sortedByMode(mode: SortMode): List<WordEntity>{
+        return when (mode) {
+            is SortMode.ByOriginalAsc -> sortedBy { it.original }
+            is SortMode.ByTranslationAsc -> sortedBy { it.translation }
+            is SortMode.ByTimeAsc -> sortedBy { it.createdAt }
+        }
+    }
+
     sealed class DialogState {
         data object None : DialogState()
         data object AddWordDialog : DialogState()
@@ -110,10 +112,7 @@ class UnitScreenModel(
 
     sealed class SortMode {
         data object ByOriginalAsc : SortMode()
-        data object ByOriginalDesc : SortMode()
         data object ByTranslationAsc : SortMode()
-        data object ByTranslationDesc : SortMode()
         data object ByTimeAsc : SortMode()
-        data object ByTimeDesc : SortMode()
     }
 }
