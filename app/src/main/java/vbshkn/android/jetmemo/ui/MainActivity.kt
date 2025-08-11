@@ -30,16 +30,18 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import vbshkn.android.jetmemo.model.HomeScreenModel
 import vbshkn.android.jetmemo.model.HomeScreenModelFactory
+import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.LearnScreenModelFactory
 import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.model.UnitScreenModelFactory
 import vbshkn.android.jetmemo.ui.screen.HomeScreen
+import vbshkn.android.jetmemo.ui.screen.LearnScreen
 import vbshkn.android.jetmemo.ui.screen.UnitScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val store = this.viewModelStore
         val app = application as App
 
         enableEdgeToEdge()
@@ -74,6 +76,16 @@ class MainActivity : ComponentActivity() {
                         controller = navController,
                     )
                 }
+                composable<Router.LearnRoute> {
+                    val data = it.toRoute<Router.LearnRoute>()
+                    val viewModel: LearnScreenModel = viewModel(
+                        factory = LearnScreenModelFactory(app.learnRepository, data.id)
+                    )
+                    LearnScreen(
+                        model = viewModel,
+                        navController = navController
+                    )
+                }
             }
         }
     }
@@ -84,7 +96,7 @@ fun enterAnimation(duration: Int): EnterTransition {
         animationSpec = tween(300, easing = LinearEasing)
     ) + slideIn(
         animationSpec = tween(400, easing = LinearEasing),
-        initialOffset = {IntOffset(400, 100)}
+        initialOffset = { IntOffset(400, 100) }
     )
 }
 
@@ -93,6 +105,6 @@ fun exitAnimation(duration: Int): ExitTransition {
         animationSpec = tween(300, easing = LinearEasing)
     ) + slideOut(
         animationSpec = tween(400, easing = LinearEasing),
-        targetOffset = {IntOffset(400, 100)}
+        targetOffset = { IntOffset(400, 100) }
     )
 }

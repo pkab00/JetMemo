@@ -1,9 +1,5 @@
-package vbshkn.android.jetmemo.ui
+package vbshkn.android.jetmemo.ui.screen
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -40,41 +36,37 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import vbshkn.android.jetmemo.R
-import vbshkn.android.jetmemo.model.LearnWordsActivityViewModel
+import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
-class LearnWordsActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Scaffold(
-                content = {innerPadding: PaddingValues ->
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .background(Color.White)
-                    ) {
-                        Content()
-                    }
-                }
-            )
+@Composable
+fun LearnScreen(
+    model: LearnScreenModel,
+    navController: NavController
+) {
+    Scaffold { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialWhite)
+        ) {
+            CloseButton{  }
+            QuestionWord(model)
+            OptionPanel(model)
+            SkipButton(model)
+            CorrectMessagePanel()
         }
     }
 }
 
 @Composable
-fun Content(){
-    CloseButton()
-    QuestionWord("Galaxy")
-    OptionPanel()
-    SkipButton()
-    CorrectMessagePanel()
-}
-
-@Composable
-fun CloseButton(){
+fun CloseButton(
+    onClick: () -> Unit
+) {
     Image(
         painter = painterResource(R.drawable.ic_close),
         contentDescription = "Close button",
@@ -88,9 +80,8 @@ fun CloseButton(){
 
 @Composable
 fun QuestionWord(
-    text: String,
-    viewModel: LearnWordsActivityViewModel = viewModel()
-){
+    viewModel: LearnScreenModel
+) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -111,8 +102,8 @@ fun QuestionWord(
 @Composable
 fun Option(
     number: Int,
-    viewModel: LearnWordsActivityViewModel = viewModel()
-){
+    viewModel: LearnScreenModel
+) {
     val index = number - 1
     Button(
         onClick = { viewModel.onOption(index) },
@@ -150,7 +141,7 @@ fun Option(
                 )
             }
             Text(
-                text = (viewModel.currentQuestion?.answers?.get(number-1)?.translation ?: ""),
+                text = (viewModel.currentQuestion?.answers?.get(number - 1)?.translation ?: ""),
                 // TODO: ПОДУМАТЬ ЧТО ДЕЛАТЬ С ЭТИМИ УРОДСКИМИ NULL-SAFE ВЫЗОВАМИ
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.rubik_regular)),
@@ -164,7 +155,7 @@ fun Option(
 }
 
 @Composable
-fun OptionPanel(){
+fun OptionPanel(model: LearnScreenModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -175,17 +166,17 @@ fun OptionPanel(){
                 end = 32.dp,
                 top = 60.dp
             )
-    ){
-        for(i in 1..4){
-            Option(i)
+    ) {
+        for (i in 1..4) {
+            Option(i, model)
         }
     }
 }
 
 @Composable
 fun SkipButton(
-    viewModel: LearnWordsActivityViewModel = viewModel()
-){
+    viewModel: LearnScreenModel
+) {
     AnimatedVisibility(
         visible = !viewModel.correctMessagePanelState.visibility,
         enter = fadeIn(tween(durationMillis = 10)),
@@ -196,7 +187,7 @@ fun SkipButton(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier
                 .fillMaxSize()
-        ){
+        ) {
             Button(
                 onClick = { viewModel.onSkip() },
                 colors = ButtonDefaults.buttonColors(VividBlue),
@@ -223,8 +214,8 @@ fun SkipButton(
 
 @Composable
 fun CorrectMessagePanel(
-    viewModel: LearnWordsActivityViewModel = viewModel()
-){
+    viewModel: LearnScreenModel = viewModel()
+) {
     AnimatedVisibility(
         visible = viewModel.correctMessagePanelState.visibility,
         enter = slideInHorizontally(),
@@ -237,11 +228,11 @@ fun CorrectMessagePanel(
                 .fillMaxSize()
                 .height(136.dp)
                 .background(viewModel.correctMessagePanelState.mainColor)
-        ){
+        ) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Image(
                     painter = painterResource(viewModel.correctMessagePanelState.pictureResource),
                     contentDescription = stringResource(viewModel.correctMessagePanelState.messageResource),
@@ -266,7 +257,7 @@ fun CorrectMessagePanel(
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Button(
                     onClick = { viewModel.onContinue() },
                     shape = RoundedCornerShape(22.dp),

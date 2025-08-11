@@ -92,7 +92,7 @@ fun UnitScreen(
         bottomBar = {
             BottomBar(
                 show = !isEmpty,
-                onLearn = {}
+                onLearn = { controller.navigate(Router.LearnRoute(viewModel.unitID)) }
             )
         }
     ) { innerPadding ->
