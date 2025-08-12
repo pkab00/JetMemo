@@ -2,17 +2,6 @@ package vbshkn.android.jetmemo.logic
 
 import vbshkn.android.jetmemo.data.WordEntity
 
-data class Word(
-    val original: String,
-    val translation: String,
-    var learned: Boolean = false
-) {
-    constructor(entity: WordEntity) : this(
-        original = entity.original,
-        translation = entity.translation
-    )
-}
-
 data class Question(
     val answers: List<Word>,
     val correctAnswer: Word
