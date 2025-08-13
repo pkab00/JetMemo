@@ -1,19 +1,14 @@
 package vbshkn.android.jetmemo.model
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.data.LearnRepository
-import vbshkn.android.jetmemo.data.WordEntity
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
 import vbshkn.android.jetmemo.ui.theme.BorderGrey
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
@@ -28,7 +23,7 @@ class LearnScreenModel(
     private val words = repository.getWordsInUnit(unitID)
     private val trainer: LearnWordsTrainer = LearnWordsTrainer(words)
 
-    private val _currentQuestion = mutableStateOf(trainer.generateNextQuestion())
+    private val _currentQuestion = mutableStateOf(trainer.generateNextExercise())
     private val _buttonStates = mutableStateListOf<ButtonState>().apply {
         repeat(4) {add(ButtonState())}
     }
@@ -39,7 +34,7 @@ class LearnScreenModel(
     var correctMessagePanelState by _correctMessagePanelState
 
     private fun setNewQuestion(){
-        currentQuestion = trainer.generateNextQuestion()
+        currentQuestion = trainer.generateNextExercise()
     }
 
     private fun changeButtonState(buttonIndex: Int){

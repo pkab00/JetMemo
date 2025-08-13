@@ -1,18 +1,19 @@
 package vbshkn.android.jetmemo.logic
 
 import vbshkn.android.jetmemo.data.WordEntity
+import kotlin.random.Random
+import kotlin.random.nextInt
+import kotlin.reflect.KClass
 
-data class Question(
-    val answers: List<Word>,
-    val correctAnswer: Word
-)
 
 class LearnWordsTrainer(entities : List<WordEntity>){
-    private val TAG = this.javaClass.simpleName
-
-    var dictionary : List<Word> = entities.map { entity -> Word(entity) }
-
-    private var currentQuestion: Question? = null
+    private var dictionary : List<Word> = entities.map { entity -> Word(entity) }
+    private val wordsNeededMap = mapOf(
+        Exercise.MatchPairsQuestion::class to 4,
+        Exercise.RightOptionQuestion::class to 3,
+        Exercise.IsCorrectTranslationQuestion::class to 1
+    )
+    private var currentExercise: Exercise? = null
 
     private fun getLearnedWords(): List<Word>{
         return dictionary.filter { it.learned }.shuffled()
@@ -22,30 +23,57 @@ class LearnWordsTrainer(entities : List<WordEntity>){
         return  dictionary.filter { !it.learned }.shuffled()
     }
 
-    fun generateNextQuestion(): Question?{
+    fun generateNextExercise(): Exercise? {
         val notLearned = getNotLearnedWords()
-        val learned = getLearnedWords()
-        val WORDS_NEEDED = 4;
 
         if(notLearned.isEmpty()){
             return null
         }
-
-        var questionSet: List<Word> = if(notLearned.size >= WORDS_NEEDED) notLearned.take(WORDS_NEEDED)
-            else notLearned + learned.take(WORDS_NEEDED - notLearned.size)
-        currentQuestion = Question(questionSet, questionSet.random())
-        return currentQuestion
+        var _randomIndex = Random.nextInt(0..wordsNeededMap.size)
+        val randomIndex: Int = _randomIndex
+        while(wordsNeededMap.values.toList()[randomIndex] > notLearned.size){
+            _randomIndex = Random.nextInt(0..wordsNeededMap.size)
+        }
+        val exerciseClass = wordsNeededMap.keys.toList()[randomIndex]
+        return buildExercise(exerciseClass)
     }
 
-    fun checkAnswer(answerIndex: Int): Boolean {
-        currentQuestion?.let {
-            if(it.answers[answerIndex] == it.correctAnswer){
-               dictionary[dictionary.indexOf(it.correctAnswer)].learned = true
-                return true
+    fun checkAnswer(answer: Answer): Boolean {
+        return currentExercise?.checkAnswer(answer) ?: false
+    }
+
+    private fun buildExercise(clazz: KClass<out Exercise>): Exercise? {
+        val learned = getLearnedWords()
+        val notLearned = getNotLearnedWords()
+
+        when(clazz){
+            Exercise.RightOptionQuestion::class -> {
+                val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
+                if (randomWords != null) {
+                    return Exercise.RightOptionQuestion(randomWords, randomWords.random())
+                }
             }
-            else{
-                return false
+            Exercise.MatchPairsQuestion::class -> {
+                val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
+                if (randomWords != null) {
+                    return Exercise.MatchPairsQuestion(randomWords.toMutableList())
+                }
             }
-        } ?: return false
+            Exercise.IsCorrectTranslationQuestion::class -> {
+                val randomNotLearned = notLearned.random()
+                val randomLearned = learned.random()
+                val coff = Random.nextInt(0..100)
+
+                if(coff < 50){
+                    val wrongTranslatedWord = Word(
+                        original = randomNotLearned.original,
+                        translation = randomLearned.translation
+                    )
+                    return Exercise.IsCorrectTranslationQuestion(wrongTranslatedWord, randomNotLearned)
+                }
+                else return Exercise.IsCorrectTranslationQuestion(randomNotLearned, randomNotLearned)
+            }
+        }
+        return null
     }
 }
