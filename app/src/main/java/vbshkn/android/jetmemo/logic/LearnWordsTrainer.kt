@@ -1,6 +1,6 @@
 package vbshkn.android.jetmemo.logic
 
-import androidx.compose.runtime.mutableStateMapOf
+import android.util.Log
 import vbshkn.android.jetmemo.data.WordEntity
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -37,8 +37,9 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
     fun generateNextExercise(): Exercise {
         val notLearned = getNotLearnedWords()
 
-        wordsNeededMap.filter { it.value <= notLearned.size }
-        val exerciseClass = wordsNeededMap.keys.random()
+        val filtered = wordsNeededMap.filter { it.value <= notLearned.size }
+        Log.d("${LearnWordsTrainer::class.simpleName}", "notLearned.size = ${notLearned.size}, filtered.size = ${filtered.size}")
+        val exerciseClass = filtered.keys.random()
         return buildExercise(exerciseClass)
     }
 

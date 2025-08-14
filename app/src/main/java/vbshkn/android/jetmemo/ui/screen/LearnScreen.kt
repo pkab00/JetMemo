@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,15 +77,71 @@ fun BottomBar(
     model: LearnScreenModel
 ) {
     val mainColor = if (model.bottomPanelState) CorrectGreen else WrongRed
+    val title =
+        stringResource(if (model.bottomPanelState) R.string.title_correct else R.string.title_wrong)
+    val icon =
+        painterResource(if (model.bottomPanelState) R.drawable.ic_correct else R.drawable.ic_wrong)
+
     if (show) {
         BottomAppBar(
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier.height(150.dp)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(mainColor)
-            ) { }
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Icon(
+                        painter = icon,
+                        contentDescription = "",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                    Text(
+                        text = title,
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.nunito_semibold))
+                    )
+                }
+                Spacer(Modifier.fillMaxWidth().height(15.dp))
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { model.nextExercise() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = mainColor
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(
+                                bottom = 10.dp,
+                                start = 25.dp,
+                                end = 25.dp
+                            )
+                    ) {
+                        Text(
+                            text = stringResource(R.string.button_continue),
+                            color = mainColor,
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                        )
+                    }
+                }
+            }
         }
     }
 }

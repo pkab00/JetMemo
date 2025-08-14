@@ -4,7 +4,7 @@
     <style name="Theme.JetMemo" parent="android:Theme.Material.Light.NoActionBar" />
   <!-- Base application theme. -->
     <style name="Base.Theme.JetMemo" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Если хочешь, чтобы иконки были белыми на светлой теме -->
+        <item name="colorOnSurface">@android:color/white</item>
     </style>
 </resources>
