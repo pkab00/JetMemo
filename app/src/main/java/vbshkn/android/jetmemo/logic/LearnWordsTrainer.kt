@@ -38,7 +38,6 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         val notLearned = getNotLearnedWords()
 
         val filtered = wordsNeededMap.filter { it.value <= notLearned.size }
-        Log.d("${LearnWordsTrainer::class.simpleName}", "notLearned.size = ${notLearned.size}, filtered.size = ${filtered.size}")
         val exerciseClass = filtered.keys.random()
         return buildExercise(exerciseClass)
     }
