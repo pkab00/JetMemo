@@ -2,12 +2,15 @@ package vbshkn.android.jetmemo.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import vbshkn.android.jetmemo.data.LearnRepository
 import vbshkn.android.jetmemo.logic.Answer
+import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
+import vbshkn.android.jetmemo.logic.Word
 
 class LearnScreenModel(
     repository: LearnRepository,
@@ -22,10 +25,12 @@ class LearnScreenModel(
     private val _bottomPanelState = mutableStateOf(false)
     var bottomPanelState by _bottomPanelState
 
-    fun resetAllStates(capacity: Int) {
+    fun resetAllStates() {
         elementStates.clear()
-        repeat(capacity) {
-            elementStates.add(ElementState.Neutral)
+        trainer.getStatesNumber()?.let {
+            repeat(it) {
+                elementStates.add(ElementState.Neutral)
+            }
         }
     }
 
@@ -40,11 +45,19 @@ class LearnScreenModel(
     }
 
     fun checkAnswer(answer: Answer): Boolean{
-        return trainer.checkAnswer(answer)
+        val correct = trainer.checkAnswer(answer)
+        if (correct) {
+            when (val ex = currentExercise) {
+                is Exercise.MatchPairsQuestion -> { ex.options.forEach { trainer.setLearned(it) } }
+                is Exercise.IsCorrectTranslationQuestion -> { trainer.setLearned(ex.correctWord) }
+                is Exercise.RightOptionQuestion -> { trainer.setLearned(ex.correctAnswer) }
+            }
+        }
+        return correct
     }
 
     fun isDone(): Boolean {
-        return trainer.currentExercise?.done() ?: false
+        return trainer.currentExercise.done()
     }
 
     sealed class ElementState {

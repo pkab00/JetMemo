@@ -4,8 +4,7 @@ import vbshkn.android.jetmemo.data.WordEntity
 
 data class Word(
     val original: String,
-    val translation: String,
-    var learned: Boolean = false
+    val translation: String
 ) {
     constructor(entity: WordEntity) : this(
         original = entity.original,

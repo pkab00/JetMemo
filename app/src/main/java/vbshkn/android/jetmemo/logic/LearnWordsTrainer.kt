@@ -1,5 +1,6 @@
 package vbshkn.android.jetmemo.logic
 
+import androidx.compose.runtime.mutableStateMapOf
 import vbshkn.android.jetmemo.data.WordEntity
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -13,37 +14,44 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         Exercise.RightOptionQuestion::class to 3,
         Exercise.IsCorrectTranslationQuestion::class to 1
     )
-    var currentExercise: Exercise? = null
+    private val learnedStateMap = mutableMapOf<Word, Boolean>()
+    var currentExercise: Exercise = generateNextExercise()
         private set
 
     private fun getLearnedWords(): List<Word> {
-        return dictionary.filter { it.learned }.shuffled()
+        return dictionary.filter { isLearned(it) }.shuffled()
     }
 
     private fun getNotLearnedWords(): List<Word> {
-        return dictionary.filter { !it.learned }.shuffled()
+        return dictionary.filter { !isLearned(it) }.shuffled()
     }
 
-    fun generateNextExercise(): Exercise? {
+    private fun isLearned(word: Word): Boolean {
+        return learnedStateMap[word] == true
+    }
+
+    fun setLearned(word: Word) {
+        learnedStateMap[word] = true
+    }
+
+    fun generateNextExercise(): Exercise {
         val notLearned = getNotLearnedWords()
 
-        if (notLearned.isEmpty()) {
-            return null
-        }
-        var _randomIndex = Random.nextInt(0..wordsNeededMap.size)
-        val randomIndex: Int = _randomIndex
-        while (wordsNeededMap.values.toList()[randomIndex] > notLearned.size) {
-            _randomIndex = Random.nextInt(0..wordsNeededMap.size)
-        }
-        val exerciseClass = wordsNeededMap.keys.toList()[randomIndex]
+        wordsNeededMap.filter { it.value <= notLearned.size }
+        val exerciseClass = wordsNeededMap.keys.random()
         return buildExercise(exerciseClass)
     }
 
     fun checkAnswer(answer: Answer): Boolean {
-        return currentExercise?.checkAnswer(answer) ?: false
+        return currentExercise.checkAnswer(answer)
     }
 
-    private fun buildExercise(clazz: KClass<out Exercise>): Exercise? {
+    fun getStatesNumber(): Int? {
+        val klass = currentExercise::class
+        return wordsNeededMap[klass]
+    }
+
+    private fun buildExercise(clazz: KClass<out Exercise>): Exercise {
         val learned = getLearnedWords()
         val notLearned = getNotLearnedWords()
 
@@ -82,6 +90,6 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
                 )
             }
         }
-        return null
+        throw IllegalStateException("Can not recognize given Exercise class")
     }
 }
