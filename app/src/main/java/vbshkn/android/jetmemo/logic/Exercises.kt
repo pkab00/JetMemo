@@ -73,4 +73,14 @@ sealed interface Exercise {
             return done
         }
     }
+
+    data object Unspecified : Exercise {
+        override fun done(): Boolean {
+            return false
+        }
+
+        override fun checkAnswer(answer: Answer): Boolean {
+            return false
+        }
+    }
 }

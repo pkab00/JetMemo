@@ -1,10 +1,13 @@
 package vbshkn.android.jetmemo.model
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.lifecycle.ViewModel
 import vbshkn.android.jetmemo.data.LearnRepository
 import vbshkn.android.jetmemo.logic.Answer
@@ -17,9 +20,8 @@ class LearnScreenModel(
 ) : ViewModel() {
     private val words = repository.getWordsInUnit(unitID)
     private val trainer: LearnWordsTrainer = LearnWordsTrainer(words)
+    val currentExercise get() = trainer.currentExercise
 
-    private val _currentExercise = mutableStateOf(trainer.generateNextExercise())
-    var currentExercise by _currentExercise
     private var elementStates = mutableStateListOf<ElementState>()
     private val _bottomBarState = mutableStateOf(false)
     var bottomBarState by _bottomBarState
@@ -29,11 +31,22 @@ class LearnScreenModel(
     private val _showSkipButton = mutableStateOf(true)
     var showSkipButton by _showSkipButton
 
-    fun resetAllStates() {
+    init {
+        nextExercise()
+    }
+
+    fun stateAt(index: Int): ElementState? {
+        if (index >= 0 && index < elementStates.size){
+            return elementStates[index]
+        }
+        return null
+    }
+
+    private fun resetAllStates() {
         elementStates.clear()
         trainer.getStatesNumber()?.let {
             repeat(it) {
-                elementStates.add(ElementState.Neutral)
+                elementStates.add(ElementState())
             }
         }
     }
@@ -49,14 +62,10 @@ class LearnScreenModel(
         showSkipButton = true
     }
 
-    fun setElementState(at: Int, state: ElementState){
-        if(at < elementStates.size) {
-            elementStates[at] = state
-        }
-    }
 
     fun nextExercise() {
-        _currentExercise.value = trainer.generateNextExercise()
+        trainer.generateNextExercise()
+        resetAllStates()
     }
 
     fun checkAnswer(answer: Answer): Boolean{
@@ -66,6 +75,7 @@ class LearnScreenModel(
                 is Exercise.MatchPairsExercise -> { ex.options.forEach { trainer.setLearned(it) } }
                 is Exercise.IsCorrectTranslationExercise -> { trainer.setLearned(ex.correctWord) }
                 is Exercise.RightOptionExercise -> { trainer.setLearned(ex.correctAnswer) }
+                else -> {}
             }
         }
         return correct
@@ -75,9 +85,8 @@ class LearnScreenModel(
         return trainer.currentExercise.done()
     }
 
-    sealed class ElementState {
-        data object Neutral : ElementState()
-        data object Correct : ElementState()
-        data object Wrong : ElementState()
-    }
+    data class ElementState(
+        var color: Color = Color.Unspecified,
+        var clickable: Boolean = true
+    )
 }

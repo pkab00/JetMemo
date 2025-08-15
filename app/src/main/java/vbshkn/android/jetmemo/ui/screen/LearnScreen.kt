@@ -235,6 +235,8 @@ fun ExerciseArea(
             is Exercise.IsCorrectTranslationExercise -> {
                 ExerciseViews.IsCorrectTranslationView(model)
             }
+
+            else -> {}
         }
     }
 }

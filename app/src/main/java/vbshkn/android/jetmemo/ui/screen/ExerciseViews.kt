@@ -16,6 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +49,9 @@ object ExerciseViews {
 
     @Composable
     fun IsCorrectTranslationView(model: LearnScreenModel) {
-        val ex = model.currentExercise as Exercise.IsCorrectTranslationExercise
+        val _ex = remember { mutableStateOf(model.currentExercise as Exercise.IsCorrectTranslationExercise) }
+        val ex by _ex
+        // DOES NOT UPDATE THE SCREEN
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
@@ -86,8 +91,11 @@ object ExerciseViews {
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            val result = ex.checkAnswer(Answer.YesNo(true))
-                            model.showBottomBar(result)
+                            if(model.stateAt(0)?.clickable == true){
+                                val result = model.checkAnswer(Answer.YesNo(true))
+                                model.showBottomBar(result)
+                                model.stateAt(0)!!.clickable = false
+                            }
                         }
                 )
                 Icon(
@@ -97,8 +105,11 @@ object ExerciseViews {
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            val result = ex.checkAnswer(Answer.YesNo(false))
-                            model.showBottomBar(result)
+                            if(model.stateAt(1)?.clickable == true){
+                                val result = model.checkAnswer(Answer.YesNo(false))
+                                model.showBottomBar(result)
+                                model.stateAt(1)!!.clickable = false
+                            }
                         }
                 )
             }
