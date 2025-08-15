@@ -14,7 +14,7 @@ import vbshkn.android.jetmemo.logic.Word
 
 class LearnScreenModel(
     repository: LearnRepository,
-    unitID: Int
+    val unitID: Int
 ) : ViewModel() {
     private val words = repository.getWordsInUnit(unitID)
     private val trainer: LearnWordsTrainer = LearnWordsTrainer(words)

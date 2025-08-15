@@ -28,6 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +50,7 @@ import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
 import vbshkn.android.jetmemo.model.LearnScreenModelFactory
 import vbshkn.android.jetmemo.ui.App
+import vbshkn.android.jetmemo.ui.Router
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -57,8 +61,11 @@ fun LearnScreen(
     model: LearnScreenModel,
     navController: NavController
 ) {
+    val showBottomBar by remember { mutableStateOf(false) }
+    val showSkipButton by remember { mutableStateOf(true) }
+
     Scaffold(
-        bottomBar = { BottomBar(true, model) }
+        bottomBar = { BottomBar(showBottomBar, model) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -66,8 +73,46 @@ fun LearnScreen(
                 .padding(paddingValues)
                 .background(MaterialWhite)
         ) {
-            MainExerciseArea(model)
+            MainArea(model, navController)
         }
+    }
+}
+
+@Composable
+fun MainArea(
+    model: LearnScreenModel,
+    navController: NavController
+) {
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Row(
+            verticalAlignment = Alignment.Top,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            CloseButtonArea(model, navController)
+        }
+    }
+}
+
+@Composable
+fun CloseButtonArea(
+    model: LearnScreenModel,
+    navController: NavController
+) {
+    Row(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_close),
+            contentDescription = "",
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .padding(10.dp)
+                .clickable { navController.popBackStack() }
+        )
     }
 }
 
@@ -112,7 +157,9 @@ fun BottomBar(
                         fontFamily = FontFamily(Font(R.font.nunito_semibold))
                     )
                 }
-                Spacer(Modifier.fillMaxWidth().height(15.dp))
+                Spacer(Modifier
+                    .fillMaxWidth()
+                    .height(15.dp))
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Bottom,
@@ -147,7 +194,7 @@ fun BottomBar(
 }
 
 @Composable
-fun MainExerciseArea(
+fun ExerciseArea(
     model: LearnScreenModel
 ) {
     when (model.currentExercise) {
