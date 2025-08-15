@@ -1,13 +1,5 @@
 package vbshkn.android.jetmemo.ui.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,19 +28,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.google.android.material.bottomappbar.BottomAppBar
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
-import vbshkn.android.jetmemo.model.LearnScreenModelFactory
-import vbshkn.android.jetmemo.ui.App
-import vbshkn.android.jetmemo.ui.Router
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -62,7 +45,6 @@ fun LearnScreen(
     navController: NavController
 ) {
     val showBottomBar by remember { mutableStateOf(false) }
-    val showSkipButton by remember { mutableStateOf(true) }
 
     Scaffold(
         bottomBar = { BottomBar(showBottomBar, model) }
@@ -83,17 +65,16 @@ fun MainArea(
     model: LearnScreenModel,
     navController: NavController
 ) {
+    val showSkipButton by remember { mutableStateOf(true) }
+
     Column(
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Row(
-            verticalAlignment = Alignment.Top,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            CloseButtonArea(model, navController)
-        }
+        CloseButtonArea(model, navController)
+        ExerciseArea(model, Modifier.weight(1f))
+        SkipButtonArea(showSkipButton, model)
     }
 }
 
@@ -103,7 +84,9 @@ fun CloseButtonArea(
     navController: NavController
 ) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_close),
@@ -113,6 +96,41 @@ fun CloseButtonArea(
                 .padding(10.dp)
                 .clickable { navController.popBackStack() }
         )
+    }
+}
+
+@Composable
+fun SkipButtonArea(
+    show: Boolean,
+    model: LearnScreenModel
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .background(Color.White)
+    ) {
+        if (show) {
+            Button(
+                onClick = { model.nextExercise() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = VividBlue,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .height(50.dp)
+                    .padding(horizontal = 25.dp)
+                    .fillMaxWidth(0.8f)
+            ) {
+                Text(
+                    text = stringResource(R.string.button_skip),
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                )
+            }
+        }
     }
 }
 
@@ -195,12 +213,20 @@ fun BottomBar(
 
 @Composable
 fun ExerciseArea(
-    model: LearnScreenModel
+    model: LearnScreenModel,
+    modifier: Modifier
 ) {
-    when (model.currentExercise) {
-        is Exercise.MatchPairsQuestion -> {}
-        is Exercise.IsCorrectTranslationQuestion -> {}
-        is Exercise.RightOptionQuestion -> {}
-        null -> {}
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
+        when (model.currentExercise) {
+            is Exercise.MatchPairsQuestion -> { ExerciseViews.MatchPairsView(model) }
+            is Exercise.IsCorrectTranslationQuestion -> { ExerciseViews.RightOptionView(model) }
+            is Exercise.RightOptionQuestion -> { ExerciseViews.IsCorrectTranslationView(model) }
+        }
     }
 }
