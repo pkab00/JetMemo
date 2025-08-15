@@ -1,6 +1,5 @@
 package vbshkn.android.jetmemo.logic
 
-import android.util.Log
 import vbshkn.android.jetmemo.data.WordEntity
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -10,9 +9,9 @@ import kotlin.reflect.KClass
 class LearnWordsTrainer(entities: List<WordEntity>) {
     private var dictionary: List<Word> = entities.map { entity -> Word(entity) }
     private val wordsNeededMap = mapOf(
-        Exercise.MatchPairsQuestion::class to 4,
-        Exercise.RightOptionQuestion::class to 3,
-        Exercise.IsCorrectTranslationQuestion::class to 1
+        Exercise.MatchPairsExercise::class to 4,
+        Exercise.RightOptionExercise::class to 3,
+        Exercise.IsCorrectTranslationExercise::class to 1
     )
     private val learnedStateMap = mutableMapOf<Word, Boolean>()
     var currentExercise: Exercise = generateNextExercise()
@@ -56,21 +55,21 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         val notLearned = getNotLearnedWords()
 
         when (clazz) {
-            Exercise.RightOptionQuestion::class -> {
+            Exercise.RightOptionExercise::class -> {
                 val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
                 if (randomWords != null) {
-                    return Exercise.RightOptionQuestion(randomWords, randomWords.random())
+                    return Exercise.RightOptionExercise(randomWords, randomWords.random())
                 }
             }
 
-            Exercise.MatchPairsQuestion::class -> {
+            Exercise.MatchPairsExercise::class -> {
                 val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
                 if (randomWords != null) {
-                    return Exercise.MatchPairsQuestion(randomWords.toMutableList())
+                    return Exercise.MatchPairsExercise(randomWords.toMutableList())
                 }
             }
 
-            Exercise.IsCorrectTranslationQuestion::class -> {
+            Exercise.IsCorrectTranslationExercise::class -> {
                 val randomNotLearned = notLearned.random()
                 val randomLearned = if (learned.isEmpty()) notLearned.random() else learned.random()
                 val coff = Random.nextInt(0..100)
@@ -80,11 +79,11 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
                         original = randomNotLearned.original,
                         translation = randomLearned.translation
                     )
-                    return Exercise.IsCorrectTranslationQuestion(
+                    return Exercise.IsCorrectTranslationExercise(
                         wrongTranslatedWord,
                         randomNotLearned
                     )
-                } else return Exercise.IsCorrectTranslationQuestion(
+                } else return Exercise.IsCorrectTranslationExercise(
                     randomNotLearned,
                     randomNotLearned
                 )

@@ -9,7 +9,7 @@ sealed interface Exercise {
     fun done(): Boolean
     fun checkAnswer(answer: Answer): Boolean
 
-    class RightOptionQuestion(
+    class RightOptionExercise(
         val options: List<Word>,
         val correctAnswer: Word
     ) : Exercise {
@@ -30,7 +30,7 @@ sealed interface Exercise {
         }
     }
 
-    class MatchPairsQuestion(
+    class MatchPairsExercise(
         var options: MutableList<Word>,
     ) : Exercise {
         val matched = mutableListOf<Word>()
@@ -55,7 +55,7 @@ sealed interface Exercise {
         }
     }
 
-    class IsCorrectTranslationQuestion(
+    class IsCorrectTranslationExercise(
         val givenWord: Word,
         val correctWord: Word
     ) : Exercise {

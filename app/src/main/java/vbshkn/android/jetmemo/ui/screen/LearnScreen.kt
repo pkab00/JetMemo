@@ -44,10 +44,8 @@ fun LearnScreen(
     model: LearnScreenModel,
     navController: NavController
 ) {
-    val showBottomBar by remember { mutableStateOf(false) }
-
     Scaffold(
-        bottomBar = { BottomBar(showBottomBar, model) }
+        bottomBar = { BottomBar(model.showBottomBar, model) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -65,8 +63,6 @@ fun MainArea(
     model: LearnScreenModel,
     navController: NavController
 ) {
-    val showSkipButton by remember { mutableStateOf(true) }
-
     Column(
         verticalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
@@ -74,7 +70,7 @@ fun MainArea(
     ) {
         CloseButtonArea(model, navController)
         ExerciseArea(model, Modifier.weight(1f))
-        SkipButtonArea(showSkipButton, model)
+        SkipButtonArea(model)
     }
 }
 
@@ -101,18 +97,18 @@ fun CloseButtonArea(
 
 @Composable
 fun SkipButtonArea(
-    show: Boolean,
     model: LearnScreenModel
 ) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
-            .background(Color.White)
-    ) {
-        if (show) {
+    val show = model.showSkipButton
+    if (show) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+                .background(Color.White)
+        ) {
             Button(
                 onClick = { model.nextExercise() },
                 colors = ButtonDefaults.buttonColors(
@@ -139,11 +135,11 @@ fun BottomBar(
     show: Boolean,
     model: LearnScreenModel
 ) {
-    val mainColor = if (model.bottomPanelState) CorrectGreen else WrongRed
+    val mainColor = if (model.bottomBarState) CorrectGreen else WrongRed
     val title =
-        stringResource(if (model.bottomPanelState) R.string.title_correct else R.string.title_wrong)
+        stringResource(if (model.bottomBarState) R.string.title_correct else R.string.title_wrong)
     val icon =
-        painterResource(if (model.bottomPanelState) R.drawable.ic_correct else R.drawable.ic_wrong)
+        painterResource(if (model.bottomBarState) R.drawable.ic_correct else R.drawable.ic_wrong)
 
     if (show) {
         BottomAppBar(
@@ -175,16 +171,21 @@ fun BottomBar(
                         fontFamily = FontFamily(Font(R.font.nunito_semibold))
                     )
                 }
-                Spacer(Modifier
-                    .fillMaxWidth()
-                    .height(15.dp))
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(15.dp)
+                )
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Bottom,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { model.nextExercise() },
+                        onClick = {
+                            model.nextExercise()
+                            model.hideBottomBar()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = mainColor
@@ -217,16 +218,23 @@ fun ExerciseArea(
     modifier: Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
         when (model.currentExercise) {
-            is Exercise.MatchPairsQuestion -> { ExerciseViews.MatchPairsView(model) }
-            is Exercise.IsCorrectTranslationQuestion -> { ExerciseViews.RightOptionView(model) }
-            is Exercise.RightOptionQuestion -> { ExerciseViews.IsCorrectTranslationView(model) }
+            is Exercise.MatchPairsExercise -> {
+                ExerciseViews.MatchPairsView(model)
+            }
+
+            is Exercise.RightOptionExercise -> {
+                ExerciseViews.RightOptionView(model)
+            }
+
+            is Exercise.IsCorrectTranslationExercise -> {
+                ExerciseViews.IsCorrectTranslationView(model)
+            }
         }
     }
 }

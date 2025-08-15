@@ -2,15 +2,14 @@ package vbshkn.android.jetmemo.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import vbshkn.android.jetmemo.data.LearnRepository
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
-import vbshkn.android.jetmemo.logic.Word
 
 class LearnScreenModel(
     repository: LearnRepository,
@@ -22,8 +21,13 @@ class LearnScreenModel(
     private val _currentExercise = mutableStateOf(trainer.generateNextExercise())
     var currentExercise by _currentExercise
     private var elementStates = mutableStateListOf<ElementState>()
-    private val _bottomPanelState = mutableStateOf(false)
-    var bottomPanelState by _bottomPanelState
+    private val _bottomBarState = mutableStateOf(false)
+    var bottomBarState by _bottomBarState
+
+    private val _showBottomBar =  mutableStateOf(false)
+    var showBottomBar by _showBottomBar
+    private val _showSkipButton = mutableStateOf(true)
+    var showSkipButton by _showSkipButton
 
     fun resetAllStates() {
         elementStates.clear()
@@ -32,6 +36,17 @@ class LearnScreenModel(
                 elementStates.add(ElementState.Neutral)
             }
         }
+    }
+
+    fun showBottomBar(correct: Boolean) {
+        bottomBarState = correct
+        showBottomBar = true
+        showSkipButton = false
+    }
+
+    fun hideBottomBar() {
+        showBottomBar = false
+        showSkipButton = true
     }
 
     fun setElementState(at: Int, state: ElementState){
@@ -48,9 +63,9 @@ class LearnScreenModel(
         val correct = trainer.checkAnswer(answer)
         if (correct) {
             when (val ex = currentExercise) {
-                is Exercise.MatchPairsQuestion -> { ex.options.forEach { trainer.setLearned(it) } }
-                is Exercise.IsCorrectTranslationQuestion -> { trainer.setLearned(ex.correctWord) }
-                is Exercise.RightOptionQuestion -> { trainer.setLearned(ex.correctAnswer) }
+                is Exercise.MatchPairsExercise -> { ex.options.forEach { trainer.setLearned(it) } }
+                is Exercise.IsCorrectTranslationExercise -> { trainer.setLearned(ex.correctWord) }
+                is Exercise.RightOptionExercise -> { trainer.setLearned(ex.correctAnswer) }
             }
         }
         return correct
