@@ -15,11 +15,6 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         Exercise.RightOptionExercise::class to 3,
         Exercise.IsCorrectTranslationExercise::class to 1
     )
-    private val statesNeededMap = mapOf(
-        Exercise.MatchPairsExercise::class to 4,
-        Exercise.RightOptionExercise::class to 3,
-        Exercise.IsCorrectTranslationExercise::class to 2
-    )
     private val learnedStateMap = mutableMapOf<Word, Boolean>()
     private var _currentExercise = MutableStateFlow<Exercise>(Exercise.Unspecified)
     var currentExercise = _currentExercise.asStateFlow()
@@ -54,11 +49,6 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
 
     fun checkAnswer(answer: Answer): Boolean {
         return currentExercise.value.checkAnswer(answer)
-    }
-
-    fun getStatesNumber(): Int? {
-        val klass = currentExercise.value::class
-        return statesNeededMap[klass]
     }
 
     private fun buildExercise(clazz: KClass<out Exercise>): Exercise {

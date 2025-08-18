@@ -22,6 +22,11 @@ class LearnScreenModel(
     val navController: NavController,
     val unitID: Int
 ) : ViewModel() {
+    private val statesNeededMap = mapOf(
+        Exercise.MatchPairsExercise::class to 8,
+        Exercise.RightOptionExercise::class to 3,
+        Exercise.IsCorrectTranslationExercise::class to 2
+    )
     private val words = repository.getWordsInUnit(unitID)
     private val trainer: LearnWordsTrainer = LearnWordsTrainer(words)
     val currentExercise = trainer.currentExercise
@@ -51,9 +56,14 @@ class LearnScreenModel(
         return null
     }
 
+    private fun getStatesNumber(): Int? {
+        val klass = currentExercise.value::class
+        return statesNeededMap[klass]
+    }
+
     private fun resetAllStates() {
         val newList = mutableListOf<ElementState>()
-        trainer.getStatesNumber()?.let {
+        getStatesNumber()?.let {
             repeat(it) {
                 newList.add(ElementState())
             }
