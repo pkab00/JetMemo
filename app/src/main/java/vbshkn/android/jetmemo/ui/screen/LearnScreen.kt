@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,8 +42,7 @@ import vbshkn.android.jetmemo.ui.theme.WrongRed
 
 @Composable
 fun LearnScreen(
-    model: LearnScreenModel,
-    navController: NavController
+    model: LearnScreenModel
 ) {
     Scaffold(
         bottomBar = { BottomBar(model.showBottomBar, model) }
@@ -53,22 +53,21 @@ fun LearnScreen(
                 .padding(paddingValues)
                 .background(MaterialWhite)
         ) {
-            MainArea(model, navController)
+            MainArea(model)
         }
     }
 }
 
 @Composable
 fun MainArea(
-    model: LearnScreenModel,
-    navController: NavController
+    model: LearnScreenModel
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        CloseButtonArea(model, navController)
+        CloseButtonArea(model)
         ExerciseArea(model, Modifier.weight(1f))
         SkipButtonArea(model)
     }
@@ -76,8 +75,7 @@ fun MainArea(
 
 @Composable
 fun CloseButtonArea(
-    model: LearnScreenModel,
-    navController: NavController
+    model: LearnScreenModel
 ) {
     Row(
         modifier = Modifier
@@ -90,7 +88,7 @@ fun CloseButtonArea(
             tint = Color.Unspecified,
             modifier = Modifier
                 .padding(10.dp)
-                .clickable { navController.popBackStack() }
+                .clickable { model.exit() }
         )
     }
 }
@@ -217,13 +215,14 @@ fun ExerciseArea(
     model: LearnScreenModel,
     modifier: Modifier
 ) {
+    val ex by model.currentExercise.collectAsState()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        when (model.currentExercise) {
+        when (ex) {
             is Exercise.MatchPairsExercise -> {
                 ExerciseViews.MatchPairsView(model)
             }
@@ -236,7 +235,7 @@ fun ExerciseArea(
                 ExerciseViews.IsCorrectTranslationView(model)
             }
 
-            else -> {}
+            else -> { model.exit() }
         }
     }
 }

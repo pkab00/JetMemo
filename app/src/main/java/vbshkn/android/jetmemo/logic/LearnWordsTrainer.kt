@@ -1,5 +1,7 @@
 package vbshkn.android.jetmemo.logic
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import vbshkn.android.jetmemo.data.WordEntity
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -19,8 +21,8 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         Exercise.IsCorrectTranslationExercise::class to 2
     )
     private val learnedStateMap = mutableMapOf<Word, Boolean>()
-    var currentExercise: Exercise = Exercise.Unspecified
-        private set
+    private var _currentExercise = MutableStateFlow<Exercise>(Exercise.Unspecified)
+    var currentExercise = _currentExercise.asStateFlow()
 
     private fun getLearnedWords(): List<Word> {
         return dictionary.filter { isLearned(it) }.shuffled()
@@ -41,16 +43,21 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
     fun generateNextExercise() {
         val notLearned = getNotLearnedWords()
         val filtered = wordsNeededMap.filter { it.value <= notLearned.size }
-        val exerciseClass = filtered.keys.random()
-        currentExercise = buildExercise(exerciseClass)
+        if(filtered.isEmpty()) {
+            _currentExercise.value = Exercise.Unspecified
+        }
+        else {
+            val exerciseClass = filtered.keys.random()
+            _currentExercise.value = buildExercise(exerciseClass)
+        }
     }
 
     fun checkAnswer(answer: Answer): Boolean {
-        return currentExercise.checkAnswer(answer)
+        return currentExercise.value.checkAnswer(answer)
     }
 
     fun getStatesNumber(): Int? {
-        val klass = currentExercise::class
+        val klass = currentExercise.value::class
         return statesNeededMap[klass]
     }
 

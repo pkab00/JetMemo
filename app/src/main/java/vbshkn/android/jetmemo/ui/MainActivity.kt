@@ -79,11 +79,10 @@ class MainActivity : ComponentActivity() {
                 composable<Router.LearnRoute> {
                     val data = it.toRoute<Router.LearnRoute>()
                     val viewModel: LearnScreenModel = viewModel(
-                        factory = LearnScreenModelFactory(app.learnRepository, data.id)
+                        factory = LearnScreenModelFactory(app.learnRepository, navController, data.id)
                     )
                     LearnScreen(
-                        model = viewModel,
-                        navController = navController
+                        model = viewModel
                     )
                 }
             }

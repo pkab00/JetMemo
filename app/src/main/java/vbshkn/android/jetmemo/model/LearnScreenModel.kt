@@ -9,6 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import vbshkn.android.jetmemo.data.LearnRepository
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
@@ -16,16 +19,18 @@ import vbshkn.android.jetmemo.logic.LearnWordsTrainer
 
 class LearnScreenModel(
     repository: LearnRepository,
+    val navController: NavController,
     val unitID: Int
 ) : ViewModel() {
     private val words = repository.getWordsInUnit(unitID)
     private val trainer: LearnWordsTrainer = LearnWordsTrainer(words)
-    val currentExercise get() = trainer.currentExercise
+    val currentExercise = trainer.currentExercise
 
-    private var elementStates = mutableStateListOf<ElementState>()
+    private var _elementStates = MutableStateFlow<List<ElementState>>(emptyList())
+    val elementStates = _elementStates.asStateFlow()
+
     private val _bottomBarState = mutableStateOf(false)
     var bottomBarState by _bottomBarState
-
     private val _showBottomBar =  mutableStateOf(false)
     var showBottomBar by _showBottomBar
     private val _showSkipButton = mutableStateOf(true)
@@ -35,20 +40,25 @@ class LearnScreenModel(
         nextExercise()
     }
 
+    fun exit() {
+        navController.popBackStack()
+    }
+
     fun stateAt(index: Int): ElementState? {
-        if (index >= 0 && index < elementStates.size){
-            return elementStates[index]
+        if (index >= 0 && index < elementStates.value.size){
+            return elementStates.value[index]
         }
         return null
     }
 
     private fun resetAllStates() {
-        elementStates.clear()
+        val newList = mutableListOf<ElementState>()
         trainer.getStatesNumber()?.let {
             repeat(it) {
-                elementStates.add(ElementState())
+                newList.add(ElementState())
             }
         }
+        _elementStates.value = newList
     }
 
     fun showBottomBar(correct: Boolean) {
@@ -71,7 +81,7 @@ class LearnScreenModel(
     fun checkAnswer(answer: Answer): Boolean{
         val correct = trainer.checkAnswer(answer)
         if (correct) {
-            when (val ex = currentExercise) {
+            when (val ex = currentExercise.value) {
                 is Exercise.MatchPairsExercise -> { ex.options.forEach { trainer.setLearned(it) } }
                 is Exercise.IsCorrectTranslationExercise -> { trainer.setLearned(ex.correctWord) }
                 is Exercise.RightOptionExercise -> { trainer.setLearned(ex.correctAnswer) }
@@ -82,7 +92,7 @@ class LearnScreenModel(
     }
 
     fun isDone(): Boolean {
-        return trainer.currentExercise.done()
+        return trainer.currentExercise.value.done()
     }
 
     data class ElementState(
