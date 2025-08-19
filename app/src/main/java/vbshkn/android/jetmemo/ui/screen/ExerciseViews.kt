@@ -50,10 +50,6 @@ object ExerciseViews {
         val subModel = remember(model.currentExercise) { MatchPairsSubModel(model) }
         val leftColumnStates by subModel.leftColumnStates.collectAsState()
         val rightColumnStates by subModel.rightColumnStates.collectAsState()
-        Log.d("DEBUG", "left states = ${leftColumnStates.size}")
-        Log.d("DEBUG", "right states = ${rightColumnStates.size}")
-        Log.d("DEBUG", "left words = ${subModel.leftColumnWords}")
-        Log.d("DEBUG", "right words = ${subModel.rightColumnWords}")
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,7 +73,7 @@ object ExerciseViews {
                         PairCardItem(
                             text = subModel.leftColumnWords[i],
                             state = leftColumnStates[i]
-                        ) { }
+                        ) { subModel.onLeftClicked(i) }
                     }
                 }
                 Column(
@@ -90,7 +86,7 @@ object ExerciseViews {
                         PairCardItem(
                             text = subModel.rightColumnWords[i],
                             state = rightColumnStates[i]
-                        ) { }
+                        ) { subModel.onRightClicked(i) }
                     }
                 }
             }
