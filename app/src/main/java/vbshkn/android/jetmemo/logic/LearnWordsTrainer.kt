@@ -13,7 +13,7 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
     private val wordsNeededMap = mapOf(
         Exercise.MatchPairsExercise::class to 4,
         Exercise.RightOptionExercise::class to 3,
-        Exercise.IsCorrectTranslationExercise::class to 1
+        Exercise.ApproveTranslationExercise::class to 1
     )
     private val learnedStateMap = mutableMapOf<Word, Boolean>()
     private var _currentExercise = MutableStateFlow<Exercise>(Exercise.Unspecified)
@@ -70,7 +70,7 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
                 }
             }
 
-            Exercise.IsCorrectTranslationExercise::class -> {
+            Exercise.ApproveTranslationExercise::class -> {
                 val randomNotLearned = notLearned.random()
                 val randomLearned = if (learned.isEmpty()) notLearned.random() else learned.random()
                 val coff = Random.nextInt(0..100)
@@ -80,11 +80,11 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
                         original = randomNotLearned.original,
                         translation = randomLearned.translation
                     )
-                    return Exercise.IsCorrectTranslationExercise(
+                    return Exercise.ApproveTranslationExercise(
                         wrongTranslatedWord,
                         randomNotLearned
                     )
-                } else return Exercise.IsCorrectTranslationExercise(
+                } else return Exercise.ApproveTranslationExercise(
                     randomNotLearned,
                     randomNotLearned
                 )

@@ -20,8 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +29,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
@@ -181,7 +178,9 @@ fun BottomBar(
                 ) {
                     Button(
                         onClick = {
-                            model.nextExercise()
+                            if(model.currentExercise.value.done()){
+                                model.nextExercise()
+                            }
                             model.hideBottomBar()
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -231,8 +230,8 @@ fun ExerciseArea(
                 ExerciseViews.RightOptionView(model)
             }
 
-            is Exercise.IsCorrectTranslationExercise -> {
-                ExerciseViews.IsCorrectTranslationView(model)
+            is Exercise.ApproveTranslationExercise -> {
+                ExerciseViews.ApproveTranslationView(model)
             }
 
             else -> { model.exit() }

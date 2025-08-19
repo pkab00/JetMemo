@@ -55,7 +55,7 @@ sealed interface Exercise {
         }
     }
 
-    class IsCorrectTranslationExercise(
+    class ApproveTranslationExercise(
         val givenWord: Word,
         val correctWord: Word
     ) : Exercise {
