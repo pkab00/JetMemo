@@ -51,6 +51,10 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         return currentExercise.value.checkAnswer(answer)
     }
 
+    fun isDone(): Boolean {
+        return currentExercise.value.done()
+    }
+
     private fun buildExercise(clazz: KClass<out Exercise>): Exercise {
         val learned = getLearnedWords()
         val notLearned = getNotLearnedWords()

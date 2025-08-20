@@ -114,7 +114,8 @@ class LearnScreenModel(
 
     fun checkAnswer(answer: Answer): Boolean {
         val correct = trainer.checkAnswer(answer)
-        if (correct) {
+        val done = trainer.isDone()
+        if (correct && done) {
             when (val ex = currentExercise.value) {
                 is Exercise.MatchPairsExercise -> {
                     ex.options.forEach { trainer.setLearned(it) }
