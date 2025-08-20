@@ -14,6 +14,8 @@ import vbshkn.android.jetmemo.data.LearnRepository
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
+import vbshkn.android.jetmemo.model.sub.LearnScreenSubModel
+import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 
 class LearnScreenModel(
     repository: LearnRepository, val navController: NavController, val unitID: Int
@@ -36,6 +38,18 @@ class LearnScreenModel(
     var showBottomBar by _showBottomBar
     private val _showSkipButton = mutableStateOf(true)
     var showSkipButton by _showSkipButton
+
+    private var _currentSubModel: LearnScreenSubModel? = null
+    val currentSubModel
+        get() = when (currentExercise.value) {
+            is Exercise.MatchPairsExercise -> {
+                if (_currentSubModel !is MatchPairsSubModel) {
+                    _currentSubModel = MatchPairsSubModel(this)
+                }
+                _currentSubModel
+            }
+            else -> null
+        }
 
     init {
         nextExercise()
@@ -65,14 +79,20 @@ class LearnScreenModel(
         return statesNeededMap[klass]
     }
 
-    private fun resetAllStates() {
+    fun resetAllStates(
+        defaultState: ElementState
+    ) {
         val newList = mutableListOf<ElementState>()
         getStatesNumber()?.let {
             repeat(it) {
-                newList.add(ElementState())
+                newList.add(defaultState)
             }
         }
         _elementStates.value = newList
+    }
+
+    private fun resetAllStates() {
+        currentSubModel?.resetAllStates() ?: resetAllStates(ElementState())
     }
 
     fun showBottomBar(correct: Boolean) {

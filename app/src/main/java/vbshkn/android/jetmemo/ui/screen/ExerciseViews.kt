@@ -1,6 +1,5 @@
 package vbshkn.android.jetmemo.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -23,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -34,9 +31,8 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
-import vbshkn.android.jetmemo.model.MatchPairsSubModel
+import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
-import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.WrongRed
 
 object ExerciseViews {
@@ -47,7 +43,7 @@ object ExerciseViews {
 
     @Composable
     fun MatchPairsView(model: LearnScreenModel) {
-        val subModel = remember(model.currentExercise) { MatchPairsSubModel(model) }
+        val subModel = model.currentSubModel as? MatchPairsSubModel ?: return
         val leftColumnStates by subModel.leftColumnStates.collectAsState()
         val rightColumnStates by subModel.rightColumnStates.collectAsState()
 
@@ -56,7 +52,6 @@ object ExerciseViews {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(5.dp)
-
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

@@ -1,4 +1,4 @@
-package vbshkn.android.jetmemo.model
+package vbshkn.android.jetmemo.model.sub
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
@@ -7,11 +7,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
+import vbshkn.android.jetmemo.model.LearnScreenModel
 import vbshkn.android.jetmemo.model.LearnScreenModel.ElementState
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 
-class MatchPairsSubModel(private val baseModel: LearnScreenModel) {
+class MatchPairsSubModel(private val baseModel: LearnScreenModel)
+    : LearnScreenSubModel {
     val ex = baseModel.currentExercise.value as Exercise.MatchPairsExercise
     val leftColumnWords = ex.options.shuffled().map { it.original }
     val rightColumnWords = ex.options.shuffled().map { it.translation }
@@ -32,13 +34,6 @@ class MatchPairsSubModel(private val baseModel: LearnScreenModel) {
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
-
-    init {
-        for (i in 0..<COLUMN_SIZE) {
-            updateLeftColumnState(i, ElementStateDefaults.Default)
-            updateRightColumnState(i, ElementStateDefaults.Default)
-        }
-    }
 
     private fun updateLeftColumnState(index: Int, state: ElementState) {
         if (index in 0..<COLUMN_SIZE) {
@@ -129,6 +124,10 @@ class MatchPairsSubModel(private val baseModel: LearnScreenModel) {
             selectedIndex = -1
             lockLeftColumn(false)
         }
+    }
+
+    override fun resetAllStates() {
+        baseModel.resetAllStates(ElementStateDefaults.Default)
     }
 
     class ElementStateDefaults {

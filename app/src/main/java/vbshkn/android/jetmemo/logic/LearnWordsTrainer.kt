@@ -1,5 +1,6 @@
 package vbshkn.android.jetmemo.logic
 
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import vbshkn.android.jetmemo.data.WordEntity
@@ -38,10 +39,9 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
     fun generateNextExercise() {
         val notLearned = getNotLearnedWords()
         val filtered = wordsNeededMap.filter { it.value <= notLearned.size }
-        if(filtered.isEmpty()) {
+        if (filtered.isEmpty()) {
             _currentExercise.value = Exercise.Unspecified
-        }
-        else {
+        } else {
             val exerciseClass = filtered.keys.random()
             _currentExercise.value = buildExercise(exerciseClass)
         }
@@ -59,6 +59,7 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
             Exercise.RightOptionExercise::class -> {
                 val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
                 if (randomWords != null) {
+                    Log.d("DEBUG", "RightOptionExercise built")
                     return Exercise.RightOptionExercise(randomWords, randomWords.random())
                 }
             }
@@ -66,6 +67,7 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
             Exercise.MatchPairsExercise::class -> {
                 val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
                 if (randomWords != null) {
+                    Log.d("DEBUG", "MatchPairsExercise built")
                     return Exercise.MatchPairsExercise(randomWords.toMutableList())
                 }
             }
@@ -80,14 +82,18 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
                         original = randomNotLearned.original,
                         translation = randomLearned.translation
                     )
+                    Log.d("DEBUG", "ApproveTranslationExercise built")
                     return Exercise.ApproveTranslationExercise(
                         wrongTranslatedWord,
                         randomNotLearned
                     )
-                } else return Exercise.ApproveTranslationExercise(
-                    randomNotLearned,
-                    randomNotLearned
-                )
+                } else {
+                    Log.d("DEBUG", "ApproveTranslationExercise built")
+                    return Exercise.ApproveTranslationExercise(
+                        randomNotLearned,
+                        randomNotLearned
+                    )
+                }
             }
         }
         throw IllegalStateException("Can not recognize given Exercise class")
