@@ -178,7 +178,7 @@ fun BottomBar(
                 ) {
                     Button(
                         onClick = {
-                            if(model.currentExercise.value.done()){
+                            if(model.canMoveFurther){
                                 model.nextExercise()
                             }
                             model.hideBottomBar()

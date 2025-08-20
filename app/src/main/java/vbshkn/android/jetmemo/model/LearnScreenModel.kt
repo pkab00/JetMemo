@@ -14,6 +14,7 @@ import vbshkn.android.jetmemo.data.LearnRepository
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
+import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.LearnScreenSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 
@@ -25,6 +26,8 @@ class LearnScreenModel(
         Exercise.RightOptionExercise::class to 3,
         Exercise.ApproveTranslationExercise::class to 2
     )
+    private var _canMoveFurther = false
+    val canMoveFurther get() = _canMoveFurther
     private val words = repository.getWordsInUnit(unitID)
     private val trainer: LearnWordsTrainer = LearnWordsTrainer(words)
     val currentExercise = trainer.currentExercise
@@ -40,16 +43,7 @@ class LearnScreenModel(
     var showSkipButton by _showSkipButton
 
     private var _currentSubModel: LearnScreenSubModel? = null
-    val currentSubModel
-        get() = when (currentExercise.value) {
-            is Exercise.MatchPairsExercise -> {
-                if (_currentSubModel !is MatchPairsSubModel) {
-                    _currentSubModel = MatchPairsSubModel(this)
-                }
-                _currentSubModel
-            }
-            else -> null
-        }
+    val currentSubModel get() = getSubModel()
 
     init {
         nextExercise()
@@ -110,33 +104,59 @@ class LearnScreenModel(
     fun nextExercise() {
         trainer.generateNextExercise()
         resetAllStates()
+        resetSubModel()
     }
 
     fun checkAnswer(answer: Answer): Boolean {
         val correct = trainer.checkAnswer(answer)
         val done = trainer.isDone()
-        if (correct && done) {
-            when (val ex = currentExercise.value) {
-                is Exercise.MatchPairsExercise -> {
-                    ex.options.forEach { trainer.setLearned(it) }
-                }
-
-                is Exercise.ApproveTranslationExercise -> {
-                    trainer.setLearned(ex.correctWord)
-                }
-
-                is Exercise.RightOptionExercise -> {
-                    trainer.setLearned(ex.correctAnswer)
-                }
-
-                else -> {}
+        when (val ex = currentExercise.value) {
+            is Exercise.MatchPairsExercise -> {
+                if (correct && done) ex.options.forEach { trainer.setLearned(it) }
+                _canMoveFurther = done
             }
+
+            is Exercise.ApproveTranslationExercise -> {
+                if (correct && done) trainer.setLearned(ex.correctWord)
+                _canMoveFurther = true
+            }
+
+            is Exercise.RightOptionExercise -> {
+                if (correct && done) trainer.setLearned(ex.correctAnswer)
+                _canMoveFurther = true
+            }
+
+            else -> {}
         }
         return correct
     }
 
     fun isDone(): Boolean {
         return trainer.currentExercise.value.done()
+    }
+
+    private fun getSubModel(): LearnScreenSubModel? {
+        when (currentExercise.value) {
+            is Exercise.MatchPairsExercise -> {
+                if (_currentSubModel !is MatchPairsSubModel) {
+                    _currentSubModel = MatchPairsSubModel(this)
+                }
+                return _currentSubModel as MatchPairsSubModel
+            }
+
+            is Exercise.ApproveTranslationExercise -> {
+                if (_currentSubModel !is ApproveTranslationSubModel) {
+                    _currentSubModel = ApproveTranslationSubModel(this)
+                }
+                return _currentSubModel as ApproveTranslationSubModel
+            }
+
+            else -> return null
+        }
+    }
+
+    private fun resetSubModel() {
+        _currentSubModel = null
     }
 
     data class ElementState(

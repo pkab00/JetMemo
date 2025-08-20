@@ -1,5 +1,6 @@
 package vbshkn.android.jetmemo.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.WrongRed
@@ -90,8 +92,10 @@ object ExerciseViews {
 
     @Composable
     fun ApproveTranslationView(model: LearnScreenModel) {
-        val _ex by model.currentExercise.collectAsState()
-        val ex = _ex as Exercise.ApproveTranslationExercise
+        val subModel = model.currentSubModel as? ApproveTranslationSubModel ?: return
+        val exercise by model.currentExercise.collectAsState()
+        val word = (exercise as Exercise.ApproveTranslationExercise).givenWord
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
@@ -104,14 +108,14 @@ object ExerciseViews {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = ex.givenWord.original,
+                    text = word.original,
                     color = Color.Black,
                     fontSize = 32.sp,
                     fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     modifier = Modifier.padding(bottom = 20.dp),
                 )
                 Text(
-                    text = ex.givenWord.translation,
+                    text = word.translation,
                     color = Color.Black,
                     fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.nunito_semibold)),
@@ -131,11 +135,7 @@ object ExerciseViews {
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            if (model.stateAt(0)?.clickable == true) {
-                                val result = model.checkAnswer(Answer.YesNo(true))
-                                model.showBottomBar(result)
-                                model.stateAt(0)!!.clickable = false
-                            }
+                            if (subModel.isClickable(0)) subModel.onClicked(true)
                         }
                 )
                 Icon(
@@ -145,11 +145,7 @@ object ExerciseViews {
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            if (model.stateAt(1)?.clickable == true) {
-                                val result = model.checkAnswer(Answer.YesNo(false))
-                                model.showBottomBar(result)
-                                model.stateAt(1)!!.clickable = false
-                            }
+                            if (subModel.isClickable(1)) subModel.onClicked(false)
                         }
                 )
             }
