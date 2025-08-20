@@ -17,6 +17,7 @@ import vbshkn.android.jetmemo.logic.LearnWordsTrainer
 import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.LearnScreenSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
+import vbshkn.android.jetmemo.model.sub.RightOptionSubModel
 
 class LearnScreenModel(
     repository: LearnRepository, val navController: NavController, val unitID: Int
@@ -137,6 +138,13 @@ class LearnScreenModel(
 
     private fun getSubModel(): LearnScreenSubModel? {
         when (currentExercise.value) {
+            is Exercise.RightOptionExercise -> {
+                if (_currentSubModel !is RightOptionSubModel) {
+                    _currentSubModel = RightOptionSubModel(this)
+                }
+                return _currentSubModel as RightOptionSubModel
+            }
+
             is Exercise.MatchPairsExercise -> {
                 if (_currentSubModel !is MatchPairsSubModel) {
                     _currentSubModel = MatchPairsSubModel(this)

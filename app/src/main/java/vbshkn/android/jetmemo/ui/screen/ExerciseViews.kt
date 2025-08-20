@@ -1,6 +1,7 @@
 package vbshkn.android.jetmemo.ui.screen
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -41,6 +44,7 @@ import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
 import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
+import vbshkn.android.jetmemo.model.sub.RightOptionSubModel
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.WrongRed
@@ -48,7 +52,46 @@ import vbshkn.android.jetmemo.ui.theme.WrongRed
 object ExerciseViews {
     @Composable
     fun RightOptionView(model: LearnScreenModel) {
-        Text("TODO")
+        val subModel = model.currentSubModel as? RightOptionSubModel ?: return
+        val states by model.elementStates.collectAsState()
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(30.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)
+            ) {
+                Text(
+                    text = subModel.qWord,
+                    color = Color.Black,
+                    fontSize = 28.sp,
+                    fontFamily = FontFamily(Font(R.font.nunito_semibold))
+                )
+            }
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.7f)
+            ) {
+                items (states.size) { i ->
+                    OptionItem(
+                        number = i+1,
+                        text = subModel.opWords[i],
+                        state = states[i]
+                    ) { subModel.onClicked(i) }
+                }
+            }
+        }
     }
 
     @Composable
@@ -118,6 +161,7 @@ object ExerciseViews {
                 Text(
                     text = word.original,
                     color = Color.Black,
+                    textAlign = TextAlign.Center,
                     fontSize = 32.sp,
                     fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     modifier = Modifier.padding(bottom = 20.dp),
@@ -125,6 +169,7 @@ object ExerciseViews {
                 Text(
                     text = word.translation,
                     color = Color.Black,
+                    textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.nunito_semibold)),
                     modifier = Modifier.padding(bottom = 50.dp),
@@ -187,7 +232,7 @@ object ExerciseViews {
     }
 
     @Composable
-    fun OptionItem(
+    private fun OptionItem(
         number: Int,
         text: String,
         state: LearnScreenModel.ElementState,
@@ -202,7 +247,7 @@ object ExerciseViews {
             shape = RoundedCornerShape(30.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(25.dp)
+                .padding(10.dp)
                 .border(
                     width = 1.5.dp,
                     color = state.color,
@@ -215,27 +260,28 @@ object ExerciseViews {
                     .fillMaxWidth()
                     .padding(20.dp)
             ) {
-                Button(
-                    onClick = { if (state.clickable) onClick() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = state.color,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(10.dp),
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(30.dp)
+                        .background(
+                            color = state.color,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .clickable { onClick() }
                 ) {
                     Text(
                         text = number.toString(),
+                        color = Color.White,
                         textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.nunito_semibold))
                     )
                 }
                 Spacer(Modifier.width(25.dp))
                 Text(
                     text = text,
-                    fontSize = 24.sp,
+                    fontSize = 18.sp,
                     fontFamily = FontFamily(Font(R.font.nunito_regular))
                 )
             }
