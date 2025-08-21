@@ -1,6 +1,7 @@
 package vbshkn.android.jetmemo.logic
 
 import android.util.Log
+import androidx.collection.FloatList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import vbshkn.android.jetmemo.data.WordEntity
@@ -16,7 +17,7 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         Exercise.CorrectOptionExercise::class to 3,
         Exercise.ApproveTranslationExercise::class to 1
     )
-    private val learnedStateMap = mutableMapOf<Word, Boolean>()
+    private val learnedStateMap = dictionary.associateWith { 0f }.toMutableMap()
     private var _currentExercise = MutableStateFlow<Exercise>(Exercise.Unspecified)
     var currentExercise = _currentExercise.asStateFlow()
 
@@ -29,11 +30,12 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
     }
 
     private fun isLearned(word: Word): Boolean {
-        return learnedStateMap[word] == true
+        return learnedStateMap[word]!! >= 1
     }
 
-    fun setLearned(word: Word) {
-        learnedStateMap[word] = true
+    fun addLearningPoints(word: Word) {
+        learnedStateMap[word] =
+            (learnedStateMap[word]?.plus(currentExercise.value.learningPoints) ?: return)
     }
 
     fun generateNextExercise() {

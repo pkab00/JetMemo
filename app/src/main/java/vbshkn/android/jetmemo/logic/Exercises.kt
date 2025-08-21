@@ -8,12 +8,14 @@ sealed interface Answer {
 sealed interface Exercise {
     fun done(): Boolean
     fun checkAnswer(answer: Answer): Boolean
+    val learningPoints: Float
 
     class CorrectOptionExercise(
         val options: List<Word>,
-        val correctAnswer: Word
+        val correctAnswer: Word,
     ) : Exercise {
         private var done = false
+        override val learningPoints: Float = 0.4f
 
         override fun checkAnswer(answer: Answer): Boolean {
             if (answer is Answer.WordPair) {
@@ -34,6 +36,7 @@ sealed interface Exercise {
         var options: MutableList<Word>,
     ) : Exercise {
         val matched = mutableListOf<Word>()
+        override val learningPoints: Float = 0.3f
 
         override fun checkAnswer(answer: Answer): Boolean {
             if (answer is Answer.WordPair) {
@@ -57,9 +60,10 @@ sealed interface Exercise {
 
     class ApproveTranslationExercise(
         val givenWord: Word,
-        val correctWord: Word
+        val correctWord: Word,
     ) : Exercise {
-        var done = false
+        private var done = false
+        override val learningPoints: Float = 0.2f
 
         override fun checkAnswer(answer: Answer): Boolean {
             if (answer is Answer.YesNo) {
@@ -75,6 +79,7 @@ sealed interface Exercise {
     }
 
     data object Unspecified : Exercise {
+        override val learningPoints: Float = 0f
         override fun done(): Boolean {
             return false
         }

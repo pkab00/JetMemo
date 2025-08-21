@@ -112,17 +112,17 @@ class LearnScreenModel(
         val done = trainer.isDone()
         when (val ex = currentExercise.value) {
             is Exercise.MatchPairsExercise -> {
-                if (correct && done) ex.options.forEach { trainer.setLearned(it) }
+                if (correct && done) ex.options.forEach { trainer.addLearningPoints(it) }
                 _canMoveFurther = done
             }
 
             is Exercise.ApproveTranslationExercise -> {
-                if (correct && done) trainer.setLearned(ex.correctWord)
+                if (correct && done) trainer.addLearningPoints(ex.correctWord)
                 _canMoveFurther = true
             }
 
             is Exercise.CorrectOptionExercise -> {
-                if (correct && done) trainer.setLearned(ex.correctAnswer)
+                if (correct && done) trainer.addLearningPoints(ex.correctAnswer)
                 _canMoveFurther = true
             }
 
