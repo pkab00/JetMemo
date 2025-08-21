@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Exercise
-import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.LearningScreenModel
 import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
@@ -41,8 +41,8 @@ import vbshkn.android.jetmemo.ui.theme.VividBlue
 import vbshkn.android.jetmemo.ui.theme.WrongRed
 
 @Composable
-fun LearnScreen(
-    model: LearnScreenModel
+fun LearningScreen(
+    model: LearningScreenModel
 ) {
     Scaffold(
         bottomBar = { BottomBar(model.showBottomBar, model) }
@@ -60,7 +60,7 @@ fun LearnScreen(
 
 @Composable
 fun MainArea(
-    model: LearnScreenModel
+    model: LearningScreenModel
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceAround,
@@ -75,7 +75,7 @@ fun MainArea(
 
 @Composable
 fun CloseButtonArea(
-    model: LearnScreenModel
+    model: LearningScreenModel
 ) {
     Row(
         modifier = Modifier
@@ -95,7 +95,7 @@ fun CloseButtonArea(
 
 @Composable
 fun SkipButtonArea(
-    model: LearnScreenModel
+    model: LearningScreenModel
 ) {
     val show = model.showSkipButton
     if (show) {
@@ -131,7 +131,7 @@ fun SkipButtonArea(
 @Composable
 fun BottomBar(
     show: Boolean,
-    model: LearnScreenModel
+    model: LearningScreenModel
 ) {
     val mainColor = if (model.bottomBarState) CorrectGreen else WrongRed
     val title =
@@ -214,7 +214,7 @@ fun BottomBar(
 
 @Composable
 fun ExerciseArea(
-    model: LearnScreenModel,
+    model: LearningScreenModel,
     modifier: Modifier
 ) {
     val ex by model.currentExercise.collectAsState()
@@ -237,7 +237,7 @@ fun ExerciseArea(
                 ExerciseViews.ApproveTranslationView(model.currentSubModel as ApproveTranslationSubModel)
             }
 
-            else -> { model.exit() }
+            else -> { model.toEndScreen() }
         }
     }
 }

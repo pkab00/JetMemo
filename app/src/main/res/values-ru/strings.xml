@@ -27,4 +27,5 @@
     <string name="sort_time">По времени создания</string>
     <string name="sort_original">В алфавитном порядке (оригинал)</string>
     <string name="sort_translation">В алфавитном порядке (перевод)</string>
+    <string name="training_completed">Тренеровка завершена!</string>
 </resources>

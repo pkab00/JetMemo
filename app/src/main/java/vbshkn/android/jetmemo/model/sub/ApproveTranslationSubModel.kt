@@ -2,10 +2,9 @@ package vbshkn.android.jetmemo.model.sub
 
 import androidx.compose.ui.graphics.Color
 import vbshkn.android.jetmemo.logic.Answer
-import vbshkn.android.jetmemo.logic.Exercise
-import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.LearningScreenModel
 
-class ApproveTranslationSubModel(private val baseModel: LearnScreenModel) : LearnScreenSubModel {
+class ApproveTranslationSubModel(private val baseModel: LearningScreenModel) : LearningScreenSubModel {
     val exercise get() = baseModel.currentExercise
 
     fun onClicked(isCorrectTranslation: Boolean) {
@@ -35,8 +34,8 @@ class ApproveTranslationSubModel(private val baseModel: LearnScreenModel) : Lear
 
     class ElementStateDefaults {
         companion object {
-            val On = LearnScreenModel.ElementState(Color.Unspecified, true)
-            val Off = LearnScreenModel.ElementState(Color.Unspecified, false)
+            val On = LearningScreenModel.ElementState(Color.Unspecified, true)
+            val Off = LearningScreenModel.ElementState(Color.Unspecified, false)
         }
     }
 }

@@ -2,13 +2,13 @@ package vbshkn.android.jetmemo.model.sub
 
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
-import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.LearningScreenModel
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.WrongRed
 import kotlin.random.Random
 
-class CorrectOptionSubModel(private val baseModel: LearnScreenModel): LearnScreenSubModel {
+class CorrectOptionSubModel(private val baseModel: LearningScreenModel): LearningScreenSubModel {
     private val coff = Random.nextInt(0,100)
     private val ex = baseModel.currentExercise.value as Exercise.CorrectOptionExercise
     val qWord = if(coff < 50) ex.correctAnswer.original else ex.correctAnswer.translation
@@ -37,10 +37,10 @@ class CorrectOptionSubModel(private val baseModel: LearnScreenModel): LearnScree
 
     class ElementStateDefaults {
         companion object {
-            val Neutral = LearnScreenModel.ElementState(OptionTextGrey, true)
-            val Locked = LearnScreenModel.ElementState(OptionTextGrey, false)
-            val Correct = LearnScreenModel.ElementState(CorrectGreen, false)
-            val Wrong = LearnScreenModel.ElementState(WrongRed, false)
+            val Neutral = LearningScreenModel.ElementState(OptionTextGrey, true)
+            val Locked = LearningScreenModel.ElementState(OptionTextGrey, false)
+            val Correct = LearningScreenModel.ElementState(CorrectGreen, false)
+            val Wrong = LearningScreenModel.ElementState(WrongRed, false)
         }
     }
 }

@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
-import vbshkn.android.jetmemo.model.LearnScreenModel
-import vbshkn.android.jetmemo.model.LearnScreenModel.ElementState
+import vbshkn.android.jetmemo.model.LearningScreenModel
+import vbshkn.android.jetmemo.model.LearningScreenModel.ElementState
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 
-class MatchPairsSubModel(private val baseModel: LearnScreenModel)
-    : LearnScreenSubModel {
+class MatchPairsSubModel(private val baseModel: LearningScreenModel)
+    : LearningScreenSubModel {
     val ex = baseModel.currentExercise.value as Exercise.MatchPairsExercise
     val leftColumnWords = ex.options.shuffled().map { it.original }
     val rightColumnWords = ex.options.shuffled().map { it.translation }

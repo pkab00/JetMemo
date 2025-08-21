@@ -14,11 +14,12 @@ import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
 import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
-import vbshkn.android.jetmemo.model.sub.LearnScreenSubModel
+import vbshkn.android.jetmemo.model.sub.LearningScreenSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
+import vbshkn.android.jetmemo.ui.Router
 
-class LearnScreenModel(
+class LearningScreenModel(
     repository: LearnRepository, val navController: NavController, val unitID: Int
 ) : ViewModel() {
     private val statesNeededMap = mapOf(
@@ -42,7 +43,7 @@ class LearnScreenModel(
     private val _showSkipButton = mutableStateOf(true)
     var showSkipButton by _showSkipButton
 
-    private var _currentSubModel: LearnScreenSubModel? = null
+    private var _currentSubModel: LearningScreenSubModel? = null
     val currentSubModel get() = getSubModel()
 
     init {
@@ -51,6 +52,11 @@ class LearnScreenModel(
 
     fun exit() {
         navController.popBackStack()
+    }
+
+    fun toEndScreen() {
+        navController.popBackStack()
+        navController.navigate(Router.LearningEndRoute)
     }
 
     fun stateAt(index: Int): ElementState? {
@@ -135,7 +141,7 @@ class LearnScreenModel(
         return trainer.currentExercise.value.done()
     }
 
-    private fun getSubModel(): LearnScreenSubModel? {
+    private fun getSubModel(): LearningScreenSubModel? {
         when (currentExercise.value) {
             is Exercise.CorrectOptionExercise -> {
                 if (_currentSubModel !is CorrectOptionSubModel) {

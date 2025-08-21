@@ -1,5 +1,5 @@
 package vbshkn.android.jetmemo.model.sub
 
-interface LearnScreenSubModel {
+interface LearningScreenSubModel {
     fun resetAllStates()
 }

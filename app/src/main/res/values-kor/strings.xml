@@ -27,4 +27,5 @@
     <string name="sort_time">생성 시간 기준</string>
     <string name="sort_original">"알파벳순 (원본 기준) "</string>
     <string name="sort_translation">알파벳순 (번역순)</string>
+    <string name="training_completed">"훈련이 완료되었습니다! "</string>
 </resources>

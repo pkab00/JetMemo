@@ -30,6 +30,7 @@
     <string name="sort_time">By creation time</string>
     <string name="sort_original">In alphabet order (by original)</string>
     <string name="sort_translation">In alphabet order (by translation)</string>
+    <string name="training_completed">Training completed!</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

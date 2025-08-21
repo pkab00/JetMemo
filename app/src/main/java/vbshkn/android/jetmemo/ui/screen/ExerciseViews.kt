@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Exercise
-import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.LearningScreenModel
 import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
@@ -199,7 +199,7 @@ object ExerciseViews {
     @Composable
     private fun PairCardItem(
         text: String,
-        state: LearnScreenModel.ElementState,
+        state: LearningScreenModel.ElementState,
         onClick: () -> Unit
     ) {
         Button(
@@ -224,7 +224,7 @@ object ExerciseViews {
     private fun OptionItem(
         number: Int,
         text: String,
-        state: LearnScreenModel.ElementState,
+        state: LearningScreenModel.ElementState,
         onClick: () -> Unit
     ) {
         Button(

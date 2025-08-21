@@ -5,15 +5,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import vbshkn.android.jetmemo.data.LearnRepository
 
-class LearnScreenModelFactory(
-    private val repository: LearnRepository,
-    private val navController: NavController,
-    private val unitID: Int
+class LearningEndScreenModelFactory(
+    private val navController: NavController
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(LearnScreenModel::class.java)){
+        if(modelClass.isAssignableFrom(LearningEndScreenModel::class.java)){
             @Suppress("UNCHECKED_CAST")
-            return LearnScreenModel(repository, navController, unitID) as T
+            return LearningEndScreenModel(navController) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

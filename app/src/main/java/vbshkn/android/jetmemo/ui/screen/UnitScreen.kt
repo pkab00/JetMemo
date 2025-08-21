@@ -48,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,7 +93,7 @@ fun UnitScreen(
         bottomBar = {
             BottomBar(
                 show = !isEmpty,
-                onLearn = { controller.navigate(Router.LearnRoute(viewModel.unitID)) }
+                onLearn = { controller.navigate(Router.LearningRoute(viewModel.unitID)) }
             )
         }
     ) { innerPadding ->

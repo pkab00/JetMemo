@@ -13,8 +13,11 @@ sealed class Router{
     )
 
     @Serializable
-    data class LearnRoute(
+    data class LearningRoute(
         val id: Int
     )
+
+    @Serializable
+    object LearningEndRoute
 }
 

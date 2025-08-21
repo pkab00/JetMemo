@@ -6,23 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseInBack
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOut
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.ui.unit.IntOffset
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,12 +20,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import vbshkn.android.jetmemo.model.HomeScreenModel
 import vbshkn.android.jetmemo.model.HomeScreenModelFactory
-import vbshkn.android.jetmemo.model.LearnScreenModel
-import vbshkn.android.jetmemo.model.LearnScreenModelFactory
+import vbshkn.android.jetmemo.model.LearningEndScreenModel
+import vbshkn.android.jetmemo.model.LearningEndScreenModelFactory
+import vbshkn.android.jetmemo.model.LearningScreenModel
+import vbshkn.android.jetmemo.model.LearningScreenModelFactory
 import vbshkn.android.jetmemo.model.UnitScreenModel
 import vbshkn.android.jetmemo.model.UnitScreenModelFactory
 import vbshkn.android.jetmemo.ui.screen.HomeScreen
-import vbshkn.android.jetmemo.ui.screen.LearnScreen
+import vbshkn.android.jetmemo.ui.screen.LearningEndScreen
+import vbshkn.android.jetmemo.ui.screen.LearningScreen
 import vbshkn.android.jetmemo.ui.screen.UnitScreen
 
 class MainActivity : ComponentActivity() {
@@ -76,12 +69,20 @@ class MainActivity : ComponentActivity() {
                         controller = navController,
                     )
                 }
-                composable<Router.LearnRoute> {
-                    val data = it.toRoute<Router.LearnRoute>()
-                    val viewModel: LearnScreenModel = viewModel(
-                        factory = LearnScreenModelFactory(app.learnRepository, navController, data.id)
+                composable<Router.LearningRoute> {
+                    val data = it.toRoute<Router.LearningRoute>()
+                    val viewModel: LearningScreenModel = viewModel(
+                        factory = LearningScreenModelFactory(app.learnRepository, navController, data.id)
                     )
-                    LearnScreen(
+                    LearningScreen(
+                        model = viewModel
+                    )
+                }
+                composable<Router.LearningEndRoute> {
+                    val viewModel: LearningEndScreenModel = viewModel(
+                        factory = LearningEndScreenModelFactory(navController)
+                    )
+                    LearningEndScreen(
                         model = viewModel
                     )
                 }
