@@ -1,6 +1,5 @@
 package vbshkn.android.jetmemo.model
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,14 +16,14 @@ import vbshkn.android.jetmemo.logic.LearnWordsTrainer
 import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
 import vbshkn.android.jetmemo.model.sub.LearnScreenSubModel
 import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
-import vbshkn.android.jetmemo.model.sub.RightOptionSubModel
+import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
 
 class LearnScreenModel(
     repository: LearnRepository, val navController: NavController, val unitID: Int
 ) : ViewModel() {
     private val statesNeededMap = mapOf(
         Exercise.MatchPairsExercise::class to 8,
-        Exercise.RightOptionExercise::class to 3,
+        Exercise.CorrectOptionExercise::class to 3,
         Exercise.ApproveTranslationExercise::class to 2
     )
     private var _canMoveFurther = false
@@ -122,7 +121,7 @@ class LearnScreenModel(
                 _canMoveFurther = true
             }
 
-            is Exercise.RightOptionExercise -> {
+            is Exercise.CorrectOptionExercise -> {
                 if (correct && done) trainer.setLearned(ex.correctAnswer)
                 _canMoveFurther = true
             }
@@ -138,11 +137,11 @@ class LearnScreenModel(
 
     private fun getSubModel(): LearnScreenSubModel? {
         when (currentExercise.value) {
-            is Exercise.RightOptionExercise -> {
-                if (_currentSubModel !is RightOptionSubModel) {
-                    _currentSubModel = RightOptionSubModel(this)
+            is Exercise.CorrectOptionExercise -> {
+                if (_currentSubModel !is CorrectOptionSubModel) {
+                    _currentSubModel = CorrectOptionSubModel(this)
                 }
-                return _currentSubModel as RightOptionSubModel
+                return _currentSubModel as CorrectOptionSubModel
             }
 
             is Exercise.MatchPairsExercise -> {

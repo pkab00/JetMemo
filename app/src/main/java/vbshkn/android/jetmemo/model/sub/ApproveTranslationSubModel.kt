@@ -6,6 +6,7 @@ import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
 
 class ApproveTranslationSubModel(private val baseModel: LearnScreenModel) : LearnScreenSubModel {
+    val exercise get() = baseModel.currentExercise
 
     fun onClicked(isCorrectTranslation: Boolean) {
         val answer = Answer.YesNo(isCorrectTranslation)

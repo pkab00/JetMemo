@@ -13,7 +13,7 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
     private var dictionary: List<Word> = entities.map { entity -> Word(entity) }
     private val wordsNeededMap = mapOf(
         Exercise.MatchPairsExercise::class to 4,
-        Exercise.RightOptionExercise::class to 3,
+        Exercise.CorrectOptionExercise::class to 3,
         Exercise.ApproveTranslationExercise::class to 1
     )
     private val learnedStateMap = mutableMapOf<Word, Boolean>()
@@ -60,11 +60,11 @@ class LearnWordsTrainer(entities: List<WordEntity>) {
         val notLearned = getNotLearnedWords()
 
         when (clazz) {
-            Exercise.RightOptionExercise::class -> {
+            Exercise.CorrectOptionExercise::class -> {
                 val randomWords = wordsNeededMap[clazz]?.let { notLearned.take(it) }
                 if (randomWords != null) {
                     Log.d("DEBUG", "RightOptionExercise built")
-                    return Exercise.RightOptionExercise(randomWords, randomWords.random())
+                    return Exercise.CorrectOptionExercise(randomWords, randomWords.random())
                 }
             }
 

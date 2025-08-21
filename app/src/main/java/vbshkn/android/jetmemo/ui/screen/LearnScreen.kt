@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.sp
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.model.LearnScreenModel
+import vbshkn.android.jetmemo.model.sub.ApproveTranslationSubModel
+import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
+import vbshkn.android.jetmemo.model.sub.MatchPairsSubModel
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
@@ -223,15 +226,15 @@ fun ExerciseArea(
     ) {
         when (ex) {
             is Exercise.MatchPairsExercise -> {
-                ExerciseViews.MatchPairsView(model)
+                ExerciseViews.MatchPairsView(model.currentSubModel as MatchPairsSubModel)
             }
 
-            is Exercise.RightOptionExercise -> {
-                ExerciseViews.RightOptionView(model)
+            is Exercise.CorrectOptionExercise -> {
+                ExerciseViews.CorrectOptionView(model.currentSubModel as CorrectOptionSubModel)
             }
 
             is Exercise.ApproveTranslationExercise -> {
-                ExerciseViews.ApproveTranslationView(model)
+                ExerciseViews.ApproveTranslationView(model.currentSubModel as ApproveTranslationSubModel)
             }
 
             else -> { model.exit() }

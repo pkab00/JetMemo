@@ -8,11 +8,12 @@ import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.WrongRed
 import kotlin.random.Random
 
-class RightOptionSubModel(private val baseModel: LearnScreenModel): LearnScreenSubModel {
-    val coff = Random.nextInt(0,100)
-    private val ex = baseModel.currentExercise.value as Exercise.RightOptionExercise
+class CorrectOptionSubModel(private val baseModel: LearnScreenModel): LearnScreenSubModel {
+    private val coff = Random.nextInt(0,100)
+    private val ex = baseModel.currentExercise.value as Exercise.CorrectOptionExercise
     val qWord = if(coff < 50) ex.correctAnswer.original else ex.correctAnswer.translation
     val opWords = ex.options.map { if(coff < 50) it.translation else it.original }
+    val elementStates get() = baseModel.elementStates
 
     fun onClicked(index: Int) {
         val answer = Answer.WordPair(qWord, opWords[index])

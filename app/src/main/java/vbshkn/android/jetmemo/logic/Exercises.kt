@@ -9,7 +9,7 @@ sealed interface Exercise {
     fun done(): Boolean
     fun checkAnswer(answer: Answer): Boolean
 
-    class RightOptionExercise(
+    class CorrectOptionExercise(
         val options: List<Word>,
         val correctAnswer: Word
     ) : Exercise {
