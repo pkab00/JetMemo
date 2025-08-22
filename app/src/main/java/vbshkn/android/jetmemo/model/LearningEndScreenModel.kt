@@ -6,9 +6,9 @@ import androidx.navigation.NavController
 class LearningEndScreenModel
     (
     private val navController: NavController,
-    private val total: Int,
-    private val mistakes: Int,
-    private val timeString: String
+    val total: Int,
+    val mistakes: Int,
+    val timeString: String
 ) : ViewModel() {
     fun exit() {
         navController.popBackStack()

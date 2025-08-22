@@ -28,4 +28,7 @@
     <string name="sort_original">В алфавитном порядке (оригинал)</string>
     <string name="sort_translation">В алфавитном порядке (перевод)</string>
     <string name="training_completed">Тренеровка завершена!</string>
+    <string name="statistics_total">Всего:</string>
+    <string name="statistics_mistakes">Ошибок:</string>
+    <string name="statistics_time">Время:</string>
 </resources>

@@ -1,5 +1,6 @@
 package vbshkn.android.jetmemo.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.model.LearningEndScreenModel
+import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
 @Composable
@@ -36,26 +38,74 @@ fun LearningEndScreen(model: LearningEndScreenModel) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        TopBlock(Modifier.weight(1f))
+        TopBlock(Modifier.weight(1f), model)
         BottomBlock(model)
     }
 }
 
 @Composable
-fun TopBlock(modifier: Modifier) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+fun StatisticsBlock(model: LearningEndScreenModel) {
+    Button(
+        onClick = {},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = OptionTextGrey
+        ),
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, Color.Black),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = 50.dp,
+                end = 50.dp,
+                //top = 75.dp,
+                //bottom = 75.dp
+            )
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            StatisticsItem("${stringResource(R.string.statistics_time)} ${model.timeString}")
+            StatisticsItem("${stringResource(R.string.statistics_total)} ${model.total}")
+            StatisticsItem("${stringResource(R.string.statistics_mistakes)} ${model.mistakes}")
+        }
+    }
+}
+
+@Composable
+fun StatisticsItem(txt: String) {
+    Text(
+        text = txt,
+        fontSize = 24.sp,
+        fontFamily = FontFamily(Font(R.font.rubik_regular))
+    )
+}
+
+@Composable
+fun TopBlock(
+    modifier: Modifier,
+    model: LearningEndScreenModel
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(50.dp),
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Text(
-            text = stringResource(R.string.training_completed),
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            fontSize = 36.sp,
-            fontFamily = FontFamily(Font(R.font.nunito_bold))
-        )
+        Row(
+            Modifier
+                .padding(top = 100.dp)
+        ){
+            Text(
+                text = stringResource(R.string.training_completed),
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                fontSize = 36.sp,
+                fontFamily = FontFamily(Font(R.font.nunito_bold))
+            )
+        }
+        StatisticsBlock(model)
     }
 }
 

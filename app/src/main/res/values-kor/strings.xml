@@ -28,4 +28,7 @@
     <string name="sort_original">"알파벳순 (원본 기준) "</string>
     <string name="sort_translation">알파벳순 (번역순)</string>
     <string name="training_completed">"훈련이 완료되었습니다! "</string>
+    <string name="statistics_total">"총: "</string>
+    <string name="statistics_mistakes">"오류: "</string>
+    <string name="statistics_time">"시간: "</string>
 </resources>

@@ -31,6 +31,9 @@
     <string name="sort_original">In alphabet order (by original)</string>
     <string name="sort_translation">In alphabet order (by translation)</string>
     <string name="training_completed">Training completed!</string>
+    <string name="statistics_total">Total:</string>
+    <string name="statistics_mistakes">Mistakes:</string>
+    <string name="statistics_time">Time:</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>
