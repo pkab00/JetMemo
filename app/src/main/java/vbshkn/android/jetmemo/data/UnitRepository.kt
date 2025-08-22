@@ -16,7 +16,9 @@ class UnitRepository(
         word: WordEntity,
         unitID: Int
     ) {
-        wordDao.insertWord(word) // если такое слово уже есть - будет пропущено
+        if (!wordDao.hasWord(word.original, word.translation)) {
+            wordDao.insertWord(word)
+        }
         if(unitID != -1){
             val newID = wordDao.getWordID(word.original, word.translation)
             relationsDao.insertRelation(RelationsEntity(newID, unitID))
