@@ -1,5 +1,6 @@
 package vbshkn.android.jetmemo.model
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -45,6 +46,7 @@ class LearningScreenModel(
 
     private var _currentSubModel: LearningScreenSubModel? = null
     val currentSubModel get() = getSubModel()
+    private var statistics = Statistics()
 
     init {
         nextExercise()
@@ -55,8 +57,16 @@ class LearningScreenModel(
     }
 
     fun toEndScreen() {
+        statistics = statistics.withTimerStopped()
+        Log.d("DEBUG", "TIME: ${statistics.getTimeAsString()}")
         navController.popBackStack()
-        navController.navigate(Router.LearningEndRoute)
+        navController.navigate(
+            Router.LearningEndRoute(
+                total = statistics.total,
+                mistakes = statistics.mistakes,
+                timeString = statistics.getTimeAsString()
+            )
+        )
     }
 
     fun stateAt(index: Int): ElementState? {
@@ -109,6 +119,7 @@ class LearningScreenModel(
 
     fun nextExercise() {
         trainer.generateNextExercise()
+        statistics = statistics.withExerciseCounted()
         resetAllStates()
         resetSubModel()
     }
@@ -116,6 +127,8 @@ class LearningScreenModel(
     fun checkAnswer(answer: Answer): Boolean {
         val correct = trainer.checkAnswer(answer)
         val done = trainer.isDone()
+
+        if (!correct) statistics = statistics.withMistakeCounted()
         when (val ex = currentExercise.value) {
             is Exercise.MatchPairsExercise -> {
                 if (correct && done) ex.options.forEach { trainer.addLearningPoints(it) }
@@ -175,4 +188,34 @@ class LearningScreenModel(
     data class ElementState(
         var color: Color = Color.Unspecified, var clickable: Boolean = true
     )
+
+    data class Statistics(
+        val total: Int = 0,
+        val mistakes: Int = 0,
+        val startTimestamp: Long = System.currentTimeMillis(),
+        val endTimestamp: Long = 0L
+    ) {
+        fun withTimerStopped(): Statistics {
+            return if (endTimestamp == 0L) {
+                copy(endTimestamp = System.currentTimeMillis())
+            } else this
+        }
+
+        fun withExerciseCounted(): Statistics {
+            return copy(total = total + 1)
+        }
+
+        fun withMistakeCounted(): Statistics {
+            return copy(mistakes = mistakes + 1)
+        }
+
+        fun getTimeAsString(): String {
+            val seconds = (endTimestamp - startTimestamp) / 1000
+            val minutes = seconds / 60
+            val secondsLeft = seconds % 60
+            val  mString = if(minutes < 10) "0$minutes" else minutes.toString()
+            val sString = if(secondsLeft < 10) "0$secondsLeft" else secondsLeft.toString()
+            return "$mString:$sString"
+        }
+    }
 }

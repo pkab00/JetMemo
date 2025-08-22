@@ -79,8 +79,15 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 composable<Router.LearningEndRoute> {
+                    val data = it.toRoute<Router.LearningEndRoute>()
+
                     val viewModel: LearningEndScreenModel = viewModel(
-                        factory = LearningEndScreenModelFactory(navController)
+                        factory = LearningEndScreenModelFactory(
+                            navController = navController,
+                            total = data.total,
+                            mistakes = data.mistakes,
+                            timeString = data.timeString,
+                        )
                     )
                     LearningEndScreen(
                         model = viewModel

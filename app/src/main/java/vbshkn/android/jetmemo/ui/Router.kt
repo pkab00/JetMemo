@@ -18,6 +18,10 @@ sealed class Router{
     )
 
     @Serializable
-    object LearningEndRoute
+    data class LearningEndRoute(
+        val total: Int,
+        val mistakes: Int,
+        val timeString: String
+    )
 }
 
