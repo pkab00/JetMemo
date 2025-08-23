@@ -40,6 +40,12 @@ import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 import vbshkn.android.jetmemo.ui.theme.WrongRed
 
+/**
+ * Экран режима заучивания.
+ * В верхней части расположена кнопка выхода, в нижней - кнопка пропуска.
+ * Остальное содержимое адаптивно изменяется в зависимости от текущего упражнения.
+ * @see LearningScreenModel
+ */
 @Composable
 fun LearningScreen(
     model: LearningScreenModel
@@ -58,8 +64,12 @@ fun LearningScreen(
     }
 }
 
+/**
+ * Содержимое экрана.
+ * @param model вью-модель
+ */
 @Composable
-fun MainArea(
+private fun MainArea(
     model: LearningScreenModel
 ) {
     Column(
@@ -73,8 +83,12 @@ fun MainArea(
     }
 }
 
+/**
+ * Верхняя часть экрана с кнопокой выхода из режима тренеровки.
+ * @param model вью-модель
+ */
 @Composable
-fun CloseButtonArea(
+private fun CloseButtonArea(
     model: LearningScreenModel
 ) {
     Row(
@@ -93,8 +107,12 @@ fun CloseButtonArea(
     }
 }
 
+/**
+ * Нижняя часть экрана с кнопкой пропуска текущего упражнения.
+ * @param model вью-модель
+ */
 @Composable
-fun SkipButtonArea(
+private fun SkipButtonArea(
     model: LearningScreenModel
 ) {
     val show = model.showSkipButton
@@ -128,8 +146,13 @@ fun SkipButtonArea(
     }
 }
 
+/**
+ * Нижняя панель с сообщением о правильном/неправильном ответе.
+ * @param show если равно true, то панель видима
+ * @param model вью-модель
+ */
 @Composable
-fun BottomBar(
+private fun BottomBar(
     show: Boolean,
     model: LearningScreenModel
 ) {
@@ -212,8 +235,14 @@ fun BottomBar(
     }
 }
 
+/**
+ * Часть экрана, адаптивно изменяющаяся в зависимости от текущего упражнения.
+ * @param model вью-модель
+ * @param modifier модификатор с указанным весом
+ * @see ExerciseViews
+ */
 @Composable
-fun ExerciseArea(
+private fun ExerciseArea(
     model: LearningScreenModel,
     modifier: Modifier
 ) {

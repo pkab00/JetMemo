@@ -31,6 +31,9 @@ import vbshkn.android.jetmemo.ui.screen.LearningEndScreen
 import vbshkn.android.jetmemo.ui.screen.LearningScreen
 import vbshkn.android.jetmemo.ui.screen.UnitScreen
 
+/**
+ * Основной класс приложения.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +44,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
+            // навигация между экранами
             NavHost(
                 navController = navController,
                 startDestination = Router.HomeRoute,
                 enterTransition = { enterAnimation(400) },
                 exitTransition = { exitAnimation(400) }
             ) {
+                // => HomeScreen
                 composable<Router.HomeRoute> {
                     val viewModel: HomeScreenModel = viewModel(
                         factory = HomeScreenModelFactory(app.homeRepository)
@@ -56,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         controller = navController
                     )
                 }
+                // => UnitScreen
                 composable<Router.UnitRoute> {
                     // данные из data class'а принимаем здесь
                     val data = it.toRoute<Router.UnitRoute>()
@@ -69,6 +75,7 @@ class MainActivity : ComponentActivity() {
                         controller = navController,
                     )
                 }
+                // => LearningScreen
                 composable<Router.LearningRoute> {
                     val data = it.toRoute<Router.LearningRoute>()
                     val viewModel: LearningScreenModel = viewModel(
@@ -78,6 +85,7 @@ class MainActivity : ComponentActivity() {
                         model = viewModel
                     )
                 }
+                // => LearningEndScreen
                 composable<Router.LearningEndRoute> {
                     val data = it.toRoute<Router.LearningEndRoute>()
 
@@ -98,6 +106,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Анимация перехода между экранами.
+ * @param duration длительность анимации
+ * @return анимация перехода
+ */
 fun enterAnimation(duration: Int): EnterTransition {
     return fadeIn(
         animationSpec = tween(300, easing = LinearEasing)
@@ -107,6 +120,11 @@ fun enterAnimation(duration: Int): EnterTransition {
     )
 }
 
+/**
+ * Анимация обратного перехода между экранами.
+ * @param duration длительность анимации
+ * @return анимация обратного перехода
+ */
 fun exitAnimation(duration: Int): ExitTransition {
     return fadeOut(
         animationSpec = tween(300, easing = LinearEasing)

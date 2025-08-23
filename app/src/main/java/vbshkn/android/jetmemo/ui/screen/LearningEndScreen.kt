@@ -29,6 +29,10 @@ import vbshkn.android.jetmemo.model.LearningEndScreenModel
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Экран завершения режима заучивания, содержащий статистику прохождения.
+ * @see LearningEndScreenModel
+ */
 @Composable
 fun LearningEndScreen(model: LearningEndScreenModel) {
     Column(
@@ -43,8 +47,12 @@ fun LearningEndScreen(model: LearningEndScreenModel) {
     }
 }
 
+/**
+ * Блок по статистикой прохождения, расположенный в верхней части экрана.
+ * @param model вью-модель
+ */
 @Composable
-fun StatisticsBlock(model: LearningEndScreenModel) {
+private fun StatisticsBlock(model: LearningEndScreenModel) {
     Button(
         onClick = {},
         colors = ButtonDefaults.buttonColors(
@@ -57,9 +65,7 @@ fun StatisticsBlock(model: LearningEndScreenModel) {
             .fillMaxSize()
             .padding(
                 start = 50.dp,
-                end = 50.dp,
-                //top = 75.dp,
-                //bottom = 75.dp
+                end = 50.dp
             )
     ) {
         Column(
@@ -73,8 +79,11 @@ fun StatisticsBlock(model: LearningEndScreenModel) {
     }
 }
 
+/**
+ * Вспомагательный текстовый элемент, используемый StatisticsBlock.
+ */
 @Composable
-fun StatisticsItem(txt: String) {
+private fun StatisticsItem(txt: String) {
     Text(
         text = txt,
         fontSize = 24.sp,
@@ -82,8 +91,12 @@ fun StatisticsItem(txt: String) {
     )
 }
 
+/**
+ * Верхняя часть экрана, содержащая заголовок и блок статистики.
+ * @param modifier модификатор с установленным весом
+ */
 @Composable
-fun TopBlock(
+private fun TopBlock(
     modifier: Modifier,
     model: LearningEndScreenModel
 ) {
@@ -109,8 +122,12 @@ fun TopBlock(
     }
 }
 
+/**
+ * Нижняя часть экрана, содержащая кнопку выхода.
+ * @param model вью-модель
+ */
 @Composable
-fun BottomBlock(model: LearningEndScreenModel) {
+private fun BottomBlock(model: LearningEndScreenModel) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,

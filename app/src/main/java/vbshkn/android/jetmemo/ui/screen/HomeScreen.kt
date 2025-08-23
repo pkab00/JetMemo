@@ -53,6 +53,10 @@ import vbshkn.android.jetmemo.ui.dialog.TextInputDialog
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Главная страница приложения, содержащая список юнитов.
+ * @see HomeScreenModel
+ */
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenModel,
@@ -99,6 +103,11 @@ fun HomeScreen(
     }
 }
 
+/**
+ * Верхняя панель экрана.
+ * @param onAddClicked коллбэк при нажатии кнопки добавления юнита
+ * @param onAboutClicked коллбэк при нажатии кнопки "О приложении"
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -144,6 +153,13 @@ fun TopBar(
     )
 }
 
+/**
+ * Часть экрана, находящаяся перед списком юнитов.
+ * @param onEdit коллбэк при нажатии кнопки "Редактировать"
+ * @param onSort коллбэк при изменении режима сортировки
+ * @param sortMode режим сортировки
+ * @param editMode режим редактирования
+ */
 @Composable
 fun TitleArea(
     onEdit: () -> Unit,
@@ -206,6 +222,13 @@ fun TitleArea(
     }
 }
 
+/**
+ * Список доступных юнитов с поддержкой скроллинга.
+ * @param viewModel вью-модель
+ * @param controller контроллер для навигации
+ * @param editMode режим редактирования
+ * @param sortMode режим сортировки
+ */
 @Composable
 fun UnitList(
     viewModel: HomeScreenModel,
@@ -240,6 +263,14 @@ fun UnitList(
     }
 }
 
+/**
+ * Элемент для отображения юнитов в списке.
+ * @param unit отображаемый юнит
+ * @param isEditable true если активен режим редактирования, иначе - false
+ * @param onClick коллбэк при нажатии на элемент
+ * @param onEdit коллбэк при нажатии на кнопку "Редактировать"
+ * @param onDelete коллбэк при нажатии на кнопку "Удалить"
+ */
 @Composable
 fun UnitButton(
     unit: UnitEntity,
@@ -307,6 +338,10 @@ fun UnitButton(
     }
 }
 
+/**
+ * Composable компонент для управления видимостью диалоговых окон.
+ * @param viewModel вью-модель
+ */
 @Composable
 private fun DialogHost(viewModel: HomeScreenModel) {
     when (val state = viewModel.dialogState) {

@@ -67,6 +67,10 @@ import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Экран со словами, которые содержит некоторый юнит.
+ * @see UnitScreenModel
+ */
 @Composable
 fun UnitScreen(
     name: String,
@@ -108,9 +112,15 @@ fun UnitScreen(
     }
 }
 
+/**
+ * Верхняя часть экрана, содержащая название юнита и кнопку "Домой".
+ * @param title название юнита
+ * @param model вью-модель
+ * @param onNavigate коллбэк при нажатии кнопки "Домой"
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(
+private fun TopBar(
     title: String,
     model: UnitScreenModel,
     onNavigate: () -> Unit
@@ -192,8 +202,14 @@ fun TopBar(
     )
 }
 
+/**
+ * Нижняя часть экрана, содержащая кнопку перехода в режим заучивания.
+ * Видна только если в юните содержится хотя бы одно слово.
+ * @param show если равно true, панель видна
+ * @param onLearn коллбэк при нажатии на кнопку "Учить"
+ */
 @Composable
-fun BottomBar(
+private fun BottomBar(
     show: Boolean,
     onLearn: () -> Unit
 ) {
@@ -236,8 +252,11 @@ fun BottomBar(
     }
 }
 
+/**
+ * Филлер, занимающий место списка слов в случае полного отсутствия слов в юните.
+ */
 @Composable
-fun EmptyUnitFiller() {
+private fun EmptyUnitFiller() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -253,8 +272,12 @@ fun EmptyUnitFiller() {
     }
 }
 
+/**
+ * Список слов в юните с поддержкой скроллинга.
+ * @param viewModel вью-модель
+ */
 @Composable
-fun WordList(viewModel: UnitScreenModel) {
+private fun WordList(viewModel: UnitScreenModel) {
     val words by viewModel.unitWords.collectAsState()
 
     if (words.isNotEmpty()) {
@@ -275,8 +298,14 @@ fun WordList(viewModel: UnitScreenModel) {
     } else EmptyUnitFiller()
 }
 
+/**
+ * Элемент для отображения слова.
+ * При нажатии на кнопку "Действия" отображает под ней список возможных операций со словом.
+ * @param word объект-слова
+ * @param viewModel вью-модель
+ */
 @Composable
-fun WordItem(
+private fun WordItem(
     word: WordEntity,
     viewModel: UnitScreenModel
 ) {
@@ -377,6 +406,10 @@ fun WordItem(
     }
 }
 
+/**
+ * Composable функция для управления видимостью и состоянием диалоговых окон.
+ * @param model вью-модель
+ */
 @Composable
 private fun DialogHost(model: UnitScreenModel) {
     when (val dialogState = model.dialogState) {

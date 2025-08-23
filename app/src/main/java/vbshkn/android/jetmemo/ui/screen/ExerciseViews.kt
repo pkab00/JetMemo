@@ -41,7 +41,20 @@ import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.WrongRed
 
+/**
+ * Объект, содержащий набор composable функций для представления
+ * различных типов Exercise.
+ * @see Exercise
+ */
 object ExerciseViews {
+    /**
+     * Представление для CorrectOptionExercise.
+     * В верхней части экрана располагается непосредственно слово, для которого нужно выбрать перевод.
+     * Остальное место занято LazyColumn с вариантами ответа.
+     * @see Exercise.CorrectOptionExercise
+     * @see CorrectOptionSubModel
+     * @see OptionItem
+     */
     @Composable
     fun CorrectOptionView(subModel: CorrectOptionSubModel) {
         val states by subModel.elementStates.collectAsState()
@@ -74,9 +87,9 @@ object ExerciseViews {
                     .fillMaxWidth()
                     .weight(0.7f)
             ) {
-                items (states.size) { i ->
+                items(states.size) { i ->
                     OptionItem(
-                        number = i+1,
+                        number = i + 1,
                         text = subModel.opWords[i],
                         state = states[i]
                     ) { subModel.onClicked(i) }
@@ -85,6 +98,14 @@ object ExerciseViews {
         }
     }
 
+    /**
+     * Представление для MatchPairExercise. Экран разбит на два столбца,
+     * по 4 элемента в каждом. При выборе одного элемента из столбца,
+     * остальные блокируются. Для перехода дальше нужно собрать все пары.
+     * @see Exercise.MatchPairsExercise
+     * @see MatchPairsSubModel
+     * @see PairCardItem
+     */
     @Composable
     fun MatchPairsView(subModel: MatchPairsSubModel) {
         val leftColumnStates by subModel.leftColumnStates.collectAsState()
@@ -131,6 +152,12 @@ object ExerciseViews {
         }
     }
 
+    /**
+     * Представление для ApproveTranslationExercise. Рабочая область имеет вид карточки.
+     * В верхней части - слово и его перевод, внизу - кнопки для принятия и отклонения.
+     * @see Exercise.ApproveTranslationExercise
+     * @see ApproveTranslationSubModel
+     */
     @Composable
     fun ApproveTranslationView(subModel: ApproveTranslationSubModel) {
         val exercise by subModel.exercise.collectAsState()
@@ -196,6 +223,10 @@ object ExerciseViews {
 
     /// OTHER COMPOSABLE ///
 
+    /**
+     * Composable элемент в виде карты.
+     * @see MatchPairsView
+     */
     @Composable
     private fun PairCardItem(
         text: String,
@@ -220,6 +251,10 @@ object ExerciseViews {
         }
     }
 
+    /**
+     * Composable элемент для варианта ответа.
+     * @see CorrectOptionView
+     */
     @Composable
     private fun OptionItem(
         number: Int,
@@ -240,7 +275,8 @@ object ExerciseViews {
                 .border(
                     width = 1.5.dp,
                     color = state.color,
-                    shape = RoundedCornerShape(30.dp))
+                    shape = RoundedCornerShape(30.dp)
+                )
         ) {
             Row(
                 horizontalArrangement = Arrangement.Start,
