@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import vbshkn.android.jetmemo.data.LearnRepository
+import vbshkn.android.jetmemo.data.LearningRepository
 import vbshkn.android.jetmemo.logic.Answer
 import vbshkn.android.jetmemo.logic.Exercise
 import vbshkn.android.jetmemo.logic.LearnWordsTrainer
@@ -21,7 +21,7 @@ import vbshkn.android.jetmemo.model.sub.CorrectOptionSubModel
 import vbshkn.android.jetmemo.ui.Router
 
 class LearningScreenModel(
-    repository: LearnRepository, val navController: NavController, val unitID: Int
+    repository: LearningRepository, val navController: NavController, val unitID: Int
 ) : ViewModel() {
     private val statesNeededMap = mapOf(
         Exercise.MatchPairsExercise::class to 8,

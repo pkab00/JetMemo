@@ -3,10 +3,10 @@ package vbshkn.android.jetmemo.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import vbshkn.android.jetmemo.data.LearnRepository
+import vbshkn.android.jetmemo.data.LearningRepository
 
 class LearningScreenModelFactory(
-    private val repository: LearnRepository,
+    private val repository: LearningRepository,
     private val navController: NavController,
     private val unitID: Int
 ) : ViewModelProvider.Factory {

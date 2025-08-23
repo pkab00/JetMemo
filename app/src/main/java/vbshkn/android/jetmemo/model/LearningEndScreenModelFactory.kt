@@ -3,7 +3,6 @@ package vbshkn.android.jetmemo.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import vbshkn.android.jetmemo.data.LearnRepository
 
 class LearningEndScreenModelFactory(
     private val navController: NavController,

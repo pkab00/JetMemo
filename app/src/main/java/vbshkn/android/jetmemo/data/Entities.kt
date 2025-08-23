@@ -7,6 +7,14 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
+/**
+ * Объект слова, возвращаемый базой данных.
+ * Ассоциируется с таблицей main_words_table.
+ * @param id уникальный идентификатор, генерируется автоматически
+ * @param original слово
+ * @param translation перевод слова
+ * @param createdAt время создания в миллисекундах
+ */
 @Entity(tableName = "main_words_table")
 data class WordEntity (
     @PrimaryKey(autoGenerate = true)
@@ -16,7 +24,14 @@ data class WordEntity (
     val createdAt: Long = System.currentTimeMillis()
 )
 
-
+/**
+ * Объект юнита, возвращаемый базой данных.
+ * Ассоциируется с таблицей units_table.
+ * @param id уникальный идентификатор, генерируется автоматически
+ * @param name название юнита
+ * @param counter счётчик слов (в данный момент не используется)
+ * @param createdAt время создания в миллисекундах
+ */
 @Entity(tableName = "units_table")
 data class UnitEntity (
     @PrimaryKey(autoGenerate = true)
@@ -30,6 +45,16 @@ data class UnitEntity (
     }
 }
 
+/**
+ * Объект связи, возвращаемый базой данных.
+ * Содержит пару значений "юнит-слово".
+ * ID юнита и слова используются как foreign key. В случае удаления юнита или слова,
+ * информация о связях с их участием также удаляется.
+ * Ассоциируется с таблицей relations_table.
+ * @param unitID идентификатор юнита
+ * @param wordID идентификатор слова
+ * @param createdAt время создания в миллисекундах
+ */
 @Entity(
     tableName = "relations_table",
     primaryKeys = ["wordID", "unitID"],

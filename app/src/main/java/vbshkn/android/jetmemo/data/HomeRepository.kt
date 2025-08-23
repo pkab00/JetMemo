@@ -4,25 +4,33 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.concurrent.Volatile
 
 /**
- * Repository - промежуточный слой абстракции между DB и ViewModel.
- *
- * Репозиторий запрашивает только необходимые ему для работы Dao.
- * Он инкапсулирует процессы работы с данными.
- * ViewModel для отображения данных использует ТОЛЬКО функционал Repository.
+ * Промежуточный слой абстракции между HomeScreenModel и базой данных Room.
+ * @param unitDao - объект для работы с базой юнитов
  */
 class HomeRepository(private val unitDao: UnitDao) {
     fun getUnits(): Flow<List<UnitEntity>> {
         return unitDao.getAll()
     }
 
+    /**
+     * Добавление нового юнита в базу данных.
+     * @param name название юнита
+     */
     suspend fun insertUnit(name: String) {
         unitDao.insertUnit(UnitEntity(name = name))
     }
 
+    /**
+     * Удаление юнита из базы данных.
+     * @param unit объект юнита
+     */
     suspend fun deleteUnit(unit: UnitEntity) {
         unitDao.deleteUnit(unit)
     }
-
+    /**
+     * Обновление информации о юните (обычно - названия) в базе данных.
+     * @param unit объект юнита
+     */
     suspend fun editUnit(unit: UnitEntity) {
         unitDao.updateUnit(unit)
     }
@@ -31,6 +39,9 @@ class HomeRepository(private val unitDao: UnitDao) {
         @Volatile
         var INSTANCE: HomeRepository? = null
 
+        /**
+         * Создание и/или запрос singleton-объекта репозитория.
+         */
         fun getInstance(unitDao: UnitDao): HomeRepository {
             return INSTANCE ?: synchronized(this) {
                 val repo = HomeRepository(unitDao)
