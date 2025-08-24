@@ -12,6 +12,11 @@ import vbshkn.android.jetmemo.model.LearningScreenModel.ElementState
 import vbshkn.android.jetmemo.ui.theme.CorrectGreen
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 
+/**
+ * Саб-модель для управления MatchPairsView.
+ * @param baseModel LearningScreenModel основного экрана
+ * @see Exercise.MatchPairsExercise
+ */
 class MatchPairsSubModel(private val baseModel: LearningScreenModel)
     : LearningScreenSubModel {
     val ex = baseModel.currentExercise.value as Exercise.MatchPairsExercise
@@ -35,12 +40,22 @@ class MatchPairsSubModel(private val baseModel: LearningScreenModel)
             initialValue = emptyList()
         )
 
+    /**
+     * Обновление состояния элемента в левом столбце.
+     * @param index индекс элемента относительно столбца
+     * @param state новое состояние элемента
+     */
     private fun updateLeftColumnState(index: Int, state: ElementState) {
         if (index in 0..<COLUMN_SIZE) {
             baseModel.updateStateAt(index, state.color, state.clickable)
         }
     }
 
+    /**
+     * Обновление состояния элемента в правом столбце.
+     * @param index индекс элемента относительно столбца
+     * @param state новое состояние элемента
+     */
     private fun updateRightColumnState(index: Int, state: ElementState) {
         if (index in 0..<COLUMN_SIZE) {
             val actualIndex = index + COLUMN_SIZE
@@ -48,6 +63,10 @@ class MatchPairsSubModel(private val baseModel: LearningScreenModel)
         }
     }
 
+    /**
+     * Блокировка/разблокировка элементов левого столбца.
+     * @param lock если равно true - элемент блокируется, иначе блокировка снимается
+     */
     private fun lockLeftColumn(lock: Boolean) {
         for (i in 0..<COLUMN_SIZE) {
             if (leftColumnStates.value[i] != ElementStateDefaults.Correct
@@ -62,6 +81,10 @@ class MatchPairsSubModel(private val baseModel: LearningScreenModel)
         }
     }
 
+    /**
+     * Блокировка/разблокировка элементов правого столбца.
+     * @param lock если равно true - элемент блокируется, иначе блокировка снимается
+     */
     private fun lockRightColumn(lock: Boolean) {
         for (i in 0..<COLUMN_SIZE) {
             if (rightColumnStates.value[i] != ElementStateDefaults.Correct
@@ -76,6 +99,10 @@ class MatchPairsSubModel(private val baseModel: LearningScreenModel)
         }
     }
 
+    /**
+     * Коллбэк при нажатии на элемент левого столбца.
+     * @param index индекс элемента относительно столбца
+     */
     fun onLeftClicked(index: Int) {
         val text = leftColumnWords[index]
         if (selectedWord == null) {
@@ -101,6 +128,10 @@ class MatchPairsSubModel(private val baseModel: LearningScreenModel)
         }
     }
 
+    /**
+     * Коллбэк при нажатии на элемент правого столбца.
+     * @param index индекс элемента относительно столбца
+     */
     fun onRightClicked(index: Int) {
         val text = rightColumnWords[index]
         if (selectedWord == null) {
@@ -126,16 +157,23 @@ class MatchPairsSubModel(private val baseModel: LearningScreenModel)
         }
     }
 
+    /**
+     * Переопределяемый метод сброса состояний элемента.
+     * Устанавливает состояние ElementStateDefaults.Default.
+     */
     override fun resetAllStates() {
         baseModel.resetAllStates(ElementStateDefaults.Default)
     }
 
+    /**
+     * Набор возможных состояний элементов.
+     */
     class ElementStateDefaults {
         companion object {
-            val Default = ElementState(Color.Black, true)
-            val Locked = ElementState(OptionTextGrey, false)
-            val Selected = ElementState(Color.Black, false)
-            val Correct = ElementState(CorrectGreen, false)
+            val Default = ElementState(Color.Black, true) // изначальное
+            val Locked = ElementState(OptionTextGrey, false) // блокировка
+            val Selected = ElementState(Color.Black, false) // элемент выбран
+            val Correct = ElementState(CorrectGreen, false) // элемент уже стал частью собранной пары
         }
     }
 }
