@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import vbshkn.android.jetmemo.data.HomeRepository
 
 /**
- * Кастомная фабрика ViewModel, которая (в отличие от дефолтной) принимает
- * в качестве параметра нужный класс Repository.
- *
- * Реализация любезно предоставлена Qwen 3 Coder.
+ * Фабрика HomeScreenModel.
+ * @param repository репозиторий Home
+ * @throws IllegalArgumentException
+ * @see HomeScreenModel
  */
 class HomeScreenModelFactory(private val repository: HomeRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

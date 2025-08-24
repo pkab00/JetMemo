@@ -7,7 +7,7 @@ package vbshkn.android.jetmemo.model.sub
 interface LearningScreenSubModel {
     /**
      * Метод, инициализирующий состояния компонентов view.
-     * Для переопределения используется оодноимённый метод LearnScreenModel.
+     * Для переопределения используется одноимённый метод LearnScreenModel.
      */
     fun resetAllStates()
 }

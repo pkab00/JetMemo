@@ -15,6 +15,11 @@ import vbshkn.android.jetmemo.data.UnitEntity
 import vbshkn.android.jetmemo.data.UnitRepository
 import vbshkn.android.jetmemo.data.WordEntity
 
+/**
+ * Модель для управления UnitScreen.
+ * @param repository репозиторий Unit
+ * @param unitID идентификатор юнита
+ */
 class UnitScreenModel(
     private val repository: UnitRepository,
     val unitID: Int
@@ -36,13 +41,21 @@ class UnitScreenModel(
     private val _unitsToAddTo = MutableStateFlow<List<UnitEntity>>(emptyList())
     val unitsToAddTo = _unitsToAddTo.asStateFlow()
 
-
+    /**
+     * Добавление слова в юнит.
+     * @param word объект слова
+     */
     fun addWord(word: WordEntity) {
         viewModelScope.launch {
             repository.addWord(word, unitID)
         }
     }
 
+    /**
+     * Добавление слова в один из юнитов, доступных для этой операции.
+     * @param word объект слова
+     * @param unitID идентификатор юнита
+     */
     fun addWordToAnotherUnit(
         word: WordEntity,
         unitID: Int
@@ -52,49 +65,82 @@ class UnitScreenModel(
         }
     }
 
+    /**
+     * Изменение информации о слове.
+     * @param word объект слова
+     */
     fun editWord(word: WordEntity) {
         viewModelScope.launch {
             repository.editWord(word)
         }
     }
 
+    /**
+     * Удаление слова из данного юнита.
+     * @param word объект слова
+     */
     fun deleteWordFromUnit(word: WordEntity) {
         viewModelScope.launch {
             repository.deleteWordFromUnit(word, unitID)
         }
     }
 
+    /**
+     * Полное удаление слова из базы данных.
+     * @param word объект слова
+     */
     fun deleteWordCompletely(word: WordEntity) {
         viewModelScope.launch {
             repository.deleteWordCompletely(word)
         }
     }
 
+    /**
+     * Запрос из БД списка юнитов, в которые можно добавить данное слово.
+     * @param word объект слова
+     */
     fun loadUnitsToAddTo(word: WordEntity) {
         viewModelScope.launch {
             _unitsToAddTo.value = repository.getUnitsToAddTo(word)
         }
     }
 
+    // текущее состояние DialogHost
     var dialogState by mutableStateOf<DialogState>(DialogState.None)
         private set
 
+    /**
+     * Изменение текущего состояния DialogState для отображения диалогового окна.
+     * @param state новое состояние
+     */
     fun showDialog(state: DialogState) {
         dialogState = state
     }
 
+    /**
+     * Сокрытие диалоговых окон путём установки DialogState по умолчанию.
+     */
     fun dismissDialog() {
         dialogState = DialogState.None
     }
 
+    /**
+     * Смена режима сортировки слов в юните.
+     * @param newMode новый режим сортировки SortMode
+     */
     fun setSortMode(newMode: SortMode) {
         viewModelScope.launch {
             _sortMode.value = newMode
         }
     }
 
-    // функция-расширение
-    private fun List<WordEntity>.sortedByMode(mode: SortMode): List<WordEntity>{
+    /**
+     * Функция-расширения для стандартного интерфейса List, позволяющая
+     * сортировать списки с использованием стратегий сортировки SortMode.
+     * @param mode режим сортировки SortMode
+     * @see SortMode
+     */
+    private fun List<WordEntity>.sortedByMode(mode: SortMode): List<WordEntity> {
         return when (mode) {
             is SortMode.ByOriginalAsc -> sortedBy { it.original }
             is SortMode.ByTranslationAsc -> sortedBy { it.translation }
@@ -102,17 +148,24 @@ class UnitScreenModel(
         }
     }
 
+    /**
+     * Набор возможных состояний для DialogHost.
+     */
     sealed class DialogState {
-        data object None : DialogState()
-        data object AddWordDialog : DialogState()
-        data class EditWordDialog(val word: WordEntity) : DialogState()
-        data class DeleteWordDialog(val word: WordEntity) : DialogState()
-        data class AddToAnotherUnitDialog(val word: WordEntity) : DialogState()
+        data object None : DialogState() // окна скрыты
+        data object AddWordDialog : DialogState() // окно добавления слова
+        data class EditWordDialog(val word: WordEntity) : DialogState() // окно изменения слова
+        data class DeleteWordDialog(val word: WordEntity) : DialogState() // окно удаления слова
+        data class AddToAnotherUnitDialog(val word: WordEntity) : DialogState() // окно выбора юнитов для добавления
     }
 
+    /**
+     * Режимы сортировки слов в юните.
+     * Все режимы сортируют слова по убыванию.
+     */
     sealed class SortMode {
-        data object ByOriginalAsc : SortMode()
-        data object ByTranslationAsc : SortMode()
-        data object ByTimeAsc : SortMode()
+        data object ByOriginalAsc : SortMode() // по оригинальному слову
+        data object ByTranslationAsc : SortMode() // по переводу
+        data object ByTimeAsc : SortMode() // по времени создания
     }
 }

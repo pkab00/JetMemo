@@ -4,6 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import vbshkn.android.jetmemo.data.UnitRepository
 
+/**
+ * Фабрика UnitScreenModel.
+ * @param repository репозиторий Unit
+ * @param unitID идентификатор юнита
+ * @throws IllegalArgumentException
+ * @see UnitScreenModel
+ */
 class UnitScreenModelFactory(
     private val repository: UnitRepository,
     private val unitID: Int

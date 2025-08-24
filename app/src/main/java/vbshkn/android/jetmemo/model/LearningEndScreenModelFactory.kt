@@ -4,6 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 
+/**
+ * Фабрика UnitEndScreenModel.
+ * @param navController объект для навигации между экранами
+ * @param total количество пройденых упражнений
+ * @param mistakes количество ошибок
+ * @param timeString затраченное время в формате строки MM:SS
+ * @throws IllegalArgumentException
+ * @see LearningEndScreenModel
+ */
 class LearningEndScreenModelFactory(
     private val navController: NavController,
     private val total: Int,
