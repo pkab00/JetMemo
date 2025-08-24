@@ -17,6 +17,13 @@ import vbshkn.android.jetmemo.ui.theme.HeaderBlueGrey
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Кастомное диалоговое окно для вывода информационных текстовых сообщений.
+ * @param onConfirm коллбэк при нажатии кнопки "ОК"
+ * @param onDismiss коллбэк при попытке закрыть окно
+ * @param title заголовок окна
+ * @param message информационное сообщение
+ */
 @Composable
 fun InfoDialog(
     onConfirm: () -> Unit,
@@ -56,9 +63,3 @@ fun InfoDialog(
         }
     )
 }
-
-//@Composable
-//@Preview
-//fun Prev(){
-//    InfoDialog({}, {}, stringResource(R.string.delete_unit),"IDK LOL")
-//}

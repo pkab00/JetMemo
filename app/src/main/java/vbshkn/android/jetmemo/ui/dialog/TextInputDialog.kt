@@ -18,6 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -35,12 +37,24 @@ import vbshkn.android.jetmemo.ui.theme.InputAreaUnfocused
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Enum с позможными ограничениями на длину вводаю
+ * @param limit максимально возможная длина строки
+ */
 enum class InputLimit(val limit: Int) {
     NONE(-1),
     UNIT_NAME(40),
     WORD(30)
 }
 
+/**
+ * Дилаоговое окно для ввода текста (одна строка).
+ * @param onConfirm коллбэк при подтверждении ввода
+ * @param onDismiss коллбэк при попытке закрыть окно
+ * @param title загловок окна
+ * @param initialValue изначально отображаемый текст
+ * @param inputLimit ограничение на ввод текста
+ */
 @Composable
 fun TextInputDialog(
     onConfirm: (String) -> Unit,
@@ -99,6 +113,15 @@ fun TextInputDialog(
     )
 }
 
+/**
+ * Дилаоговое окно для ввода текста (две строки).
+ * @param onConfirm коллбэк при подтверждении ввода
+ * @param onDismiss коллбэк при попытке закрыть окно
+ * @param title загловок окна
+ * @param firstInitialValue изначально отображаемый текст (первое поле)
+ * @param secondInitialValue изначально отображаемый текст (второе поле)
+ * @param inputLimit ограничение на ввод текста
+ */
 @Composable
 fun DoubleTextInputDialog(
     onConfirm: (String, String) -> Unit,
@@ -166,12 +189,20 @@ fun DoubleTextInputDialog(
     )
 }
 
+/**
+ * Кастомное текстовое поле, используемое диалоговыми окнами.
+ * @param text вводимый текст
+ * @param maxLength максимальная длина ввода
+ * @param onValueChange коллбэк при изменении введённого значения
+ */
 @Composable
 private fun CustomTextField(
     text: String,
     maxLength: Int,
     onValueChange: (String) -> Unit
 ) {
+    var cleanInitial by remember { mutableStateOf(true) }
+
     OutlinedTextField(
         value = text,
         textStyle = TextStyle(
@@ -211,6 +242,14 @@ private fun CustomTextField(
                 )
             }
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged { focusState ->
+                // очищаем поле от плейсхолдера при первом наведении фокуса
+                if(focusState.isFocused && cleanInitial) {
+                    onValueChange("")
+                    cleanInitial = false
+                }
+            }
     )
 }

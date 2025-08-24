@@ -27,6 +27,13 @@ import vbshkn.android.jetmemo.ui.theme.HeaderBlueGrey
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Диалоговое окно подтверждения действия.
+ * @param onConfirm коллбэк при нажатии кнопки "ОК"
+ * @param onDismiss коллбэк при нажатии кнопки "Отмена"
+ * @param title заголовок окна
+ * @param message информационное сообщение
+ */
 @Composable
 fun ConfirmDialog(
     onConfirm: () -> Unit,
@@ -77,6 +84,16 @@ fun ConfirmDialog(
     )
 }
 
+/**
+ * Диалоговое окно подтверждение с чекбоксом.
+ * Чекбокс позволяет подключить/отключить какую-то дополнительную опцию при выборе.
+ *
+ * @param onCheckboxOn коллбэк при нажатии кнопки "ОК" (чекбокс активен)
+ * @param onCheckboxOff коллбэк при нажатии кнопки "ОК" (чекбокс не активен)
+ * @param onDismiss коллбэк при нажатии кнопки "Отмена"
+ * @param title заголовок окна
+ * @param message информационное сообщение
+ */
 @Composable
 fun CheckboxConfirmDialog(
     onCheckboxOn: () -> Unit,

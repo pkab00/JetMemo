@@ -27,11 +27,24 @@ import vbshkn.android.jetmemo.R
 import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 
+/**
+ * Объект действия, принимаемый конструктором CustomDropDownMenu.
+ * @param title название пункта меню
+ * @param onClick коллбэк при нажатии на пункт меню
+ * @see CustomDropDownMenu
+ */
 data class MenuAction(
     val title: String,
     val onClick: () -> Unit
 )
 
+/**
+ * Кастомное всплывающее меню
+ * @param show если равно true, меню видимо
+ * @param onDismiss коллбэк при попытке закрыть меню
+ * @param offset позиция меню на экране
+ * @param actions набор действий MenuAction
+ */
 @Composable
 fun CustomDropDownMenu(
     show: Boolean,
@@ -55,6 +68,10 @@ fun CustomDropDownMenu(
     }
 }
 
+/**
+ * Composable функция для представления MenuAction.
+ * @param action объект MenuAction
+ */
 @Composable
 private fun CustomMenuItem(action: MenuAction){
     DropdownMenuItem(
@@ -69,21 +86,3 @@ private fun CustomMenuItem(action: MenuAction){
         onClick = { action.onClick() }
     )
 }
-
-//@Preview
-//@Composable
-//private fun Preview(){
-//    var show by remember { mutableStateOf(true) }
-//
-//    val items = listOf(
-//        MenuAction("First"){},
-//        MenuAction("Second"){},
-//        MenuAction("Third"){}
-//    )
-//    CustomDropDownMenu(
-//        show = show,
-//        onDismiss = { show = false },
-//        actions = items,
-//        offset = DpOffset.Zero
-//    )
-//}

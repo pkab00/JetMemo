@@ -39,6 +39,14 @@ import vbshkn.android.jetmemo.ui.theme.MaterialWhite
 import vbshkn.android.jetmemo.ui.theme.OptionTextGrey
 import vbshkn.android.jetmemo.ui.theme.VividBlue
 
+/**
+ * Кастомный диалог большого размера со списком элементов, которые можно выбирать при помощи чекбоксов.
+ * @param onConfirm коллбэк при нажатии кнопки подтверждения
+ * @param onDismiss коллбэк при попытке закрыть окно
+ * @param title заголовок окна
+ * @param initialSelection выбранные элементы по умолчанию
+ * @param content список данных, отоюражаемых диалогом
+ */
 @Composable
 fun MultiSelectionDialog(
     onConfirm: (selection: List<Any>) -> Unit,
@@ -131,6 +139,12 @@ fun MultiSelectionDialog(
     )
 }
 
+/**
+ * Элемент списка с чекбоксом.
+ * @param data объект, отображаемый элементом
+ * @param onCheckOn коллбэк при активном чекбоксе
+ * @param onCheckOff коллбэк при неактивном чекбоксе
+ */
 @Composable
 private fun SelectionItem(
     data: Any,
@@ -168,21 +182,3 @@ private fun SelectionItem(
         )
     }
 }
-
-//@Preview
-//@Composable
-//private fun Preview() {
-//    val unitEntities = listOf(
-//        UnitEntity(id = 1, name = "Урок 1"),
-//        UnitEntity(id = 2, name = "Урок 2"),
-//        UnitEntity(id = 3, name = "Урок 3")
-//    )
-//
-//    MultiSelectionDialog(
-//        onConfirm = {},
-//        onDismiss = {},
-//        title = "Выберите уроки",
-//        initialSelection = listOf(unitEntities[0]), // по умолчанию первый
-//        content = unitEntities
-//    )
-//}
